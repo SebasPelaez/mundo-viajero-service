@@ -39,8 +39,15 @@ jobs:
         
       # run tests!
       - run: mvn integration-test
-deployment:
-  prod:
-    branch: master
-    heroku:
-      appname: thawing-inlet-58266 # appname must not include upper-case characters
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/mundo-viajero-service
+    environment:
+      HEROKU_APP: "thawing-inlet-58266"
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git master

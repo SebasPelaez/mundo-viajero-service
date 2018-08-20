@@ -39,3 +39,8 @@ jobs:
         
       # run tests!
       - run: mvn integration-test
+deployment:
+  prod:
+    branch: master
+    heroku:
+      appname: thawing-inlet-58266 # appname must not include upper-case characters

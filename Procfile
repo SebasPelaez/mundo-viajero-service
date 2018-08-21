@@ -1,1 +1,1 @@
-web: java -jar target/0.0.1-SNAPSHOT.jar target/*.war
+web: java -jar target/mundo-viajero-service-0.0.1-SNAPSHOT.jar target/*.war

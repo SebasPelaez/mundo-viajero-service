@@ -8,7 +8,7 @@ import com.co.mundoviajero.controller.Example;
 public class ExampleImpl implements Example{
 
 	public String home() {
-		return "Hello World!";
+		return "Hello World! PI";
 	}
 
 }

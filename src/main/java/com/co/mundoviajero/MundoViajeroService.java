@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.co.mundoviajero.controller","com.co.mundoviajero.controller.impl" })
+@ComponentScan(basePackages = {"com.co.mundoviajero.controller.impl"})
 public class MundoViajeroService {
 
 	public static void main(String[] args) {

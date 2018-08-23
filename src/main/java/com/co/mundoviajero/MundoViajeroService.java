@@ -9,7 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 public class MundoViajeroService {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MundoViajeroService.class, args);
+		//SpringApplication.run(MundoViajeroService.class, args);
+		new SpringApplication(MundoViajeroService.class).run(args);
 	}
 
 }

@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.co.mundoviajero.persistence.entity.State;
 
+
 public interface IStateDAO {
 	
 	List<State> getStates();
+	String prueba();
 
 }

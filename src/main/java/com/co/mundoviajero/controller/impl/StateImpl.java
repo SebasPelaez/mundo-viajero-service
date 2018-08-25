@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.co.mundoviajero.business.StateBusiness;
 import com.co.mundoviajero.controller.StateController;
 import com.co.mundoviajero.persistence.entity.State;
 
-@Controller
+@RestController
 public class StateImpl implements StateController{
 	
 	@Autowired
@@ -28,6 +28,16 @@ public class StateImpl implements StateController{
 	    responseHeaders.set("MiHeader", "valor x");
 	    
 		return new ResponseEntity<List<State>>(states, responseHeaders, HttpStatus.OK);
+	}
+	
+	@Override
+	public String prueba() {
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+	    responseHeaders.setExpires(1000);
+	    responseHeaders.set("MiHeader", "valor x");
+		
+		return "dsfasdfasdfadsf";
 	}
 
 }

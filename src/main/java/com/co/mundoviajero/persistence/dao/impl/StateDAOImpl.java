@@ -20,4 +20,10 @@ public class StateDAOImpl extends BaseDAO implements IStateDAO{
 	    return (List<State>)query.getResultList();
 	}
 
+	@Override
+	public String prueba() {
+		// TODO Auto-generated method stub
+		return "Hellow World! PI";
+	}
+
 }

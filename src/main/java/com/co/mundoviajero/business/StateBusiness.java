@@ -14,8 +14,13 @@ public class StateBusiness {
 	@Autowired
     private IStateDAO stateDAO; 
 	
+	
 	public List<State> getStates(){
 		return stateDAO.getStates();
+	}
+	
+	public String prueba() {
+		return stateDAO.prueba();
 	}
 	
 

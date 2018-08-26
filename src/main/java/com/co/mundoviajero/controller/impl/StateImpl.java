@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.co.mundoviajero.business.StateBusiness;
@@ -30,7 +31,7 @@ public class StateImpl implements StateController{
 	}
 
 	@Override
-	public ResponseEntity<State> createState(State state) {
+	public ResponseEntity<State> createState(@RequestBody State state) {
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setExpires(1000L);

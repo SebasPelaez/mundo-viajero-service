@@ -1,5 +1,6 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -15,15 +16,19 @@ import com.co.mundoviajero.persistence.entity.State;
 public class StateDAOImpl extends BaseDAO implements IStateDAO{
 
 	@Override
-	public List<State> getStates() {
-		Query query = getCurrentSession().createQuery("select * from State");
+	public List<State> getStates() {		
+		Query query = getCurrentSession().createQuery("From State");
 	    return (List<State>)query.getResultList();
 	}
 
 	@Override
-	public String prueba() {
-		// TODO Auto-generated method stub
-		return "Hellow World! PI";
+	public State createState(State state) {
+		State newState = new State();
+		newState.setDescription(state.getDescription());
+		newState.setBelongsTo(state.getBelongsTo());
+		
+		getCurrentSession().saveOrUpdate(newState);
+		return newState;
 	}
 
 }

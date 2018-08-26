@@ -8,8 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -54,7 +53,8 @@ public class HibernateConfiguration {
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
-      
+     
+    
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -64,7 +64,7 @@ public class HibernateConfiguration {
         dataSource.setPassword(DB_PASSWORD);
         return dataSource;
     }
-        
+           
     @Bean
     @Autowired
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
@@ -87,6 +87,7 @@ public class HibernateConfiguration {
                 setProperty("hibernate.globally_quoted_identifiers", "true");
                 setProperty("hibernate.id.new_generator_mappings", "false");
                 setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
+                setProperty("hibernate.hbm2ddl.auto",HIBERNATE_HBM2DDL_AUTO);
             }
         };
     }

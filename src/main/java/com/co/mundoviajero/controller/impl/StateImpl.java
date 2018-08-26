@@ -25,19 +25,18 @@ public class StateImpl implements StateController{
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 	    responseHeaders.setExpires(1000);
-	    responseHeaders.set("MiHeader", "valor x");
 	    
 		return new ResponseEntity<List<State>>(states, responseHeaders, HttpStatus.OK);
 	}
-	
+
 	@Override
-	public String prueba() {
+	public ResponseEntity<State> createState(State state) {
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
-	    responseHeaders.setExpires(1000);
-	    responseHeaders.set("MiHeader", "valor x");
-		
-		return "dsfasdfasdfadsf";
+        responseHeaders.setExpires(1000L);
+        
+        return new ResponseEntity<>(stateBusiness.createState(state), responseHeaders, HttpStatus.CREATED);
+        
 	}
-
+	
 }

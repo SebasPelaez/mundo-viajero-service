@@ -19,8 +19,8 @@ public class StateBusiness {
 		return stateDAO.getStates();
 	}
 	
-	public String prueba() {
-		return stateDAO.prueba();
+	public State createState(State state) {
+		return stateDAO.createState(state);
 	}
 	
 

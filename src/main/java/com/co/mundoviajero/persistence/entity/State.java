@@ -26,6 +26,8 @@ public class State implements Serializable {
     @Column(name = "BelongsTo")
     private String belongsTo;
 
+    public State() {}
+    
 	public Long getId() {
 		return id;
 	}

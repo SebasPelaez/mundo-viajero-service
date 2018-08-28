@@ -1,6 +1,10 @@
 package com.co.mundoviajero.dto;
 
-public class PersonDTO {
+import java.io.Serializable;
+
+public class PersonDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private String identification;
 	private String rnt;

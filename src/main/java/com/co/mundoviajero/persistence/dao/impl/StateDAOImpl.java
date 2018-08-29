@@ -18,14 +18,6 @@ public class StateDAOImpl extends BaseDAO implements IStateDAO{
 	@Override
 	public List<State> getAllStates() {			
 		Query query = getCurrentSession().createQuery("From State");
-		/*
-		List<StateDTO> stateDTOList = new ArrayList<>();
-		for (State state: states) {
-			StateDTO stateDTO = new StateDTO();
-			stateDTO.setDescription(state.getDescription());
-			stateDTO.setBelongsTo(stateDTO.getBelongsTo());
-			stateDTOList.add(stateDTO);
-		}*/
 	    return (List<State>)query.getResultList();
 	}
 

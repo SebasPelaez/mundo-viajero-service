@@ -1,6 +1,7 @@
 package com.co.mundoviajero.persistence.entity;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.Table;
 @Table(name = "Person")
 public class Person implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
     // Attributes	
 	@Id
     @GeneratedValue(generator = "codigo")
@@ -33,7 +36,7 @@ public class Person implements Serializable {
     private String lastName;
     
     @Column(name = "Birthday")
-    private String birthday;
+    private Date birthday;
     
     @Column(name = "Email")
     private String email;
@@ -106,11 +109,11 @@ public class Person implements Serializable {
     	this.lastName = lastName;
     }
     
-    public String getBirthday() {
+    public Date getBirthday() {
     	return birthday;
     }
     
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
     	this.birthday = birthday;
     }
     

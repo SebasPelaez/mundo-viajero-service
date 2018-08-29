@@ -1,6 +1,7 @@
 package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class PersonDTO implements Serializable {
 
@@ -10,7 +11,7 @@ public class PersonDTO implements Serializable {
 	private String rnt;
 	private String name;
 	private String lastName;
-	private String birthday;
+	private Date birthday;
 	private String email;
 	private String phoneNumber;
 	private String address;
@@ -45,10 +46,10 @@ public class PersonDTO implements Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public String getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(String birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 	public String getEmail() {

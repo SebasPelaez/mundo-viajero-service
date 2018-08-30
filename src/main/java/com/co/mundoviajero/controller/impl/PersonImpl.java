@@ -18,17 +18,17 @@ public class PersonImpl implements PersonController{
 	private PersonBusiness personBusiness;
 	
 	@Override
-	public ResponseEntity<ResponseDTO> getAllPeople() {
+	public ResponseEntity<ResponseDTO> getAllPeople()  throws Exception{
 		return personBusiness.getAllPeople();
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person) {		
+	public ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person)  throws Exception{		
         return personBusiness.createPerson(person);        
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search) {
+	public ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search) throws Exception {
 		return personBusiness.getPerson(search);
 	}
 }

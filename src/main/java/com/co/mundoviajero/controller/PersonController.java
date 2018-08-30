@@ -14,13 +14,13 @@ import com.co.mundoviajero.dto.ResponseDTO;
 public interface PersonController {
 	
 	@RequestMapping(value = "/person", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> getAllPeople();
+	ResponseEntity<ResponseDTO> getAllPeople()  throws Exception;
 	
 	@RequestMapping(value = "/person", method = RequestMethod.POST, 
 			produces = {MediaType.APPLICATION_JSON}, consumes = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person);
+	ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person)  throws Exception;
 	
 	@RequestMapping(value = "/person/{search}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search);
+	ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search)  throws Exception;
 	
 }

@@ -1,5 +1,7 @@
 package com.co.mundoviajero.business.Person;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
+import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
+import com.co.mundoviajero.util.exception.ValidationException;
 
 @Service
 public class PersonBusiness {
@@ -18,19 +22,28 @@ public class PersonBusiness {
 	@Autowired
     private IPersonDAO personDAO;
 	
-	public ResponseEntity<ResponseDTO> getAllPeople(){
-		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.getAllPeople()),HttpStatus.OK);
+	public ResponseEntity<ResponseDTO> getAllPeople()  throws Exception{
+		List<Person> people = personDAO.getAllPeople();
+		if (people != null) {
+			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",people),HttpStatus.OK);
+		}
+		throw new ValidationException("No existen registros de personas");		
 	}
 	
-	public ResponseEntity<ResponseDTO> getPerson(String searchParameter){
+	public ResponseEntity<ResponseDTO> getPerson(String searchParameter) throws ValidationException{
 		Long id = 0L;
 		if(StringUtils.isNumeric(searchParameter)) id = Long.parseLong(searchParameter);
-
-		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",
-				personDAO.getPerson(id, searchParameter, searchParameter, searchParameter)),HttpStatus.OK);
+		
+		Person person = personDAO.getPerson(id, searchParameter, searchParameter, searchParameter);
+		if(person != null) {
+			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",
+					person),HttpStatus.OK);
+		}
+		throw new ValidationException("No existen registros asocidos de esa persona");
+		
 	}
 	
-	public ResponseEntity<ResponseDTO> createPerson(PersonDTO person) {
+	public ResponseEntity<ResponseDTO> createPerson(PersonDTO person) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 
         sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_IDENTIFICATION,
@@ -44,7 +57,7 @@ public class PersonBusiness {
          */
         
         if (sb.toString().length() > 0) {
-            return null;
+        	throw new ValidationException(sb.toString());
         }
         if(person.getIdentification() == null)person.setIdentification("");
         if(person.getRnt() == null)person.setRnt("");
@@ -52,8 +65,9 @@ public class PersonBusiness {
 			
 			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
 					HttpStatus.OK);
-		}
-		return null;
+		}else {
+            throw new ValidationException("El usuario ya existe");
+        }
 		
 	}
 		

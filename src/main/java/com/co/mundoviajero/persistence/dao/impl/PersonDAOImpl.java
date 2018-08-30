@@ -18,6 +18,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO{
 	@Override
 	public List<Person> getAllPeople() {
 		Query query = getCurrentSession().createQuery("From Person");
+		if(query.getResultList().isEmpty()) return null;
 	    return (List<Person>) query.getResultList();
 	}
 

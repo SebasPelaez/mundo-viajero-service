@@ -37,8 +37,15 @@ public class PersonBusiness {
         if (sb.toString().length() > 0) {
             return null;
         }
+        if(person.getIdentification() == null)person.setIdentification("");
+        if(person.getRnt() == null)person.setRnt("");
+        if( !personDAO.existPerson(person.getIdentification(),person.getRnt(),person.getEmail())){
+			
+			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
+					HttpStatus.OK);
+		}
+		return null;
 		
-		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),HttpStatus.OK);
 	}
 		
 }

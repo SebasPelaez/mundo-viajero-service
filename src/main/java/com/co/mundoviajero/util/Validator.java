@@ -13,11 +13,11 @@ public class Validator {
 	    public static String valideString(String cadena, String nombreCampo, int longitud, boolean obligatorio) {
 	        if (obligatorio) {
 	            if (StringUtils.isBlank(cadena) || StringUtils.length(cadena) > longitud) {
-	                return String.format("%s-%s", nombreCampo, "Formato inv\u00e1lido|");
+	                return String.format("%s-%s", nombreCampo, "Formato invalido|");
 	            }
 	        } else {
 	            if (StringUtils.length(cadena) > longitud) {
-	                return String.format("%s-%s", nombreCampo, "Formato inv\u00e1lido|");
+	                return String.format("%s-%s", nombreCampo, "Formato invalido|");
 	            }
 	        }
 
@@ -27,7 +27,7 @@ public class Validator {
 	    public static String valideEmail(String nombreCampo, String correo) {
 	        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(correo != null ? correo : "");
 	        if (!matcher.find()) {
-	            return String.format("%s-%s", nombreCampo, "Formato del correo inv\u00e1lido|");
+	            return String.format("%s-%s", nombreCampo, "Formato del correo invalido|");
 	        }
 
 	        return "";

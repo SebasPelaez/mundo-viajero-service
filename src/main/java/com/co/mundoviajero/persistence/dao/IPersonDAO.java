@@ -9,4 +9,5 @@ public interface IPersonDAO {
 	
 	List<Person> getAllPeople();
 	PersonDTO createPerson(PersonDTO person);
+	boolean existPerson(String identification,String rnt,String email);
 }

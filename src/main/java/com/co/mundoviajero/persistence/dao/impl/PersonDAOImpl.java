@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.State;
 
 @Repository(value = "PersonDAOImpl")
 @Transactional
@@ -52,6 +53,16 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO{
 			return null;
 		}		
 		return person;
+	}
+
+	@Override
+	public boolean existPerson(String identification,String rnt,String email) {
+		Query query = getCurrentSession().createQuery("select p from Person p where upper(p.identification) = upper(:identification) or"
+				+ " upper(p.rnt) = upper(:rnt) or upper(p.email) = upper(:email)");
+		query.setParameter("identification", identification);
+		query.setParameter("rnt", rnt);
+		query.setParameter("email", email);
+		return !query.getResultList().isEmpty();
 	}
 
 }

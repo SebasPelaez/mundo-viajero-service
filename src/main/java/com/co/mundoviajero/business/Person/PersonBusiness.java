@@ -51,9 +51,45 @@ public class PersonBusiness {
         
         sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_RNT,
         		FieldConstants.PERSON_RNT_LENGTH, FieldConstants.PERSON_RNT_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_NAME,
+        		FieldConstants.PERSON_NAME_LENGTH, FieldConstants.PERSON_NAME_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_LASTNAME,
+        		FieldConstants.PERSON_LASTNAME_LENGTH, FieldConstants.PERSON_LASTNAME_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_BIRTHDAY,
+        		FieldConstants.PERSON_BIRTHDAY_LENGTH, FieldConstants.PERSON_BIRTHDAY_OBLIGATORY));
+        
+        sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, person.getEmail()));
+        
+        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PHONENUMBER,
+        		FieldConstants.PERSON_PHONENUMBER_LENGTH, FieldConstants.PERSON_PHONENUMBER_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_ADDRESS,
+        		FieldConstants.PERSON_ADDRESS_LENGTH, FieldConstants.PERSON_ADDRESS_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PASSWORD,
+        		FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_CALIFICATION,
+        		FieldConstants.PERSON_CALIFICATION_LENGTH, FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_TOKEN,
+        		FieldConstants.PERSON_TOKEN_LENGTH, FieldConstants.PERSON_TOKEN_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PROFILEPHOTO,
+        		FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_PROFILEID,
+        		FieldConstants.PERSON_PROFILEID_LENGTH, FieldConstants.PERSON_PROFILEID_OBLIGATORY));
+        
+        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_STATEID,
+        		FieldConstants.PERSON_STATEID_LENGTH, FieldConstants.PERSON_STATEID_OBLIGATORY));       
+        
 
         /**
-         * COMPLETAR CON LOS DEMAS
+         * FALTA LA VALIDACIÒN DEL TIPO DE CAMPO
          */
         
         if (sb.toString().length() > 0) {

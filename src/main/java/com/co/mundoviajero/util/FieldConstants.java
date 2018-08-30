@@ -19,11 +19,10 @@ public class FieldConstants {
 	public static final boolean PERSON_LASTNAME_OBLIGATORY = true;
 	
 	public static final String PERSON_BIRTHDAY = "birthday";
+	public static final int PERSON_BIRTHDAY_LENGTH = 12;
 	public static final boolean PERSON_BIRTHDAY_OBLIGATORY = true;
 	
 	public static final String PERSON_EMAIL = "email";
-	public static final int PERSON_EMAIL_LENGTH = 45;
-	public static final boolean PERSON_EMAIL_OBLIGATORY = true;
 	
 	public static final String PERSON_PHONENUMBER = "phoneNumber";
 	public static final int PERSON_PHONENUMBER_LENGTH = 13;
@@ -45,11 +44,11 @@ public class FieldConstants {
 	public static final int PERSON_TOKEN_LENGTH = 150;
 	public static final boolean PERSON_TOKEN_OBLIGATORY = false;
 	
-	public static final String PERSON_PEOFILEPHOTO = "profilePhoto";
+	public static final String PERSON_PROFILEPHOTO = "profilePhoto";
 	public static final int PERSON_PROFILEPHOTO_LENGTH = 500;
 	public static final boolean PERSON_PROFILEPHOTO_OBLIGATORY = false;
 	
-	public static final String PERSON_PEOFILEID = "profileId";
+	public static final String PERSON_PROFILEID = "profileId";
 	public static final int PERSON_PROFILEID_LENGTH = 5;
 	public static final boolean PERSON_PROFILEID_OBLIGATORY = true;
 	

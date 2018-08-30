@@ -22,16 +22,6 @@ public class StateDAOImpl extends BaseDAO implements IStateDAO{
 	}
 
 	@Override
-	public StateDTO createState(StateDTO state) {
-		State newState = new State();
-		newState.setDescription(state.getDescription());
-		newState.setBelongsTo(state.getBelongsTo());
-		
-		getCurrentSession().saveOrUpdate(newState);
-		return state;
-	}
-
-	@Override
 	public State getState(Long id) {
 		Query query = getCurrentSession().createQuery("select s from State s where s.id = :id");
 		query.setParameter("id", id);

@@ -2,6 +2,7 @@ package com.co.mundoviajero.controller.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,12 +18,17 @@ public class PersonImpl implements PersonController{
 	private PersonBusiness personBusiness;
 	
 	@Override
-	public ResponseEntity<ResponseDTO> getAllPersons() {
-		return personBusiness.getAllPersons();
+	public ResponseEntity<ResponseDTO> getAllPeople() {
+		return personBusiness.getAllPeople();
 	}
 
 	@Override
 	public ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person) {		
         return personBusiness.createPerson(person);        
+	}
+
+	@Override
+	public ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search) {
+		return personBusiness.getPerson(search);
 	}
 }

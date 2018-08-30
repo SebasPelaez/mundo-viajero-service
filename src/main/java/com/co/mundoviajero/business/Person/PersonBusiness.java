@@ -1,5 +1,6 @@
 package com.co.mundoviajero.business.Person;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,16 @@ public class PersonBusiness {
 	@Autowired
     private IPersonDAO personDAO;
 	
-	public ResponseEntity<ResponseDTO> getAllPersons(){
+	public ResponseEntity<ResponseDTO> getAllPeople(){
 		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.getAllPeople()),HttpStatus.OK);
+	}
+	
+	public ResponseEntity<ResponseDTO> getPerson(String searchParameter){
+		Long id = 0L;
+		if(StringUtils.isNumeric(searchParameter)) id = Long.parseLong(searchParameter);
+
+		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",
+				personDAO.getPerson(id, searchParameter, searchParameter, searchParameter)),HttpStatus.OK);
 	}
 	
 	public ResponseEntity<ResponseDTO> createPerson(PersonDTO person) {

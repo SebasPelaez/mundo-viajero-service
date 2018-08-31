@@ -105,4 +105,36 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO{
 		return (Person) query.getSingleResult();
 	}
 
+	@Override
+	public PersonDTO updatePerson(PersonDTO person, Person personToModify) throws ValidationException {		
+		try {
+			
+			personToModify.setIdentification(person.getIdentification());
+			personToModify.setRNT(person.getRnt());
+			personToModify.setName(person.getName());
+			personToModify.setLastName(person.getLastName());
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+	        Date parsed = format.parse(person.getBirthday());
+	        java.sql.Date sql = new java.sql.Date(parsed.getTime());
+	        personToModify.setBirthday(sql);
+			
+	        personToModify.setEmail(person.getEmail());
+	        personToModify.setPhoneNumber(person.getPhoneNumber());
+	        personToModify.setAddress(person.getAddress());
+	        personToModify.setPassword(person.getPassword());
+	        personToModify.setCalification(person.getCalification());
+	        personToModify.setProfilePhoto(person.getProfilePhoto());
+	        personToModify.setToken(person.getToken());
+	        personToModify.setProfileId(person.getProfileId());
+	        personToModify.setStateId(person.getStateId());
+			
+			getCurrentSession().saveOrUpdate(personToModify);
+		}catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}		
+		return person;
+	}
+
 }

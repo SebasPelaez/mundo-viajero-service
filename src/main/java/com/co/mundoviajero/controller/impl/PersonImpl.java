@@ -31,4 +31,9 @@ public class PersonImpl implements PersonController{
 	public ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search) throws Exception {
 		return personBusiness.getPerson(search);
 	}
+
+	@Override
+	public ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person, @PathVariable String search) throws Exception {		
+		return personBusiness.updatePerson(person, search);
+	}
 }

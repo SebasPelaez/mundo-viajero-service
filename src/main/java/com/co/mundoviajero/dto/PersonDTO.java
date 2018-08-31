@@ -11,7 +11,7 @@ public class PersonDTO implements Serializable {
 	private String rnt;
 	private String name;
 	private String lastName;
-	private Date birthday;
+	private String birthday;
 	private String email;
 	private String phoneNumber;
 	private String address;
@@ -46,10 +46,10 @@ public class PersonDTO implements Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 	public String getEmail() {

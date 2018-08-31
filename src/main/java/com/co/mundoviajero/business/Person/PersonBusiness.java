@@ -27,19 +27,24 @@ public class PersonBusiness {
 		if (people != null) {
 			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",people),HttpStatus.OK);
 		}
-		throw new ValidationException("No existen registros de personas");		
+		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","No encontro registros"),HttpStatus.NO_CONTENT);
 	}
 	
 	public ResponseEntity<ResponseDTO> getPerson(String searchParameter) throws ValidationException{
-		Long id = 0L;
-		if(StringUtils.isNumeric(searchParameter)) id = Long.parseLong(searchParameter);
+		Person person = null;
 		
-		Person person = personDAO.getPerson(id, searchParameter, searchParameter, searchParameter);
+		if(StringUtils.isNumeric(searchParameter)) {
+			person = personDAO.getPerson(Long.parseLong(searchParameter));
+		}else {
+			person = personDAO.getPerson(searchParameter);
+		}
+		
 		if(person != null) {
-			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",
+			return new ResponseEntity<>(new ResponseDTO("Codigo","DESC_SUCCESS","Mensaje",
 					person),HttpStatus.OK);
 		}
-		throw new ValidationException("No existen registros asocidos de esa persona");
+		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","No encontro registros"),HttpStatus.NO_CONTENT);
+		
 		
 	}
 	
@@ -52,55 +57,59 @@ public class PersonBusiness {
         sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_RNT,
         		FieldConstants.PERSON_RNT_LENGTH, FieldConstants.PERSON_RNT_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_NAME,
+        sb.append(Validator.valideString(person.getName(), FieldConstants.PERSON_NAME,
         		FieldConstants.PERSON_NAME_LENGTH, FieldConstants.PERSON_NAME_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_LASTNAME,
+        sb.append(Validator.valideString(person.getLastName(), FieldConstants.PERSON_LASTNAME,
         		FieldConstants.PERSON_LASTNAME_LENGTH, FieldConstants.PERSON_LASTNAME_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_BIRTHDAY,
+        sb.append(Validator.valideString(person.getBirthday(), FieldConstants.PERSON_BIRTHDAY,
         		FieldConstants.PERSON_BIRTHDAY_LENGTH, FieldConstants.PERSON_BIRTHDAY_OBLIGATORY));
         
         sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, person.getEmail()));
         
-        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PHONENUMBER,
+        sb.append(Validator.valideString(person.getPhoneNumber(), FieldConstants.PERSON_PHONENUMBER,
         		FieldConstants.PERSON_PHONENUMBER_LENGTH, FieldConstants.PERSON_PHONENUMBER_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_ADDRESS,
+        sb.append(Validator.valideString(person.getAddress(), FieldConstants.PERSON_ADDRESS,
         		FieldConstants.PERSON_ADDRESS_LENGTH, FieldConstants.PERSON_ADDRESS_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PASSWORD,
+        sb.append(Validator.valideString(person.getPassword(), FieldConstants.PERSON_PASSWORD,
         		FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_CALIFICATION,
+        sb.append(Validator.validateNumber((""+person.getCalification()), FieldConstants.PERSON_CALIFICATION,
         		FieldConstants.PERSON_CALIFICATION_LENGTH, FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_TOKEN,
+        sb.append(Validator.valideString(person.getToken(), FieldConstants.PERSON_TOKEN,
         		FieldConstants.PERSON_TOKEN_LENGTH, FieldConstants.PERSON_TOKEN_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_PROFILEPHOTO,
+        sb.append(Validator.valideString(person.getProfilePhoto(), FieldConstants.PERSON_PROFILEPHOTO,
         		FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_PROFILEID,
+        sb.append(Validator.validateNumber((""+person.getProfileId()), FieldConstants.PERSON_PROFILEID,
         		FieldConstants.PERSON_PROFILEID_LENGTH, FieldConstants.PERSON_PROFILEID_OBLIGATORY));
         
-        sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_STATEID,
-        		FieldConstants.PERSON_STATEID_LENGTH, FieldConstants.PERSON_STATEID_OBLIGATORY));       
-        
-
-        /**
-         * FALTA LA VALIDACIÒN DEL TIPO DE CAMPO
-         */
+        sb.append(Validator.validateNumber((""+person.getStateId()), FieldConstants.PERSON_STATEID,
+        		FieldConstants.PERSON_STATEID_LENGTH, FieldConstants.PERSON_STATEID_OBLIGATORY));              
         
         if (sb.toString().length() > 0) {
         	throw new ValidationException(sb.toString());
         }
-        if(person.getIdentification() == null)person.setIdentification("");
-        if(person.getRnt() == null)person.setRnt("");
-        if( !personDAO.existPerson(person.getIdentification(),person.getRnt(),person.getEmail())){
-			
-			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
-					HttpStatus.OK);
+        //Verify if already exist a Tourist
+        if(person.getProfileId() == 1) {
+        	person.setIdentification("");
+        	person.setRnt("");
+        	if(!personDAO.existPersonTourist(person.getEmail())) {
+        		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
+    					HttpStatus.OK);
+        	}else {
+                throw new ValidationException("El usuario ya existe");
+            }
+        }
+        //At this part the new Person should be a Guide
+        if( !personDAO.existPersonGuide(person.getIdentification(),person.getRnt(),person.getEmail())){			
+        	return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
+					HttpStatus.OK);        	
 		}else {
             throw new ValidationException("El usuario ya existe");
         }

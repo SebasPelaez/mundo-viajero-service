@@ -107,29 +107,62 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO{
 
 	@Override
 	public PersonDTO updatePerson(PersonDTO person, Person personToModify) throws ValidationException {		
-		try {
+		try {	
+			if(person.getIdentification() != personToModify.getIdentification() && person.getIdentification() != null) {
+				personToModify.setIdentification(person.getIdentification());
+			}
+			if(person.getRnt() != personToModify.getRNT() && person.getRnt() != null) {
+				personToModify.setRNT(person.getRnt());
+			}
+			if(person.getName() != personToModify.getName() && person.getName() != null) {
+				personToModify.setName(person.getName());
+			}
+			if(person.getLastName() != personToModify.getLastName() && person.getLastName() != null) {
+				personToModify.setLastName(person.getLastName());
+			}			
 			
-			personToModify.setIdentification(person.getIdentification());
-			personToModify.setRNT(person.getRnt());
-			personToModify.setName(person.getName());
-			personToModify.setLastName(person.getLastName());
+			if(person.getBirthday() != null) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+		        Date parsed = format.parse(person.getBirthday());
+		        java.sql.Date sql = new java.sql.Date(parsed.getTime());
+				if(sql != personToModify.getBirthday()) {					
+			        personToModify.setBirthday(sql);	
+				}
+			} 
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-	        Date parsed = format.parse(person.getBirthday());
-	        java.sql.Date sql = new java.sql.Date(parsed.getTime());
-	        personToModify.setBirthday(sql);
+			if(person.getEmail() != personToModify.getEmail() && person.getEmail() != null) {
+				personToModify.setEmail(person.getEmail());	
+			}
 			
-	        personToModify.setEmail(person.getEmail());
-	        personToModify.setPhoneNumber(person.getPhoneNumber());
-	        personToModify.setAddress(person.getAddress());
-	        personToModify.setPassword(person.getPassword());
-	        personToModify.setCalification(person.getCalification());
-	        personToModify.setProfilePhoto(person.getProfilePhoto());
-	        personToModify.setToken(person.getToken());
-	        personToModify.setProfileId(person.getProfileId());
-	        personToModify.setStateId(person.getStateId());
+			if(person.getPhoneNumber() != personToModify.getPhoneNumber() && person.getPhoneNumber() != null) {
+				personToModify.setPhoneNumber(person.getPhoneNumber());
+			}	        
+			if(person.getAddress() != personToModify.getAddress() && person.getAddress() != null) {
+				personToModify.setAddress(person.getAddress());
+			}
+			if(person.getPassword() != personToModify.getPassword() && person.getPassword() != null) {
+				personToModify.setPassword(person.getPassword());
+			}
+			/* Presenta problemas
+			if(person.getCalification() != personToModify.getCalification() && person.getCalification() != null) {
+				personToModify.setCalification(person.getCalification());
+			}
+			*/
+			if(person.getProfilePhoto() != personToModify.getProfilePhoto() && person.getProfilePhoto() != null) {
+				personToModify.setProfilePhoto(person.getProfilePhoto());
+			}
+			if(person.getToken() != personToModify.getToken() && person.getToken() != null) {
+				personToModify.setToken(person.getToken());
+			}
+			if(person.getProfileId() != personToModify.getProfileId() && person.getProfileId() != null) {
+				personToModify.setProfileId(person.getProfileId());
+			}
+			if(person.getStateId() != personToModify.getStateId() && person.getStateId() != null) {
+				personToModify.setStateId(person.getStateId());	
+			}
 			
 			getCurrentSession().saveOrUpdate(personToModify);
+			
 		}catch (Exception e) {
 			System.out.println(e);
 			return null;

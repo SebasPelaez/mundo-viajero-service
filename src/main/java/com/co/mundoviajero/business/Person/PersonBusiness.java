@@ -1,5 +1,7 @@
 package com.co.mundoviajero.business.Person;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -140,5 +142,68 @@ public class PersonBusiness {
         }
 		
 	}
+	
+	public ResponseEntity<ResponseDTO> updatePerson(PersonDTO person ,String searchParameter) throws ValidationException{
+		Person personToModify = null;
 		
+		if(StringUtils.isNumeric(searchParameter)) {
+			personToModify = personDAO.getPerson(Long.parseLong(searchParameter));
+		}else {
+			personToModify = personDAO.getPerson(searchParameter);
+		}
+		
+		try {	
+			person.setId(personToModify.getId());
+			
+			System.out.println(person.getId());
+									
+			if(person.getPhoneNumber() != personToModify.getPhoneNumber() && person.getPhoneNumber() == null) {
+				person.setPhoneNumber(personToModify.getPhoneNumber());
+			}	   
+			
+			if(person.getAddress() != personToModify.getAddress() && person.getAddress() == null) {
+				person.setAddress(personToModify.getAddress());
+			}
+			if(person.getPassword() != personToModify.getPassword() && person.getPassword() == null) {
+				person.setPassword(personToModify.getPassword());
+			}
+			if(person.getProfilePhoto() != personToModify.getProfilePhoto() && person.getProfilePhoto() == null) {
+				person.setProfilePhoto(personToModify.getProfilePhoto());
+			}			
+			if(person.getCalification() != personToModify.getCalification() && person.getCalification() == null) {
+				person.setCalification(personToModify.getCalification());
+			}
+			if(person.getToken() != personToModify.getToken() && person.getToken() == null) {
+				person.setToken(personToModify.getToken());
+			}
+			if(person.getProfileId() != personToModify.getProfileId() && person.getProfileId() == null) {
+				person.setProfileId(personToModify.getProfileId());
+			}
+			if(person.getStateId() != personToModify.getStateId() && person.getStateId() == null) {
+				person.setStateId(personToModify.getStateId());	
+			}			
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}		
+	        return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.updatePerson(person)),
+					HttpStatus.OK);       
+	}	
+	
+	public ResponseEntity<ResponseDTO> deletePerson(String searchParameter) throws ValidationException{
+		Person person = null;
+		
+		if(StringUtils.isNumeric(searchParameter)) {
+			person = personDAO.getPerson(Long.parseLong(searchParameter));
+		}else {
+			person = personDAO.getPerson(searchParameter);
+		}
+		if(person != null && person.getStateId() == 16L) {
+			person = personDAO.deletePerson(person.getId());
+			return new ResponseEntity<>(new ResponseDTO("Codigo","DESC_SUCCESS","Mensaje",
+					person),HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","No encontro registros"),HttpStatus.NO_CONTENT);		
+	}	
 }

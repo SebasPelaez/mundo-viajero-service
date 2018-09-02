@@ -12,6 +12,7 @@ public interface IPersonDAO {
 	PersonDTO createPerson(PersonDTO person) throws ValidationException;
 	boolean existPersonTourist(String email);
 	boolean existPersonGuide(String identification,String rnt,String email);
-	Person getPerson(Object searchParameter);
-	PersonDTO updatePerson(PersonDTO person, Person personToModify) throws ValidationException;
+	Person getPerson(Object searchParameter);	
+	PersonDTO updatePerson(PersonDTO person) throws ValidationException;
+	Person deletePerson(Long long1);
 }

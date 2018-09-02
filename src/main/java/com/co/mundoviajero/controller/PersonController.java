@@ -27,4 +27,7 @@ public interface PersonController {
 			produces = {MediaType.APPLICATION_JSON}, consumes = {MediaType.APPLICATION_JSON})
 	ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person, @PathVariable("search") String search)  throws Exception;
 	
+	@RequestMapping(value = "/person/{search}", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON})
+	ResponseEntity<ResponseDTO> deletePerson(@PathVariable("search") String search)  throws Exception;
+	
 }

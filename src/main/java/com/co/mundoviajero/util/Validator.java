@@ -1,5 +1,12 @@
 package com.co.mundoviajero.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,5 +54,25 @@ public class Validator {
 			}
 		}
 		return "";
+	}
+	
+	public static boolean validateBirthday(String data) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+		LocalDate localDate = LocalDate.now();		
+		
+	    Date currentDate = null;
+	    Date birthDay = null;
+	    
+		try {
+			currentDate = sdf.parse(data);
+			birthDay = sdf.parse(localDate.toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}	    
+	 
+	    long diffInMillies = Math.abs(birthDay.getTime() - currentDate.getTime());
+	    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		return diff >= 6570;
 	}
 }

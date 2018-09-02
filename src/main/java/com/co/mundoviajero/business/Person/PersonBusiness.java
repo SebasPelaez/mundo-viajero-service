@@ -2,8 +2,12 @@ package com.co.mundoviajero.business.Person;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,12 +26,18 @@ public class PersonBusiness {
 	@Autowired
     private IPersonDAO personDAO;
 	
+	@Autowired
+    private MessageSourceAccessor messageSource;
+	
 	public ResponseEntity<ResponseDTO> getAllPeople()  throws Exception{
 		List<Person> people = personDAO.getAllPeople();
 		if (people != null) {
-			return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",people),HttpStatus.OK);
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
+					people),HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","No encontro registros"),HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"),null),HttpStatus.NOT_FOUND);
 	}
 	
 	public ResponseEntity<ResponseDTO> getPerson(String searchParameter) throws ValidationException{
@@ -40,17 +50,20 @@ public class PersonBusiness {
 		}
 		
 		if(person != null) {
-			return new ResponseEntity<>(new ResponseDTO("Codigo","DESC_SUCCESS","Mensaje",
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
 					person),HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","No encontro registros"),HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"),null),
+				HttpStatus.NOT_FOUND);
 		
 		
 	}
 	
 	public ResponseEntity<ResponseDTO> createPerson(PersonDTO person) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
-
+		
         sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_IDENTIFICATION,
         		FieldConstants.PERSON_IDENTIFICATION_LENGTH, FieldConstants.PERSON_IDENTIFICATION_OBLIGATORY));
         
@@ -95,23 +108,35 @@ public class PersonBusiness {
         if (sb.toString().length() > 0) {
         	throw new ValidationException(sb.toString());
         }
-        //Verify if already exist a Tourist
-        if(person.getProfileId() == 1) {
-        	person.setIdentification("");
-        	person.setRnt("");
-        	if(!personDAO.existPersonTourist(person.getEmail())) {
-        		return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
-    					HttpStatus.OK);
-        	}else {
-                throw new ValidationException("El usuario ya existe");
+        
+        if(Validator.validateBirthday(person.getBirthday())) {
+        	if(person.getProfileId() == 1) {
+            	person.setIdentification("");
+            	person.setRnt("");
+            	if(!personDAO.existPersonTourist(person.getEmail())) {
+            		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+        					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+        					personDAO.createPerson(person)),HttpStatus.OK);
+            	}else {
+            		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+            				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"),null),
+            				HttpStatus.PRECONDITION_REQUIRED);
+                }
             }
-        }
-        //At this part the new Person should be a Guide
-        if( !personDAO.existPersonGuide(person.getIdentification(),person.getRnt(),person.getEmail())){			
-        	return new ResponseEntity<>(new ResponseDTO("SUCCES","DESC_SUCCESS","DESC_SUCCESS",personDAO.createPerson(person)),
-					HttpStatus.OK);        	
-		}else {
-            throw new ValidationException("El usuario ya existe");
+            //At this part the new Person should be a Guide
+            if( !personDAO.existPersonGuide(person.getIdentification(),person.getRnt(),person.getEmail())){			
+            	return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+    					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+    					personDAO.createPerson(person)),HttpStatus.OK);        	
+    		}else {
+    			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+    					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"),null),
+    					HttpStatus.PRECONDITION_REQUIRED);
+            }
+        }else {
+        	return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"),null),
+					HttpStatus.PRECONDITION_REQUIRED);
         }
 		
 	}

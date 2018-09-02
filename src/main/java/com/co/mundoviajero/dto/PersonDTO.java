@@ -1,7 +1,6 @@
 package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 public class PersonDTO implements Serializable {
 
@@ -22,7 +21,6 @@ public class PersonDTO implements Serializable {
 	private String profilePhoto;
 	private Long profileId;
 	private Long stateId;
-	
 	
 	public Long getId() {
     	return id;

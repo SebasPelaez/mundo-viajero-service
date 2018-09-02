@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import com.co.mundoviajero.dto.PersonDTO;
+
 public class Validator {
 
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
@@ -74,5 +76,17 @@ public class Validator {
 	    long diffInMillies = Math.abs(birthDay.getTime() - currentDate.getTime());
 	    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 		return diff >= 6570;
+	}
+	
+	public static boolean validateUpdatePerson(PersonDTO currentPerson, PersonDTO personToModify) {
+		
+		if(currentPerson.getId() != personToModify.getId() || !currentPerson.getIdentification().equals(personToModify.getIdentification()) ||
+				!currentPerson.getRnt().equals(personToModify.getRnt()) || !currentPerson.getName().equals(personToModify.getName()) ||
+				!currentPerson.getLastName().equals(personToModify.getLastName()) || !currentPerson.getBirthday().equals(personToModify.getBirthday())) {
+			
+			return false;
+		}
+				
+		return true;
 	}
 }

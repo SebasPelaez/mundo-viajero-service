@@ -23,11 +23,8 @@ public interface PersonController {
 	@RequestMapping(value = "/person/{search}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
 	ResponseEntity<ResponseDTO> getPerson(@PathVariable("search") String search)  throws Exception;
 	
-	@RequestMapping(value = "/person/{search}", method = RequestMethod.PUT, 
+	@RequestMapping(value = "/person", method = RequestMethod.PUT, 
 			produces = {MediaType.APPLICATION_JSON}, consumes = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person, @PathVariable("search") String search)  throws Exception;
-	
-	@RequestMapping(value = "/person/{search}", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> deletePerson(@PathVariable("search") String search)  throws Exception;
-	
+	ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person)  throws Exception;
+		
 }

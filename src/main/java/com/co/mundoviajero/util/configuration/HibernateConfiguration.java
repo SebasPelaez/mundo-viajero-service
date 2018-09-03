@@ -4,9 +4,14 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -39,19 +44,16 @@ public class HibernateConfiguration {
 
     @Value("${entitymanager.packagesToScan}")
     private String ENTITYMANAGER_PACKAGES_TO_SCAN;
-    
+        
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan(ENTITYMANAGER_PACKAGES_TO_SCAN);
-        Properties hibernateProperties = new Properties();
-        hibernateProperties.put("hibernate.dialect", HIBERNATE_DIALECT);
-        hibernateProperties.put("hibernate.show_sql", HIBERNATE_SHOW_SQL);
-        hibernateProperties.put("hibernate.hbm2ddl.auto", HIBERNATE_HBM2DDL_AUTO);
-        sessionFactory.setHibernateProperties(hibernateProperties);
+        sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
+     
     
     @Bean
     public DataSource dataSource() {
@@ -62,12 +64,32 @@ public class HibernateConfiguration {
         dataSource.setPassword(DB_PASSWORD);
         return dataSource;
     }
+           
+    @Bean
+    @Autowired
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactory);
+        return txManager;
+    }
     
     @Bean
-    public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager txManager = new HibernateTransactionManager();
-        txManager.setSessionFactory(sessionFactory().getObject());
-        return txManager;
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+    
+    @SuppressWarnings("serial")
+    private Properties hibernateProperties() {
+        return new Properties() {
+            {
+                setProperty("hibernate.show_sql", HIBERNATE_SHOW_SQL);
+                setProperty("hibernate.dialect", HIBERNATE_DIALECT);
+                setProperty("hibernate.globally_quoted_identifiers", "true");
+                setProperty("hibernate.id.new_generator_mappings", "false");
+                setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
+                setProperty("hibernate.hbm2ddl.auto",HIBERNATE_HBM2DDL_AUTO);
+            }
+        };
     }
 
 }

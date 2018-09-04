@@ -1,6 +1,7 @@
 package com.co.mundoviajero.business.Person;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +38,28 @@ public class PersonBusiness {
 				HttpStatus.NOT_FOUND);
 	}
 
-	public ResponseEntity<ResponseDTO> getPerson(String searchParameter) throws ValidationException {
-		PersonDTO person = null;
+	public ResponseEntity<ResponseDTO> getPerson(Long id) throws ValidationException {
 
-		if (StringUtils.isNumeric(searchParameter)) {
-			person = personDAO.getPerson(Long.parseLong(searchParameter));
-		} else {
-			person = personDAO.getPerson(searchParameter);
-		}
+		PersonDTO personDTO = personDAO.getPerson(id);
 
-		if (person != null) {
+		if (personDTO != null) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), person),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
+				HttpStatus.NOT_FOUND);
+
+	}
+
+	public ResponseEntity<ResponseDTO> getPersonWithParameters(Map<String,String> parameters) throws ValidationException {
+
+		PersonDTO personDTO = personDAO.getPersonWithParameters(parameters);
+
+		if (personDTO != null) {
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
 					HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
@@ -108,7 +119,7 @@ public class PersonBusiness {
 		if (Validator.validateBirthday(person.getBirthday())) {
 			setNullAttributes(person);
 			if (person.getProfileId() == 1) {
-				
+
 				if (!personDAO.existPersonTourist(person.getEmail())) {
 					return new ResponseEntity<>(
 							new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -128,8 +139,9 @@ public class PersonBusiness {
 						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
 						personDAO.createPerson(person)), HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"), null),
+				return new ResponseEntity<>(
+						new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
+								messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"), null),
 						HttpStatus.PRECONDITION_REQUIRED);
 			}
 		} else {
@@ -152,32 +164,39 @@ public class PersonBusiness {
 
 		if (Validator.validateUpdatePerson(currentPerson, personToModify)) {
 			PersonDTO person = personDAO.updatePerson(personToModify);
-			if(person != null) {
-				
+			if (person != null) {
+
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), person),
-						HttpStatus.PRECONDITION_REQUIRED);			
-			}else {
+						HttpStatus.PRECONDITION_REQUIRED);
+			} else {
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("PUT_DESC_ERROR"), null),
 						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			
+
 		}
-		
+
 		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("UNAUTHORIZED_PARAMETERS"), null),
 				HttpStatus.PRECONDITION_REQUIRED);
 	}
-	
+
 	private void setNullAttributes(PersonDTO person) {
-		if (person.getIdentification() == null)person.setIdentification("");
-		if (person.getRnt() == null)person.setRnt("");
-		if (person.getAddress() == null)person.setAddress("");
-		if (person.getPassword() == null)person.setPassword("");
-		if (person.getCalification() == null)person.setCalification(0.0);
-		if (person.getToken() == null)person.setToken("");
-		if (person.getProfilePhoto() == null)person.setProfilePhoto("");
+		if (person.getIdentification() == null)
+			person.setIdentification("");
+		if (person.getRnt() == null)
+			person.setRnt("");
+		if (person.getAddress() == null)
+			person.setAddress("");
+		if (person.getPassword() == null)
+			person.setPassword("");
+		if (person.getCalification() == null)
+			person.setCalification(0.0);
+		if (person.getToken() == null)
+			person.setToken("");
+		if (person.getProfilePhoto() == null)
+			person.setProfilePhoto("");
 	}
-	
+
 }

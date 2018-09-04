@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -68,32 +69,17 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO getPerson(Object object) {
+	public PersonDTO getPerson(Long id) {
+		
 		PersonDTO personDTO = null;
-		Person person = null;
-		String queryString = "";
-		String searchParameter = "";
-		Long id = 0L;
-
-		if (object instanceof Long) {
-			id = (Long) object;
-			searchParameter = String.valueOf(object);
-			queryString = "select p from Person p where p.id = :id or p.identification = :searchParameter"
-					+ " or p.rnt = :searchParameter";
-		} else {
-			searchParameter = String.valueOf(object);
-			queryString = "select p from Person p where p.id = :id or upper(p.identification) = upper(:searchParameter) or "
-					+ " upper(p.rnt) = upper(:searchParameter) or upper(p.email) = upper(:searchParameter)";
-		}
+		String queryString = "select p from Person p where p.id = :id";
 		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("searchParameter", searchParameter);
 		query.setParameter("id", id);
 
 		if (query.getResultList().isEmpty())
 			return null;
-
-		person = (Person) query.getSingleResult();
-		personDTO = setPersonDTO(person);
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());
 
 		return personDTO;
 	}
@@ -126,6 +112,31 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 
 	}
 
+	@Override
+	public PersonDTO getPersonWithParameters(Map<String, String> parameters) {
+		PersonDTO personDTO = null;
+		
+		String identification = (parameters.get("identification") != null ) ? parameters.get("identification"): "";
+		String rnt = (parameters.get("rnt") != null ) ? parameters.get("rnt"): "";
+		String email = (parameters.get("email") != null ) ? parameters.get("email"): "";
+		
+		String queryString = "select p from Person p where"
+				+ " ( upper(p.identification) = upper(:identification) and :identification <> '') or"
+				+ " ( upper(p.rnt) = upper(:rnt) and :rnt <> '' ) or"
+				+ " (upper(p.email) = upper(:email) and :email <> '')";
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("identification", identification);
+		query.setParameter("rnt", rnt);
+		query.setParameter("email", email);
+		
+		if (query.getResultList().isEmpty())
+			return null;
+
+		personDTO = setPersonDTO((Person) query.getSingleResult());
+
+		return personDTO;
+	}
+	
 	private Person setPerson(PersonDTO personDTO) {
 		Person person = new Person();
 

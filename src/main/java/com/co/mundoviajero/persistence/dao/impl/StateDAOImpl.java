@@ -1,5 +1,6 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -16,16 +17,34 @@ import com.co.mundoviajero.persistence.entity.State;
 public class StateDAOImpl extends BaseDAO implements IStateDAO{
 
 	@Override
-	public List<State> getAllStates() {			
+	public List<StateDTO> getAllStates() {
+		List<StateDTO> statesDTO = new ArrayList<>();
 		Query query = getCurrentSession().createQuery("From State");
-	    return (List<State>)query.getResultList();
+		List<State> states = (List<State>)query.getResultList();
+		
+		for(State s: states) {
+			statesDTO.add(setStateDTO(s));
+		}
+		
+	    return statesDTO;
 	}
 
 	@Override
-	public State getState(Long id) {
+	public StateDTO getState(Long id) {
 		Query query = getCurrentSession().createQuery("select s from State s where s.id = :id");
 		query.setParameter("id", id);
-		return (State) query.getSingleResult();
+		StateDTO stateDTO = setStateDTO((State) query.getSingleResult());
+		return stateDTO;
+	}
+	
+	private StateDTO setStateDTO(State state) {
+		
+		StateDTO stateDTO = new StateDTO();
+		stateDTO.setId(state.getId());
+		stateDTO.setDescription(state.getDescription().trim());
+		stateDTO.setBelongsTo(state.getBelongsTo().trim());
+		
+		return stateDTO;
 	}
 
 }

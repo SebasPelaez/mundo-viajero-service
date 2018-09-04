@@ -8,7 +8,7 @@ import com.co.mundoviajero.persistence.entity.State;
 
 public interface IStateDAO {	
 
-	List<State> getAllStates();
-	State getState(Long id);
+	List<StateDTO> getAllStates();
+	StateDTO getState(Long id);
 
 }

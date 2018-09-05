@@ -47,7 +47,7 @@ public class PersonImpl implements PersonController{
 
 	@Override
 	public ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception {
-		if(parameters != null) {
+		if(!parameters.isEmpty()) {
 			return personBusiness.getPersonWithParameters(parameters);
 		}
 		return null;

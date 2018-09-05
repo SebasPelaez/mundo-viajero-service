@@ -3,6 +3,7 @@ package com.co.mundoviajero.persistence.dao.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,23 +116,34 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	@Override
 	public PersonDTO getPersonWithParameters(Map<String, String> parameters) {
 		PersonDTO personDTO = null;
+		String queryString = "";
 		
-		String identification = (parameters.get("identification") != null ) ? parameters.get("identification"): "";
-		String rnt = (parameters.get("rnt") != null ) ? parameters.get("rnt"): "";
-		String email = (parameters.get("email") != null ) ? parameters.get("email"): "";
+		String key = (String) parameters.keySet().toArray()[0];
+		String value = "";	
 		
-		String queryString = "select p from Person p where"
-				+ " ( upper(p.identification) = upper(:identification) and :identification <> '') or"
-				+ " ( upper(p.rnt) = upper(:rnt) and :rnt <> '' ) or"
-				+ " (upper(p.email) = upper(:email) and :email <> '')";
+		switch (key) {
+			case "identification":
+				queryString = "select p from Person p where upper(p.identification) = upper(:search)";
+				value = parameters.get("identification");
+				break;
+			case "rnt":
+				queryString = "select p from Person p where upper(p.rnt) = upper(:search)";
+				value = parameters.get("rnt");
+				break;
+			case "email":
+				queryString = "select p from Person p where upper(p.email) = upper(:search)";
+				value = parameters.get("email");
+				break;
+			default:
+				break;
+		}
+		
 		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("identification", identification);
-		query.setParameter("rnt", rnt);
-		query.setParameter("email", email);
+		query.setParameter("search", value);
 		
 		if (query.getResultList().isEmpty())
 			return null;
-
+		
 		personDTO = setPersonDTO((Person) query.getSingleResult());
 
 		return personDTO;

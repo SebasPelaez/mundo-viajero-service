@@ -22,7 +22,8 @@ public class LoginBusiness {
 	
 	public ResponseEntity<ResponseDTO> getPersonWithParameters(Map<String,String> parameters) throws ValidationException {
 
-		PersonDTO personDTO = personDAO.getPersonWithParameters(parameters);
+		
+		PersonDTO personDTO = personDAO.login(parameters);
 
 		if (personDTO != null) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -33,23 +34,6 @@ public class LoginBusiness {
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
 				HttpStatus.NOT_FOUND);
 
-	}
-	
-	private void setNullAttributes(PersonDTO person) {
-		if (person.getIdentification() == null)
-			person.setIdentification("");
-		if (person.getRnt() == null)
-			person.setRnt("");
-		if (person.getAddress() == null)
-			person.setAddress("");
-		if (person.getPassword() == null)
-			person.setPassword("");
-		if (person.getCalification() == null)
-			person.setCalification(0.0);
-		if (person.getToken() == null)
-			person.setToken("");
-		if (person.getProfilePhoto() == null)
-			person.setProfilePhoto("");
 	}
 	
 	

@@ -15,5 +15,6 @@ public interface IPersonDAO {
 	boolean existPersonTourist(String email);
 	boolean existPersonGuide(String identification,String rnt,String email);
 	boolean updatePerson(Map<String, String> parameters, String identifier) throws ValidationException;
+	PersonDTO login(Map<String, String> parameters);
 	
 }

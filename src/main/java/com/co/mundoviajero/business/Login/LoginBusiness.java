@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.exception.ValidationException;
 
+@Service
 public class LoginBusiness {
 
 	@Autowired

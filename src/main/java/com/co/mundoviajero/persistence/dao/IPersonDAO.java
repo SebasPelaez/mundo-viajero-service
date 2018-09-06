@@ -14,6 +14,6 @@ public interface IPersonDAO {
 	PersonDTO createPerson(PersonDTO person) throws ValidationException;
 	boolean existPersonTourist(String email);
 	boolean existPersonGuide(String identification,String rnt,String email);
-	PersonDTO updatePerson(PersonDTO person) throws ValidationException;
+	boolean updatePerson(Map<String, String> parameters, String identifier) throws ValidationException;
 	
 }

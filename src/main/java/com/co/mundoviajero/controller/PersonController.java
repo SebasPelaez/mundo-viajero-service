@@ -35,8 +35,8 @@ public interface PersonController {
 	ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception;
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/person", method = RequestMethod.PUT, produces = {
+	@RequestMapping(value = "/person/another", method = RequestMethod.PUT, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person) throws Exception;
+	ResponseEntity<ResponseDTO> updatePerson(@RequestBody Map<String, String> bodyParameters) throws Exception;
 
 }

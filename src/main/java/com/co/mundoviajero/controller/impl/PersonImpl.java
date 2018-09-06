@@ -14,6 +14,7 @@ import com.co.mundoviajero.business.Person.PersonBusiness;
 import com.co.mundoviajero.controller.PersonController;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.util.exception.ValidationException;
 
 @RestController
 public class PersonImpl implements PersonController{
@@ -41,16 +42,19 @@ public class PersonImpl implements PersonController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> updatePerson(@RequestBody PersonDTO person) throws Exception {		
-		return personBusiness.updatePerson(person);
-	}
-
-	@Override
 	public ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception {
 		if(!parameters.isEmpty()) {
 			return personBusiness.getPersonWithParameters(parameters);
 		}
 		return null;
+	}
+
+	@Override
+	public ResponseEntity<ResponseDTO> updatePerson(@RequestBody Map<String, String> bodyParameters) throws Exception {
+		if(!bodyParameters.isEmpty()){
+			return personBusiness.updatePerson(bodyParameters);
+		}
+		throw new ValidationException("El body esta vacio");
 	}
 
 }

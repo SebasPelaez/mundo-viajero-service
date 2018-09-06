@@ -3,7 +3,6 @@ package com.co.mundoviajero.persistence.dao.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,34 +85,6 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO updatePerson(PersonDTO person) throws ValidationException {
-
-		Person personToModify = setPerson(person);
-		try {
-			Query query = getCurrentSession()
-					.createQuery("update Person p set p.email = :email, p.phoneNumber = :phoneNumber, p.address = :address,"
-							+ " p.password = :password, p.calification = :calification, p.token = :token, p.profilePhoto = :profilePhoto,"
-							+ " p.profileId = :profileId, p.stateId = :stateId where p.id = :id");
-			query.setParameter("id", personToModify.getId());
-			query.setParameter("email", personToModify.getEmail());
-			query.setParameter("phoneNumber", personToModify.getPhoneNumber());
-			query.setParameter("address", personToModify.getAddress());
-			query.setParameter("password", personToModify.getPassword());
-			query.setParameter("calification", personToModify.getCalification());
-			query.setParameter("token", personToModify.getToken());
-			query.setParameter("profilePhoto", personToModify.getProfilePhoto());
-			query.setParameter("profileId", personToModify.getProfileId());
-			query.setParameter("stateId", personToModify.getStateId());
-			query.executeUpdate();
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-		return person;
-
-	}
-
-	@Override
 	public PersonDTO getPersonWithParameters(Map<String, String> parameters) {
 		PersonDTO personDTO = null;
 		String queryString = "";
@@ -147,6 +118,34 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		personDTO = setPersonDTO((Person) query.getSingleResult());
 
 		return personDTO;
+	}
+	
+	@Override
+	public boolean updatePerson(Map<String, String> parameters, String identifier) throws ValidationException {
+		StringBuffer parametersQueryString = new StringBuffer();
+		String baseQueryString = "update Person p set ";
+		String conditionQueryString = " where p."+identifier+" = :"+identifier;
+		
+		try {
+			
+			for(String parameter: parameters.keySet()) {
+				parametersQueryString.append("p."+parameter+" = '"+parameters.get(parameter)+"', ");
+			}
+			System.out.println(parametersQueryString.length()-2);
+			System.out.println(parametersQueryString.length()-1);
+			System.out.println(parametersQueryString.length());
+			parametersQueryString.replace(parametersQueryString.length()-2, parametersQueryString.length(), "");
+			String fullQueryString = baseQueryString + parametersQueryString.toString() + conditionQueryString;
+			
+			Query query = getCurrentSession().createQuery(fullQueryString);
+			query.setParameter(identifier,parameters.get(identifier));
+			query.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+			return false;
+		}
+		return true;		
 	}
 	
 	private Person setPerson(PersonDTO personDTO) {

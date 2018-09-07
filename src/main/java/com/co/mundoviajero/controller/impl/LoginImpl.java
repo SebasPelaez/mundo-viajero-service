@@ -20,7 +20,7 @@ public class LoginImpl implements LoginController{
 	@Override
 	public ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception {
 		if(!parameters.isEmpty()) {
-			return loginBusiness.getPersonWithParameters(parameters);
+			return loginBusiness.login(parameters);
 		}
 		return null;
 	}

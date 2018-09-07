@@ -15,6 +15,6 @@ import com.co.mundoviajero.dto.ResponseDTO;
 public interface LoginController {
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/person/search", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
+	@RequestMapping(value = "/login/login", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception;
 }

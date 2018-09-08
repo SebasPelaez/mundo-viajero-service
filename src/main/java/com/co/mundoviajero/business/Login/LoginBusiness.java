@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
@@ -24,18 +25,16 @@ public class LoginBusiness {
 	@Autowired
 	private MessageSourceAccessor messageSource;
 	
-	public ResponseEntity<ResponseDTO> login(Map<String,String> parameters) throws ValidationException {
+	public ResponseEntity<ResponseDTO> login(LoginDTO login) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, parameters.get("email")));
+		sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, login.getEmail()));		
 
-		
-
-		sb.append(Validator.valideString(parameters.get("password"), FieldConstants.PERSON_PASSWORD,
+		sb.append(Validator.valideString(login.getPassword(), FieldConstants.PERSON_PASSWORD,
 				FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
 
 		
-		PersonDTO personDTO = personDAO.login(parameters);
+		PersonDTO personDTO = personDAO.login(login);
 
 		if (personDTO != null) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -47,6 +46,7 @@ public class LoginBusiness {
 				HttpStatus.NOT_FOUND);
 
 	}
+	
 	
 	
 }

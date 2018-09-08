@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
@@ -110,7 +111,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		}
 		
 		Query query = getCurrentSession().createQuery(queryString);
-		
+		query.setParameter("search", value);
 		if (query.getResultList().isEmpty())
 			return null;
 		
@@ -207,26 +208,26 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO login(Map<String, String> parameters) {
+	public PersonDTO login(LoginDTO login) {
 		PersonDTO personDTO = null;
 		String queryString = "";
-		
-		String value = "";	
-		
-		queryString = "select p from Person p where upper(p.email) = upper(:login) AND upper(p.password) = upper(:login)";		
-		
-		value = parameters.get("email");
-		
-		
+		String email = login.getEmail();
+		queryString = "select p from Person p where p.email = :email";					
 		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("login", value);
+		query.setParameter("email", email);
+		//query.setParameter("password", password);
 		
-		if (query.getResultList().isEmpty())
+		if (query.getResultList().isEmpty()) {
 			return null;
+		}
 		
-		personDTO = setPersonDTO((Person) query.getSingleResult());				
+		personDTO = setPersonDTO((Person) query.getSingleResult());
+		
+		if(personDTO.getPassword() == login.getPassword()) {			
+			return personDTO;
+		}
 
-		return personDTO;
+		return null;
 	}
 
 }

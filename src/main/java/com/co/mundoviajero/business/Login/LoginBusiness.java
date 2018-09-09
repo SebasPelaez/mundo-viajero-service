@@ -1,6 +1,11 @@
 package com.co.mundoviajero.business.Login;
 
+import java.util.Date;
 import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -16,6 +21,9 @@ import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 @Service
 public class LoginBusiness {
 
@@ -25,7 +33,12 @@ public class LoginBusiness {
 	@Autowired
 	private MessageSourceAccessor messageSource;
 	
-	public ResponseEntity<ResponseDTO> login(LoginDTO login) throws ValidationException {
+	/**
+	 * @param login
+	 * @return
+	 * @throws ValidationException
+	 */
+	public Response login(LoginDTO login) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, login.getEmail()));		
@@ -37,13 +50,28 @@ public class LoginBusiness {
 		PersonDTO personDTO = personDAO.login(login);
 
 		if (personDTO != null) {
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+			//Llave de prueba
+			String key = "prueba";
+			Long time = System.currentTimeMillis();
+			String jwt = Jwts.builder()
+					.signWith(SignatureAlgorithm.HS256, key)
+					.setSubject("Juan")
+					.setIssuedAt(new Date(time))
+					.claim("email", personDTO.getEmail())
+					.claim("password", personDTO.getPassword())
+					.compact();
+			JsonObject json = Json.createObjectBuilder()
+								  .add("JWT", jwt).build();
+			
+			return Response.status(Response.Status.CREATED).entity(json).build();
+			/*return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
-					HttpStatus.OK);
+					HttpStatus.OK);*/
 		}
-		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+		return Response.status(Response.Status.UNAUTHORIZED).build();
+		/*return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("USER_NOT_FOUND"), null),
-				HttpStatus.NOT_FOUND);
+				HttpStatus.NOT_FOUND);*/
 
 	}
 	

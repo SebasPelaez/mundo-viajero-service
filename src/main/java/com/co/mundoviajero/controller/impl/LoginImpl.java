@@ -1,5 +1,7 @@
 package com.co.mundoviajero.controller.impl;
 
+import javax.ws.rs.core.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,7 @@ public class LoginImpl implements LoginController{
 	private LoginBusiness loginBusiness;
 
 	@Override
-	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO login) throws Exception {
+	public Response login(@RequestBody LoginDTO login) throws Exception {
 		return loginBusiness.login(login);
 	}
 }

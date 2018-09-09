@@ -223,7 +223,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		
 		personDTO = setPersonDTO((Person) query.getSingleResult());
 		
-		if(personDTO.getPassword() == login.getPassword()) {			
+		if(personDTO.getPassword().equals(login.getPassword())) {			
 			return personDTO;
 		}
 

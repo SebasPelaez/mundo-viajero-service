@@ -1,6 +1,7 @@
 package com.co.mundoviajero.controller;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,5 +16,5 @@ public interface LoginController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/login/login", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO login) throws Exception;
+	Response login(@RequestBody LoginDTO login) throws Exception;
 }

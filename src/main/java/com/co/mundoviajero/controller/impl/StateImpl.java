@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.co.mundoviajero.business.Person.PersonBusiness;
 import com.co.mundoviajero.business.State.StateBusiness;
 import com.co.mundoviajero.controller.StateController;
 import com.co.mundoviajero.dto.ResponseDTO;

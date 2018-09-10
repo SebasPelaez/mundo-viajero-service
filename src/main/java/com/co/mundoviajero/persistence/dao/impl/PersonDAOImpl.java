@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
@@ -111,7 +112,6 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		
 		Query query = getCurrentSession().createQuery(queryString);
 		query.setParameter("search", value);
-		
 		if (query.getResultList().isEmpty())
 			return null;
 		
@@ -205,6 +205,29 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			return null;
 		}
 		return personDTO;
+	}
+
+	@Override
+	public PersonDTO login(LoginDTO login) {
+		PersonDTO personDTO = null;
+		String queryString = "";
+		String email = login.getEmail();
+		queryString = "select p from Person p where p.email = :email";					
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("email", email);
+		//query.setParameter("password", password);
+		
+		if (query.getResultList().isEmpty()) {
+			return null;
+		}
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());
+		
+		if(personDTO.getPassword().equals(login.getPassword())) {			
+			return personDTO;
+		}
+
+		return null;
 	}
 
 }

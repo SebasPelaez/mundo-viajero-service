@@ -78,15 +78,4 @@ public class Validator {
 		return diff >= 6570;
 	}
 	
-	public static boolean validateUpdatePerson(PersonDTO currentPerson, PersonDTO personToModify) {
-		
-		if(currentPerson.getId() != personToModify.getId() || !currentPerson.getIdentification().equals(personToModify.getIdentification()) ||
-				!currentPerson.getRnt().equals(personToModify.getRnt()) || !currentPerson.getName().equals(personToModify.getName()) ||
-				!currentPerson.getLastName().equals(personToModify.getLastName()) || !currentPerson.getBirthday().equals(personToModify.getBirthday())) {
-			
-			return false;
-		}
-				
-		return true;
-	}
 }

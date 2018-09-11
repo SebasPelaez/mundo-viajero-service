@@ -19,7 +19,7 @@ public class LoginImpl implements LoginController{
 	private LoginBusiness loginBusiness;
 
 	@Override
-	public Response login(@RequestBody LoginDTO login) throws Exception {
+	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO login) throws Exception {
 		return loginBusiness.login(login);
 	}
 }

@@ -16,5 +16,5 @@ public interface LoginController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/login/login", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	Response login(@RequestBody LoginDTO login) throws Exception;
+	ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO login) throws Exception;
 }

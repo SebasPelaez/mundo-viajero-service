@@ -1,10 +1,7 @@
 package com.co.mundoviajero.business.Login;
 
+import java.security.Key;
 import java.util.Date;
-import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.TokenDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
@@ -23,6 +21,7 @@ import com.co.mundoviajero.util.exception.ValidationException;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class LoginBusiness {
@@ -38,7 +37,7 @@ public class LoginBusiness {
 	 * @return
 	 * @throws ValidationException
 	 */
-	public Response login(LoginDTO login) throws ValidationException {
+	public ResponseEntity<ResponseDTO> login(LoginDTO login) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, login.getEmail()));		
@@ -47,31 +46,29 @@ public class LoginBusiness {
 				FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
 
 		
-		PersonDTO personDTO = personDAO.login(login);
+		PersonDTO person = personDAO.login(login);
 
-		if (personDTO != null) {
-			//Llave de prueba
-			String key = "prueba";
+		if (person != null) {
+			Key key =Keys.secretKeyFor(SignatureAlgorithm.HS256);
 			Long time = System.currentTimeMillis();
 			String jwt = Jwts.builder()
-					.signWith(SignatureAlgorithm.HS256, key)
+					.signWith(key)
 					.setSubject("Juan")
 					.setIssuedAt(new Date(time))
-					.claim("email", personDTO.getEmail())
-					.claim("password", personDTO.getPassword())
+					.claim("email", person.getEmail())
+					.claim("password", person.getPassword())
 					.compact();
-			JsonObject json = Json.createObjectBuilder()
-								  .add("JWT", jwt).build();
 			
-			return Response.status(Response.Status.CREATED).entity(json).build();
-			/*return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
-					HttpStatus.OK);*/
+			TokenDTO token = new TokenDTO(person, jwt);
+
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), token),
+					HttpStatus.OK);
 		}
-		return Response.status(Response.Status.UNAUTHORIZED).build();
-		/*return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+		
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("USER_NOT_FOUND"), null),
-				HttpStatus.NOT_FOUND);*/
+				HttpStatus.NOT_FOUND);
 
 	}
 	

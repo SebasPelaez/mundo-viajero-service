@@ -55,7 +55,7 @@ public class LoginBusiness {
 
 			if (person != null) {
 				
-				String jwt = TokenBusiness.generarToken(login.getUsername());				
+				String jwt = TokenBusiness.generateToken(person.getEmail());				
 				LoginDTO token = new LoginDTO(person, jwt);
 
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),

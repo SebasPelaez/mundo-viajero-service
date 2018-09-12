@@ -54,16 +54,8 @@ public class LoginBusiness {
 			PersonDTO person = personDAO.login(loginParameters);
 
 			if (person != null) {
-				Key key =Keys.secretKeyFor(SignatureAlgorithm.HS256);
-				Long time = System.currentTimeMillis();
-				String jwt = Jwts.builder()
-						.signWith(key)
-						.setSubject("Juan")
-						.setIssuedAt(new Date(time))
-						.claim("email", person.getEmail())
-						.claim("password", person.getPassword())
-						.compact();
 				
+				String jwt = TokenBusiness.generarToken(login.getUsername());				
 				LoginDTO token = new LoginDTO(person, jwt);
 
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),

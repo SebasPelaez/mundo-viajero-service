@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
@@ -131,9 +130,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			for(String parameter: parameters.keySet()) {
 				parametersQueryString.append("p."+parameter+" = '"+parameters.get(parameter)+"', ");
 			}
-			System.out.println(parametersQueryString.length()-2);
-			System.out.println(parametersQueryString.length()-1);
-			System.out.println(parametersQueryString.length());
+			
 			parametersQueryString.replace(parametersQueryString.length()-2, parametersQueryString.length(), "");
 			String fullQueryString = baseQueryString + parametersQueryString.toString() + conditionQueryString;
 			
@@ -149,26 +146,24 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 	
 	@Override
-	public PersonDTO login(LoginDTO login) {
+	public PersonDTO login(Map<String, String> loginParameters) {
 		PersonDTO personDTO = null;
+		
 		String queryString = "";
-		String email = login.getEmail();
-		queryString = "select p from Person p where p.email = :email";					
+		String email = loginParameters.get("email");
+		String password = loginParameters.get("password");
+		queryString = "select p from Person p where p.email = :email and p.password = :password";					
+		
 		Query query = getCurrentSession().createQuery(queryString);
 		query.setParameter("email", email);
-		//query.setParameter("password", password);
+		query.setParameter("password", password);
 		
 		if (query.getResultList().isEmpty()) {
-			return null;
-		}
-		
-		personDTO = setPersonDTO((Person) query.getSingleResult());
-		
-		if(personDTO.getPassword().equals(login.getPassword())) {			
 			return personDTO;
 		}
-
-		return null;
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());		
+		return personDTO;
 	}
 	
 	private Person setPerson(PersonDTO personDTO) {

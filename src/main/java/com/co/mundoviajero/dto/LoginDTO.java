@@ -2,31 +2,30 @@ package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
 
-public class LoginDTO implements Serializable{
-
+public class LoginDTO implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
+
+	private PersonDTO person;
+	private String token;	
 	
-	private Long id;
-	private String email;
-	private String password;
+	public LoginDTO(PersonDTO person, String token) {
+		super();
+		this.person = person;
+		this.token = token;
+	}
 	
-	public Long getId() {
-		return id;
+	public PersonDTO getPersonDTO() {
+		return person;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setPersonDTO(PersonDTO person) {
+		this.person = person;
 	}
-	public String getEmail() {
-		return email;
+	public String getToken() {
+		return token;
 	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 }

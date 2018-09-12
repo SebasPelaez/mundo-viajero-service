@@ -14,7 +14,7 @@ import com.co.mundoviajero.dto.ResponseDTO;
 public interface LoginController {
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/login/login", method = RequestMethod.POST, produces = {
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
 	Response login(@RequestBody LoginDTO login) throws Exception;
 }

@@ -1,7 +1,5 @@
 package com.co.mundoviajero.business.Login;
 
-import java.security.Key;
-import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,6 @@ import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
 @Service
 public class LoginBusiness {

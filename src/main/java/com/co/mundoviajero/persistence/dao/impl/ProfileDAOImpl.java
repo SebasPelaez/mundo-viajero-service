@@ -16,6 +16,7 @@ import com.co.mundoviajero.persistence.entity.Profile;
 @Transactional
 public class ProfileDAOImpl extends BaseDAO implements IProfileDAO{
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ProfileDTO> getAllProfiles() {
 		List<ProfileDTO> profilesDTO = new ArrayList<>();

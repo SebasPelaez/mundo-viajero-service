@@ -20,6 +20,7 @@ import com.co.mundoviajero.util.exception.ValidationException;
 @Transactional
 public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PersonDTO> getAllPeople() {
 		Query query = getCurrentSession().createQuery("From Person");

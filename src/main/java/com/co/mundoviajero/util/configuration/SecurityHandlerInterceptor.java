@@ -51,7 +51,7 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 		}
 		
 		if (token != null) {
-			
+
 			try {
 				
 				/*

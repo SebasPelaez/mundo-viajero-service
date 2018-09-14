@@ -49,15 +49,16 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 		if (HttpMethod.OPTIONS.name().equalsIgnoreCase(request.getMethod())) {
 			return true;
 		}
-		System.out.println("El token recibido es: " + token);
+		
 		if (token != null) {
 			
 			try {
-				String[] authParts = token.split("\\s+");
+				
+				/*
+				 * String[] authParts = token.split("\\s+");
 				System.out.println("Bandera 1: " + authParts.toString());
 				String authInfo = authParts[1];
 				System.out.println("Bandera 2: " + authInfo.toString());
-				/*
 				 * Claims claims =
 				 * Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.
 				 * JWT_Key)) .parseClaimsJws(authInfo).getBody(); claims.getId();
@@ -65,11 +66,11 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 				 */
 
 				Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.JWT_Key))
-						.parseClaimsJws(authInfo).getBody();
-				System.out.println("Primer claim");
+						.parseClaimsJws(token).getBody();
+				
 				claims.getSubject();
-				System.out.println("Segundo claim claim");
 				claims.getExpiration();
+				
 			} catch (ExpiredJwtException e) {
 				throw new ExpiredTokenException(messageSource.getMessage("DESC_EXPIRED_TOKEN"));
 			} catch (Exception e) {

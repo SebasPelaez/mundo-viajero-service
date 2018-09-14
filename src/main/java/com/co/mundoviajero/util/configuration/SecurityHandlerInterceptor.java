@@ -53,17 +53,6 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 		if (token != null) {
 
 			try {
-				
-				/*
-				 * String[] authParts = token.split("\\s+");
-				System.out.println("Bandera 1: " + authParts.toString());
-				String authInfo = authParts[1];
-				System.out.println("Bandera 2: " + authInfo.toString());
-				 * Claims claims =
-				 * Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.
-				 * JWT_Key)) .parseClaimsJws(authInfo).getBody(); claims.getId();
-				 * claims.getSubject(); claims.getIssuer(); claims.getExpiration();
-				 */
 
 				Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.JWT_Key))
 						.parseClaimsJws(token).getBody();

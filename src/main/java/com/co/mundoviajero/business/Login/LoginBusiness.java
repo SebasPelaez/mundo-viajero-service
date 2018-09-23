@@ -1,7 +1,5 @@
 package com.co.mundoviajero.business.Login;
 
-import java.security.Key;
-import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,6 @@ import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
 @Service
 public class LoginBusiness {
@@ -54,16 +48,8 @@ public class LoginBusiness {
 			PersonDTO person = personDAO.login(loginParameters);
 
 			if (person != null) {
-				Key key =Keys.secretKeyFor(SignatureAlgorithm.HS256);
-				Long time = System.currentTimeMillis();
-				String jwt = Jwts.builder()
-						.signWith(key)
-						.setSubject("Juan")
-						.setIssuedAt(new Date(time))
-						.claim("email", person.getEmail())
-						.claim("password", person.getPassword())
-						.compact();
 				
+				String jwt = TokenBusiness.generateToken(person.getEmail());				
 				LoginDTO token = new LoginDTO(person, jwt);
 
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),

@@ -106,10 +106,10 @@ public class PersonBusiness {
 				FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
 
 		sb.append(Validator.validateNumber(("" + person.getProfileId()), FieldConstants.PERSON_PROFILEID,
-				FieldConstants.PERSON_PROFILEID_LENGTH, FieldConstants.PERSON_PROFILEID_OBLIGATORY));
+				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getStateId()), FieldConstants.PERSON_STATEID,
-				FieldConstants.PERSON_STATEID_LENGTH, FieldConstants.PERSON_STATEID_OBLIGATORY));
+		sb.append(Validator.validateNumber(("" + person.getStateId()), FieldConstants.STATEID,
+				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {
 			throw new ValidationException(sb.toString());
@@ -161,7 +161,6 @@ public class PersonBusiness {
 		}else {
 			if( bodyParameters.containsKey("identification")) {
 				identifier = "identification";
-				bodyParameters.remove(identifier);
 			}
 		}
 		
@@ -197,11 +196,11 @@ public class PersonBusiness {
 					break;
 				case FieldConstants.PERSON_PROFILEID:
 					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.PERSON_PROFILEID,
-							FieldConstants.PERSON_PROFILEID_LENGTH, FieldConstants.PERSON_PROFILEID_OBLIGATORY));
+							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
-				case FieldConstants.PERSON_STATEID:
-					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.PERSON_STATEID,
-							FieldConstants.PERSON_STATEID_LENGTH, FieldConstants.PERSON_STATEID_OBLIGATORY));
+				case FieldConstants.STATEID:
+					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.STATEID,
+							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
 					break;

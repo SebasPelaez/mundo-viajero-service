@@ -11,19 +11,23 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.co.mundoviajero.dto.EventDTO;
 import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
+import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.Event;
-import com.co.mundoviajero.persistence.entity.EventPlace;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
 @Transactional
 public class EventDAOImpl extends BaseDAO implements IEventDAO{
+	
+	@Autowired
+	private IEventPlaceDAO eventPlaceDAO;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -37,31 +41,11 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		List<EventDTO> eventDTO = new ArrayList<>();
 		for (Event e : events) {
 			EventDTO eDTO = setEventDTO(e);
-			eDTO.setPlaces(getAllEventPlaces(eDTO.getId()));
+			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
 			eventDTO.add(eDTO);
 		}
 		
 		return eventDTO;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<EventPlaceDTO> getAllEventPlaces(Long eventId) {
-		
-		String queryString = "select ep from EventPlace ep where ep.eventId = :eventId";
-		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("eventId", eventId);
-		
-		List<EventPlace> places = (List<EventPlace>)query.getResultList();
-		List<EventPlaceDTO> placesDTO = new ArrayList<>();
-
-		if (places.isEmpty())
-			return null;
-		
-		for (EventPlace ep : places) {
-			placesDTO.add(setEventPlaceDTO(ep));
-		}
-		return placesDTO;
 	}
 
 	@Override
@@ -74,8 +58,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		if (query.getResultList().isEmpty())
 			return null;
 		
-		eventDTO = setEventDTO((Event) query.getSingleResult());
-		eventDTO.setPlaces(getAllEventPlaces(eventDTO.getId()));
+		eventDTO = setEventDTO((Event) query.getSingleResult());		
+		eventDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eventDTO.getId()));
 		return eventDTO;
 	}
 
@@ -101,7 +85,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		List<EventDTO> eventDTO = new ArrayList<>();
 		for (Event e : events) {
 			EventDTO eDTO = setEventDTO(e);
-			eDTO.setPlaces(getAllEventPlaces(eDTO.getId()));
+			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
 			eventDTO.add(eDTO);
 		}
 		return eventDTO;
@@ -121,7 +105,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			Long eventId = events.get(0).getId();
 			event.setId(eventId);
 			
-			List<EventPlaceDTO> eventPlaces = createEventPlaces(event.getPlaces(), eventId);
+			List<EventPlaceDTO> eventPlaces = eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId);
 			if (eventPlaces == null) {
 				return null;
 			}
@@ -134,24 +118,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return event;		
 	}
 	
-	private List<EventPlaceDTO> createEventPlaces(List<EventPlaceDTO> eventPlacesDTO, Long eventId) throws ValidationException {
-
-		List<EventPlace> eventPlaces = setEventPlace(eventPlacesDTO, eventId);
-
-		try {
-			for (EventPlace ep: eventPlaces) {
-				getCurrentSession().saveOrUpdate(ep);
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-		return eventPlacesDTO;
-	}
-	
 	@Override
-	public boolean updateEvent(Map<String, String> parameters, Long identifier) throws ValidationException {
+	public boolean updateEvent(Map<String, String> parameters, Long identifier) {
 		StringBuffer parametersQueryString = new StringBuffer();
 		String baseQueryString = "update Event e set ";
 		String conditionQueryString = " where e.id = :id";
@@ -197,24 +165,6 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		}
 		return eventDTO;
 	}	
-	
-	private EventPlaceDTO setEventPlaceDTO(EventPlace eventPlace) {
-		EventPlaceDTO eventPlaceDTO = new EventPlaceDTO();
-		
-		try {
-			eventPlaceDTO.setId(eventPlace.getId());
-			eventPlaceDTO.setEventId(eventPlace.getEventId());
-			eventPlaceDTO.setCityId(eventPlace.getCityId());
-			eventPlaceDTO.setEventPlaceStartDate(eventPlace.getEventPlaceStartDate().toString().trim());
-			eventPlaceDTO.setEventPlaceEndDate(eventPlace.getEventPlaceEndDate().toString().trim());
-			eventPlaceDTO.setAltitudeEventPlace(eventPlace.getAltitudeEventPlace().trim());
-			eventPlaceDTO.setLatitudeEventPlace(eventPlace.getLatitudeEventPlace().trim());
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-		return eventPlaceDTO;
-	}
 
 	private Event setEvent(EventDTO eventDTO) {
 		Event event = new Event();
@@ -247,42 +197,6 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		}
 
 		return event;
-	}
-	
-	private List<EventPlace> setEventPlace(List<EventPlaceDTO> eventPlacesDTO, Long eventId) {
-		
-		List<EventPlace> eventPlaces = new ArrayList<>();
-
-		try {
-			for(EventPlaceDTO evtDTO: eventPlacesDTO) {
-				
-				EventPlace eventPlace = new EventPlace();
-				eventPlace.setEventId(eventId);
-				evtDTO.setEventId(eventId);
-				
-				eventPlace.setCityId(evtDTO.getCityId());
-				eventPlace.setAltitudeEventPlace(evtDTO.getAltitudeEventPlace());
-				eventPlace.setLatitudeEventPlace(evtDTO.getLatitudeEventPlace());
-				
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				Date startDate = format.parse(evtDTO.getEventPlaceStartDate());
-				Date endDate = format.parse(evtDTO.getEventPlaceEndDate());
-				
-				java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
-				java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
-				
-				eventPlace.setEventPlaceStartDate(startDateSql);
-				eventPlace.setEventPlaceEndDate(endDateSql);
-				
-				eventPlaces.add(eventPlace);
-			}
-						
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-
-		return eventPlaces;
 	}
 
 }

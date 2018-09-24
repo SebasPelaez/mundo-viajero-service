@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.co.mundoviajero.dto.EventDTO;
-import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 public interface IEventDAO {
@@ -13,8 +12,6 @@ public interface IEventDAO {
 	EventDTO getEvent(Long searchParameter);
 	List<EventDTO> getEventWithParameters(Map<String, Object> parameters);
 	EventDTO createEvent(EventDTO event) throws ValidationException;
-	boolean updateEvent(Map<String, String> parameters, Long identifier) throws ValidationException;
-	
-	List<EventPlaceDTO> getAllEventPlaces(Long idEvent);
+	boolean updateEvent(Map<String, String> parameters, Long identifier);	
 	
 }

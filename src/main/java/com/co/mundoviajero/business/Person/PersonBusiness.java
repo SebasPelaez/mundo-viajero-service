@@ -161,7 +161,6 @@ public class PersonBusiness {
 		}else {
 			if( bodyParameters.containsKey("identification")) {
 				identifier = "identification";
-				bodyParameters.remove(identifier);
 			}
 		}
 		
@@ -204,7 +203,6 @@ public class PersonBusiness {
 							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
-					bodyParameters.remove(parameter);
 					break;
 			}
 			

@@ -25,7 +25,7 @@ public class EventBusiness {
 
 	@Autowired
 	private IEventDAO eventDAO;
-
+	
 	public ResponseEntity<ResponseDTO> getAllEvents() throws Exception {
 		List<EventDTO> events = eventDAO.getAllEvents();
 		if (events != null) {

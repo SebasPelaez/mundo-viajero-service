@@ -97,14 +97,18 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			if (eventDAO.createEvent(event)) {
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
-						true), HttpStatus.OK);
+			if(eventDAO.validResponsible(event.getPersonIdResponsible())) {
+				if (eventDAO.createEvent(event)) {
+					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+							true), HttpStatus.OK);
+				}
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
+						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
-					HttpStatus.PRECONDITION_REQUIRED);
+			throw new ValidationException("El responsable del evento no es válido");
+			
 		}
 
 		throw new ValidationException("No hay lugares asociados");

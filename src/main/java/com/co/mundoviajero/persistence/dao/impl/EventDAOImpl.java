@@ -141,6 +141,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return true;
 	}
 	
+	@Override
+	public boolean validResponsible(Long personIdResponsible) {
+		String queryString = "select p from Person p where p.id = :personIdResponsible and p.stateId = 16";
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("personIdResponsible", personIdResponsible);
+		return !query.getResultList().isEmpty();
+	}
+	
 	private EventDTO setEventDTO(Event event) {
 		EventDTO eventDTO = new EventDTO();
 		

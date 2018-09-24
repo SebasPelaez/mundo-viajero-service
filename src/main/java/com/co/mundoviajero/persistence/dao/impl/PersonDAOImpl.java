@@ -129,7 +129,10 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		try {
 			
 			for(String parameter: parameters.keySet()) {
-				parametersQueryString.append("p."+parameter+" = '"+parameters.get(parameter)+"', ");
+				if(!parameter.equals(identifier)) {
+					parametersQueryString.append("p."+parameter+" = '"+parameters.get(parameter)+"', ");
+				}
+				
 			}
 			
 			parametersQueryString.replace(parametersQueryString.length()-2, parametersQueryString.length(), "");

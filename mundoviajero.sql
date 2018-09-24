@@ -176,10 +176,18 @@ CREATE TABLE public."EventPlace"
     "CityId" bigint NOT NULL references public."City"("Id"),
     "EventPlaceStartDate" timestamp(4) without time zone NOT NULL,
     "EventPlaceEndDate" timestamp(4) without time zone NOT NULL,
-    "AltitudeEventPlace" character(250),
-    "LatitudeEventPlace" character(250),
+    "AltitudeEventPlace" character(250) NOT NULL,
+    "LatitudeEventPlace" character(250)  NOT NULL,
     PRIMARY KEY ("Id")
 );
+
+CREATE SEQUENCE public."SQ_EVENTPLACE"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE public."SQ_EVENTPLACE" OWNER TO udearoot;
 
 
 ALTER TABLE public."State" OWNER to udearoot;

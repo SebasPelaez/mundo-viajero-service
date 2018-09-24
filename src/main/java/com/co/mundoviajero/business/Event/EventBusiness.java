@@ -97,11 +97,10 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			EventDTO eventCreated = eventDAO.createEvent(event);
-			if (eventCreated != null) {
+			if (eventDAO.createEvent(event)) {
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
-						eventCreated), HttpStatus.OK);
+						true), HttpStatus.OK);
 			}
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
@@ -187,7 +186,7 @@ public class EventBusiness {
 			
 			if( eventDAO.updateEvent(bodyParameters, identifier) ) {		
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), true),
 						HttpStatus.PRECONDITION_REQUIRED);			
 			}
 			

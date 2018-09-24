@@ -40,7 +40,7 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 	}
 
 	@Override
-	public List<EventPlaceDTO> createEventPlaces(List<EventPlaceDTO> eventPlacesDTO, Long eventId) {
+	public boolean createEventPlaces(List<EventPlaceDTO> eventPlacesDTO, Long eventId) {
 
 		List<EventPlace> eventPlaces = setEventPlace(eventPlacesDTO, eventId);
 
@@ -51,9 +51,9 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return eventPlacesDTO;
+		return true;
 	}
 
 	@Override

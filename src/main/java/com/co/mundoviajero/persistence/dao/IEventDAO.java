@@ -11,7 +11,7 @@ public interface IEventDAO {
 	List<EventDTO> getAllEvents();
 	EventDTO getEvent(Long searchParameter);
 	List<EventDTO> getEventWithParameters(Map<String, Object> parameters);
-	EventDTO createEvent(EventDTO event) throws ValidationException;
+	boolean createEvent(EventDTO event) throws ValidationException;
 	boolean updateEvent(Map<String, String> parameters, Long identifier);	
 	
 }

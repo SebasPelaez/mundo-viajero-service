@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.co.mundoviajero.dto.EventDTO;
-import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.Event;
@@ -92,7 +91,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	}
 	
 	@Override
-	public EventDTO createEvent(EventDTO event) throws ValidationException {
+	public boolean createEvent(EventDTO event) throws ValidationException {
 
 		Event newEvent = setEvent(event);
 		
@@ -105,17 +104,15 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			Long eventId = events.get(0).getId();
 			event.setId(eventId);
 			
-			List<EventPlaceDTO> eventPlaces = eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId);
-			if (eventPlaces == null) {
-				return null;
+			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId)) {
+				return false;
 			}
-			event.setPlaces(eventPlaces);
 			
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return event;		
+		return true;		
 	}
 	
 	@Override

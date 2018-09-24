@@ -130,12 +130,12 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 				eventPlace.setAltitudeEventPlace(evtDTO.getAltitudeEventPlace());
 				eventPlace.setLatitudeEventPlace(evtDTO.getLatitudeEventPlace());
 
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date startDate = format.parse(evtDTO.getEventPlaceStartDate());
 				Date endDate = format.parse(evtDTO.getEventPlaceEndDate());
 
-				java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
-				java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
+				java.sql.Timestamp startDateSql = new java.sql.Timestamp(startDate.getTime());
+				java.sql.Timestamp endDateSql = new java.sql.Timestamp(endDate.getTime());
 
 				eventPlace.setEventPlaceStartDate(startDateSql);
 				eventPlace.setEventPlaceEndDate(endDateSql);

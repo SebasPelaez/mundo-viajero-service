@@ -179,12 +179,12 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setName(eventDTO.getName().trim());
 			event.setDescription(eventDTO.getDescription().trim());
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date startDate = format.parse(eventDTO.getStartDate());
 			Date endDate = format.parse(eventDTO.getEndDate());
 			
-			java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
-			java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
+			java.sql.Timestamp startDateSql = new java.sql.Timestamp(startDate.getTime());
+			java.sql.Timestamp endDateSql = new java.sql.Timestamp(endDate.getTime());
 			
 			event.setStartDate(startDateSql);
 			event.setEndDate(endDateSql);

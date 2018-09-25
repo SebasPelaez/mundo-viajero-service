@@ -1,5 +1,6 @@
 package com.co.mundoviajero.business.Event;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.co.mundoviajero.dto.EventDTO;
 import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
@@ -25,7 +27,7 @@ public class EventBusiness {
 
 	@Autowired
 	private IEventDAO eventDAO;
-	
+
 	public ResponseEntity<ResponseDTO> getAllEvents() throws Exception {
 		List<EventDTO> events = eventDAO.getAllEvents();
 		if (events != null) {
@@ -74,7 +76,26 @@ public class EventBusiness {
 
 		if (parametersValidation(event) && !event.getPlaces().isEmpty()) {
 
+			if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
+					Constants.EVENT_CREATED_DATE))
+				throw new ValidationException("El Evento debe empezar 8 horas después de la hora actual");
+
+			if (!Validator.validateDate(event.getStartDate(), event.getEndDate(), Constants.EVENT_DURATION))
+				throw new ValidationException("La fecha final del evento debe ser mayor que la inicial");
+
 			for (EventPlaceDTO evDTO : event.getPlaces()) {
+
+				if (!Validator.validateDate(event.getStartDate(), evDTO.getEventPlaceStartDate(), Constants.EMPTY))
+					throw new ValidationException(
+							"La fecha inicial del lugar debe ser mayor que la fecha inicial del evento");
+
+				if (!Validator.validateDate(evDTO.getEventPlaceStartDate(), evDTO.getEventPlaceEndDate(),
+						Constants.EVENT_DURATION))
+					throw new ValidationException("La fecha final del lugar debe ser mayor que la inicial");
+
+				if (!Validator.validateDate(evDTO.getEventPlaceEndDate(), event.getEndDate(), Constants.EMPTY))
+					throw new ValidationException(
+							"La fecha final del lugar debe ser menor que la fecha final del evento");
 
 				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCityId()), FieldConstants.CITY_ID,
 						FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
@@ -97,7 +118,7 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			if(eventDAO.validResponsible(event.getPersonIdResponsible())) {
+			if (eventDAO.validResponsible(event.getPersonIdResponsible())) {
 				if (eventDAO.createEvent(event)) {
 					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
@@ -108,7 +129,7 @@ public class EventBusiness {
 						HttpStatus.PRECONDITION_REQUIRED);
 			}
 			throw new ValidationException("El responsable del evento no es válido");
-			
+
 		}
 
 		throw new ValidationException("No hay lugares asociados");
@@ -166,8 +187,9 @@ public class EventBusiness {
 					break;
 
 				case FieldConstants.EVENT_FARE:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.EVENT_FARE,
-							FieldConstants.EVENT_FARE_LENGTH, FieldConstants.EVENT_FARE_OBLIGATORY));
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.EVENT_FARE, FieldConstants.EVENT_FARE_LENGTH,
+							FieldConstants.EVENT_FARE_OBLIGATORY));
 					break;
 
 				case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
@@ -176,29 +198,29 @@ public class EventBusiness {
 							FieldConstants.ID_OBLIGATORY));
 					break;
 				case FieldConstants.STATEID:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.STATEID,
-							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.STATEID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
 					break;
 				}
 			}
-			
+
 			if (sb.toString().length() > 0) {
 				throw new ValidationException(sb.toString());
 			}
-			
-			if( eventDAO.updateEvent(bodyParameters, identifier) ) {		
+
+			if (eventDAO.updateEvent(bodyParameters, identifier)) {
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), true),
-						HttpStatus.PRECONDITION_REQUIRED);			
+						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			
+
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
 					HttpStatus.PRECONDITION_REQUIRED);
 
-		}else {
+		} else {
 			throw new ValidationException("Falta id del Evento");
 		}
 

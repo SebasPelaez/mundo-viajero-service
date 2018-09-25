@@ -74,4 +74,40 @@ public class Validator {
 		return diff >= 6570;
 	}
 	
+	public static boolean validateDate(String startDate, String endDate,String type) {
+		
+		int comparableHour;
+		
+		switch (type) {
+			case Constants.EVENT_CREATED_DATE:
+				comparableHour = 8;
+				break;
+			case Constants.EVENT_DURATION:
+				comparableHour = 1;
+				break;
+			default:
+				comparableHour = 0;
+				break;
+		}
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date parsedStartDate = null;
+		Date parsedEndDate = null;
+		
+		try {
+			parsedStartDate = format.parse(startDate);
+			parsedEndDate = format.parse(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		long diffInMillies = parsedEndDate.getTime() - parsedStartDate.getTime();
+	    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	    
+	    System.out.println("Diff: " + diff);
+	    System.out.println("Validation: " + (diff >= comparableHour));
+	    return diff >= comparableHour;
+		
+	}
+	
 }

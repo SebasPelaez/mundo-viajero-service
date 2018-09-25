@@ -1,7 +1,7 @@
 package com.co.mundoviajero.persistence.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +30,10 @@ public class Event implements Serializable {
     private String description;
 	
 	@Column(name = "StartDate")
-    private Date startDate;
+    private Timestamp startDate;
 	
 	@Column(name = "EndDate")
-    private Date endDate;
+    private Timestamp endDate;
 	
 	@Column(name = "AltitudeMeetingPoint")
     private String altitudeMeetingPoint;
@@ -77,19 +77,19 @@ public class Event implements Serializable {
 		this.description = description;
 	}
 
-	public Date getStartDate() {
+	public Timestamp getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public Timestamp getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 	}
 

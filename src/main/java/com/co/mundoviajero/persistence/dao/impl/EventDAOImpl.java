@@ -46,6 +46,33 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		
 		return eventDTO;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<EventDTO> getEventsWithId(List<Long> eventsId) {
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("select e from Event e where e.id IN (");
+		for (Long id : eventsId) {
+			stringBuffer.append(id+",");
+		}
+		stringBuffer.replace(stringBuffer.length()-1, stringBuffer.length(), ")");
+		
+		Query query = getCurrentSession().createQuery(stringBuffer.toString());
+		List<Event> events = (List<Event>) query.getResultList();
+		
+		if (events.isEmpty())
+			return null;
+		
+		List<EventDTO> eventDTO = new ArrayList<>();
+		for (Event e : events) {
+			EventDTO eDTO = setEventDTO(e);
+			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
+			eventDTO.add(eDTO);
+		}
+		
+		return eventDTO;
+	}
 
 	@Override
 	public EventDTO getEvent(Long id) {
@@ -158,8 +185,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			eventDTO.setDescription(event.getDescription().trim());
 			eventDTO.setStartDate(event.getStartDate().toString().trim());
 			eventDTO.setEndDate(event.getEndDate().toString().trim());
-			eventDTO.setAltitudeMeetingPoint(event.getAltitudeMeetingPoint().trim());
-			eventDTO.setLatitudeMeetingPoint(event.getLatitudeMeetingPoint().trim());
+			eventDTO.setLongitudeMeetingPoint(String.valueOf(event.getLongitudeMeetingPoint()));
+			eventDTO.setLatitudeMeetingPoint(String.valueOf(event.getLatitudeMeetingPoint()));
 			eventDTO.setCapaciticy(event.getCapaciticy());
 			eventDTO.setFare(event.getFare());
 			eventDTO.setPersonIdResponsible(event.getPersonIdResponsible());
@@ -189,8 +216,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setStartDate(startDateSql);
 			event.setEndDate(endDateSql);
 			
-			event.setAltitudeMeetingPoint(eventDTO.getAltitudeMeetingPoint().trim());
-			event.setLatitudeMeetingPoint(eventDTO.getLatitudeMeetingPoint().trim());
+			event.setLongitudeMeetingPoint(Double.parseDouble(eventDTO.getLongitudeMeetingPoint().trim()));
+			event.setLatitudeMeetingPoint(Double.parseDouble(eventDTO.getLatitudeMeetingPoint().trim()));
 			event.setCapaciticy(eventDTO.getCapaciticy());
 			event.setFare(eventDTO.getFare());
 			event.setPersonIdResponsible(eventDTO.getPersonIdResponsible());

@@ -9,6 +9,7 @@ import com.co.mundoviajero.util.exception.ValidationException;
 public interface IEventDAO {
 
 	List<EventDTO> getAllEvents();
+	List<EventDTO> getEventsWithId(List<Long> eventsId);
 	EventDTO getEvent(Long searchParameter);
 	List<EventDTO> getEventWithParameters(Map<String, Object> parameters);
 	boolean createEvent(EventDTO event) throws ValidationException;

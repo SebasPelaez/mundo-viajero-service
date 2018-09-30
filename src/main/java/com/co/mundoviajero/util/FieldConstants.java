@@ -70,7 +70,7 @@ public class FieldConstants {
 	public static final int EVENT_ENDDATE_LENGTH = 24;
 	public static final boolean EVENT_ENDDATE_OBLIGATORY = true;
 	
-	public static final String EVENT_ALTITUDEMEETINGPOINT = "altitudeMeetingPoint";	
+	public static final String EVENT_LONGITUDEMEETINGPOINT = "longitudeMeetingPoint";	
 	public static final String EVENT_LATITUDEMEETINGPOINT = "latitudeMeetingPoint";
 	
 	public static final String EVENT_CAPACITY = "capacity";
@@ -99,8 +99,8 @@ public class FieldConstants {
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;
 	
-	public static final int ALTITUDE_LENGTH = 250;
-	public static final boolean ALTITUDE_OBLIGATORY = true;
+	public static final int LONGITUDE_LENGTH = 250;
+	public static final boolean LONGITUDE_OBLIGATORY = true;
 	
 	public static final int LATITUDE_LENGTH = 250;
 	public static final boolean LATITUDE_OBLIGATORY = true;

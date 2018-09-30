@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.EventPlace;
+import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 
 @Repository(value = "EventPlaceDAOImpl")
 @Transactional
@@ -61,27 +62,27 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		StringBuffer parametersQueryString = new StringBuffer();
 		String baseQueryString = "update EventPlace ep set ";
 		String conditionQueryString = " where ep.id = :id";
-		
+
 		try {
-			
-			for(String parameter: parameters.keySet()) {
-				parametersQueryString.append("ep."+parameter+" = '"+parameters.get(parameter)+"', ");
+
+			for (String parameter : parameters.keySet()) {
+				parametersQueryString.append("ep." + parameter + " = '" + parameters.get(parameter) + "', ");
 			}
-			
-			parametersQueryString.replace(parametersQueryString.length()-2, parametersQueryString.length(), "");
+
+			parametersQueryString.replace(parametersQueryString.length() - 2, parametersQueryString.length(), "");
 			String fullQueryString = baseQueryString + parametersQueryString.toString() + conditionQueryString;
-			
+
 			Query query = getCurrentSession().createQuery(fullQueryString);
-			query.setParameter("id",identifier);
+			query.setParameter("id", identifier);
 			query.executeUpdate();
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
 		}
 		return true;
 	}
-	
+
 	@Override
 	public EventPlaceDTO getEventPlace(Long id) {
 		String queryString = "select ep from EventPlace ep where ep.id = :id";
@@ -93,8 +94,34 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		if (eventPlace == null)
 			return null;
 
-		
 		return setEventPlaceDTO(eventPlace);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Long> findNearestEvents(BoundingBox boundingBox) {
+
+		double latitudeMin = boundingBox.getMinPoint().getLatitude();
+		double latitudeMax = boundingBox.getMaxPoint().getLatitude();
+		double longitudeMin = boundingBox.getMinPoint().getLongitude();
+		double longitudeMax = boundingBox.getMaxPoint().getLongitude();
+
+		String queryString = "select ep.eventId from EventPlace ep where "
+				+ "(ep.latitudeEventPlace BETWEEN :latitudeMin AND :latitudeMax) AND "
+				+ "(ep.longitudeEventPlace BETWEEN :longitudeMin AND :longitudeMax)";
+		
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("latitudeMin", latitudeMin);
+		query.setParameter("latitudeMax", latitudeMax);
+		query.setParameter("longitudeMin", longitudeMin);
+		query.setParameter("longitudeMax", longitudeMax);
+		
+		List<Long> eventsId = (List<Long>) query.getResultList();
+		
+		if (eventsId.isEmpty())
+			return null;
+
+		return eventsId;
 	}
 
 	private EventPlaceDTO setEventPlaceDTO(EventPlace eventPlace) {
@@ -106,8 +133,8 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 			eventPlaceDTO.setCityId(eventPlace.getCityId());
 			eventPlaceDTO.setEventPlaceStartDate(eventPlace.getEventPlaceStartDate().toString().trim());
 			eventPlaceDTO.setEventPlaceEndDate(eventPlace.getEventPlaceEndDate().toString().trim());
-			eventPlaceDTO.setAltitudeEventPlace(eventPlace.getAltitudeEventPlace().trim());
-			eventPlaceDTO.setLatitudeEventPlace(eventPlace.getLatitudeEventPlace().trim());
+			eventPlaceDTO.setLongitudeEventPlace(String.valueOf(eventPlace.getLongitudeEventPlace()));
+			eventPlaceDTO.setLatitudeEventPlace(String.valueOf(eventPlace.getLatitudeEventPlace()));
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
@@ -127,8 +154,8 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 				evtDTO.setEventId(eventId);
 
 				eventPlace.setCityId(evtDTO.getCityId());
-				eventPlace.setAltitudeEventPlace(evtDTO.getAltitudeEventPlace());
-				eventPlace.setLatitudeEventPlace(evtDTO.getLatitudeEventPlace());
+				eventPlace.setLongitudeEventPlace(Double.parseDouble(evtDTO.getLongitudeEventPlace()));
+				eventPlace.setLatitudeEventPlace(Double.parseDouble(evtDTO.getLatitudeEventPlace()));
 
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date startDate = format.parse(evtDTO.getEventPlaceStartDate());
@@ -150,4 +177,5 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 
 		return eventPlaces;
 	}
+
 }

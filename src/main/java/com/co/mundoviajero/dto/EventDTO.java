@@ -12,7 +12,7 @@ public class EventDTO implements Serializable {
 	private String description;
 	private String startDate;
 	private String endDate;
-	private String altitudeMeetingPoint;
+	private String longitudeMeetingPoint;
 	private String latitudeMeetingPoint;
 	private int capaciticy;
 	private float fare;
@@ -50,11 +50,11 @@ public class EventDTO implements Serializable {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	public String getAltitudeMeetingPoint() {
-		return altitudeMeetingPoint;
+	public String getLongitudeMeetingPoint() {
+		return longitudeMeetingPoint;
 	}
-	public void setAltitudeMeetingPoint(String altitudeMeetingPoint) {
-		this.altitudeMeetingPoint = altitudeMeetingPoint;
+	public void setLongitudeMeetingPoint(String longitudeMeetingPoint) {
+		this.longitudeMeetingPoint = longitudeMeetingPoint;
 	}
 	public String getLatitudeMeetingPoint() {
 		return latitudeMeetingPoint;

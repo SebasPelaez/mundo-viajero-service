@@ -39,6 +39,18 @@ public class EventBusiness {
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
 				HttpStatus.NOT_FOUND);
 	}
+	
+	public ResponseEntity<ResponseDTO> getEventsWithId(List<Long> eventsId) throws Exception {
+		List<EventDTO> events = eventDAO.getEventsWithId(eventsId);
+		if (events != null) {
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), events),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
+				HttpStatus.NOT_FOUND);
+	}
 
 	public ResponseEntity<ResponseDTO> getEvent(Long id) throws ValidationException {
 
@@ -73,7 +85,7 @@ public class EventBusiness {
 
 	public ResponseEntity<ResponseDTO> createEvent(EventDTO event) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
-
+		
 		if (parametersValidation(event) && !event.getPlaces().isEmpty()) {
 
 			if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
@@ -106,11 +118,11 @@ public class EventBusiness {
 				sb.append(Validator.valideString(evDTO.getEventPlaceEndDate(), FieldConstants.EVENT_ENDDATE,
 						FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 
-				sb.append(Validator.valideString(evDTO.getAltitudeEventPlace(), FieldConstants.EVENTPLACE_ALTITUDE,
-						FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+				sb.append(Validator.valideString(evDTO.getLongitudeEventPlace(), FieldConstants.EVENTPLACE_ALTITUDE,
+						FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 				sb.append(Validator.valideString(evDTO.getLatitudeEventPlace(), FieldConstants.EVENTPLACE_LATITUDE,
-						FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+						FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 			}
 
@@ -168,10 +180,10 @@ public class EventBusiness {
 							FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 					break;
 
-				case FieldConstants.EVENT_ALTITUDEMEETINGPOINT:
+				case FieldConstants.EVENT_LONGITUDEMEETINGPOINT:
 					sb.append(Validator.valideString(bodyParameters.get(parameter),
-							FieldConstants.EVENT_ALTITUDEMEETINGPOINT, FieldConstants.ALTITUDE_LENGTH,
-							FieldConstants.ALTITUDE_OBLIGATORY));
+							FieldConstants.EVENT_LONGITUDEMEETINGPOINT, FieldConstants.LONGITUDE_LENGTH,
+							FieldConstants.LONGITUDE_OBLIGATORY));
 					break;
 
 				case FieldConstants.EVENT_LATITUDEMEETINGPOINT:
@@ -241,8 +253,8 @@ public class EventBusiness {
 		sb.append(Validator.valideString(event.getEndDate(), FieldConstants.EVENT_ENDDATE,
 				FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 
-		sb.append(Validator.valideString(event.getAltitudeMeetingPoint(), FieldConstants.EVENT_ALTITUDEMEETINGPOINT,
-				FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+		sb.append(Validator.valideString(event.getLongitudeMeetingPoint(), FieldConstants.EVENT_LONGITUDEMEETINGPOINT,
+				FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 		sb.append(Validator.valideString(event.getLatitudeMeetingPoint(), FieldConstants.EVENT_LATITUDEMEETINGPOINT,
 				FieldConstants.LATITUDE_LENGTH, FieldConstants.LATITUDE_OBLIGATORY));

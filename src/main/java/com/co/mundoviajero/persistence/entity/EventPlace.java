@@ -35,11 +35,11 @@ public class EventPlace implements Serializable {
 	@Column(name = "EventPlaceEndDate")
 	private Timestamp eventPlaceEndDate;
 
-	@Column(name = "AltitudeEventPlace")
-	private String altitudeEventPlace;
+	@Column(name = "LongitudeEventPlace")
+	private double longitudeEventPlace;
 
 	@Column(name = "LatitudeEventPlace")
-	private String latitudeEventPlace;
+	private double latitudeEventPlace;
 
 	public Long getId() {
 		return id;
@@ -81,19 +81,19 @@ public class EventPlace implements Serializable {
 		this.eventPlaceEndDate = eventPlaceEndDate;
 	}
 
-	public String getAltitudeEventPlace() {
-		return altitudeEventPlace;
+	public double getLongitudeEventPlace() {
+		return longitudeEventPlace;
 	}
 
-	public void setAltitudeEventPlace(String altitudeEventPlace) {
-		this.altitudeEventPlace = altitudeEventPlace;
+	public void setLongitudeEventPlace(double longitudeEventPlace) {
+		this.longitudeEventPlace = longitudeEventPlace;
 	}
 
-	public String getLatitudeEventPlace() {
+	public double getLatitudeEventPlace() {
 		return latitudeEventPlace;
 	}
 
-	public void setLatitudeEventPlace(String latitudeEventPlace) {
+	public void setLatitudeEventPlace(double latitudeEventPlace) {
 		this.latitudeEventPlace = latitudeEventPlace;
 	}
 	

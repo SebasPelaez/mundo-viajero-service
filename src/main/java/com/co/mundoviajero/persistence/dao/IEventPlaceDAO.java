@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.co.mundoviajero.dto.EventPlaceDTO;
+import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 
 public interface IEventPlaceDAO {
 	
@@ -11,5 +12,6 @@ public interface IEventPlaceDAO {
 	List<EventPlaceDTO> getAllEventPlaces(Long idEvent);
 	boolean createEventPlaces(List<EventPlaceDTO> eventPlacesDTO, Long eventId);
 	boolean updateEventPlace(Map<String, String> parameters, Long identifier);
+	List<Long> findNearestEvents(BoundingBox boundingBox);
 
 }

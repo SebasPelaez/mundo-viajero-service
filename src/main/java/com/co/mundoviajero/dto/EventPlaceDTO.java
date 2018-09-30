@@ -11,7 +11,7 @@ public class EventPlaceDTO implements Serializable {
 	private Long cityId;
 	private String eventPlaceStartDate;
 	private String eventPlaceEndDate;
-	private String altitudeEventPlace;
+	private String longitudeEventPlace;
 	private String latitudeEventPlace;
 	
 	public Long getId() {
@@ -44,11 +44,11 @@ public class EventPlaceDTO implements Serializable {
 	public void setEventPlaceEndDate(String eventPlaceEndDate) {
 		this.eventPlaceEndDate = eventPlaceEndDate;
 	}
-	public String getAltitudeEventPlace() {
-		return altitudeEventPlace;
+	public String getLongitudeEventPlace() {
+		return longitudeEventPlace;
 	}
-	public void setAltitudeEventPlace(String altitudeEventPlace) {
-		this.altitudeEventPlace = altitudeEventPlace;
+	public void setLongitudeEventPlace(String longitudeEventPlace) {
+		this.longitudeEventPlace = longitudeEventPlace;
 	}
 	public String getLatitudeEventPlace() {
 		return latitudeEventPlace;

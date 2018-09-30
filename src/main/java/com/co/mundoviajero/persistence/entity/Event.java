@@ -35,11 +35,11 @@ public class Event implements Serializable {
 	@Column(name = "EndDate")
     private Timestamp endDate;
 	
-	@Column(name = "AltitudeMeetingPoint")
-    private String altitudeMeetingPoint;
+	@Column(name = "LongitudeMeetingPoint")
+    private double longitudeMeetingPoint;
 	
 	@Column(name = "LatitudeMeetingPoint")
-    private String latitudeMeetingPoint;
+    private double latitudeMeetingPoint;
 	
 	@Column(name = "Capaciticy")
     private int capaciticy;
@@ -93,19 +93,19 @@ public class Event implements Serializable {
 		this.endDate = endDate;
 	}
 
-	public String getAltitudeMeetingPoint() {
-		return altitudeMeetingPoint;
+	public double getLongitudeMeetingPoint() {
+		return longitudeMeetingPoint;
 	}
 
-	public void setAltitudeMeetingPoint(String altitudeMeetingPoint) {
-		this.altitudeMeetingPoint = altitudeMeetingPoint;
+	public void setLongitudeMeetingPoint(double longitudeMeetingPoint) {
+		this.longitudeMeetingPoint = longitudeMeetingPoint;
 	}
 
-	public String getLatitudeMeetingPoint() {
+	public double getLatitudeMeetingPoint() {
 		return latitudeMeetingPoint;
 	}
 
-	public void setLatitudeMeetingPoint(String latitudeMeetingPoint) {
+	public void setLatitudeMeetingPoint(double latitudeMeetingPoint) {
 		this.latitudeMeetingPoint = latitudeMeetingPoint;
 	}
 

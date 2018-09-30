@@ -5,4 +5,8 @@ public class Constants{
 	public static final String EVENT_CREATED_DATE = "Event Created Date";
 	public static final String EVENT_DURATION = "Event Duration";
 	public static final String EMPTY = "";
+	public static final String LONGITUDE = "longitude";
+	public static final String LATITUDE = "latitude";
+	public static final String BOUNDINGBOXDISTANCE = "20";
+	
 }

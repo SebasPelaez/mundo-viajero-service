@@ -35,7 +35,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO createPerson(PersonDTO person) throws ValidationException {
+	public boolean createPerson(PersonDTO person) throws ValidationException {
 
 		Person newPerson = setPerson(person);
 		Double calification = 0.0;
@@ -45,9 +45,9 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			getCurrentSession().saveOrUpdate(newPerson);
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return person;
+		return true;
 	}
 
 	@Override

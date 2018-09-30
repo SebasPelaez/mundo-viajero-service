@@ -1,7 +1,7 @@
 package com.co.mundoviajero.persistence.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,16 +30,16 @@ public class EventPlace implements Serializable {
 	private Long cityId;
 
 	@Column(name = "EventPlaceStartDate")
-	private Date eventPlaceStartDate;
+	private Timestamp eventPlaceStartDate;
 
 	@Column(name = "EventPlaceEndDate")
-	private Date eventPlaceEndDate;
+	private Timestamp eventPlaceEndDate;
 
-	@Column(name = "AltitudeEventPlace")
-	private String altitudeEventPlace;
+	@Column(name = "LongitudeEventPlace")
+	private double longitudeEventPlace;
 
 	@Column(name = "LatitudeEventPlace")
-	private String latitudeEventPlace;
+	private double latitudeEventPlace;
 
 	public Long getId() {
 		return id;
@@ -65,35 +65,35 @@ public class EventPlace implements Serializable {
 		this.cityId = cityId;
 	}
 
-	public Date getEventPlaceStartDate() {
+	public Timestamp getEventPlaceStartDate() {
 		return eventPlaceStartDate;
 	}
 
-	public void setEventPlaceStartDate(Date eventPlaceStartDate) {
+	public void setEventPlaceStartDate(Timestamp eventPlaceStartDate) {
 		this.eventPlaceStartDate = eventPlaceStartDate;
 	}
 
-	public Date getEventPlaceEndDate() {
+	public Timestamp getEventPlaceEndDate() {
 		return eventPlaceEndDate;
 	}
 
-	public void setEventPlaceEndDate(Date eventPlaceEndDate) {
+	public void setEventPlaceEndDate(Timestamp eventPlaceEndDate) {
 		this.eventPlaceEndDate = eventPlaceEndDate;
 	}
 
-	public String getAltitudeEventPlace() {
-		return altitudeEventPlace;
+	public double getLongitudeEventPlace() {
+		return longitudeEventPlace;
 	}
 
-	public void setAltitudeEventPlace(String altitudeEventPlace) {
-		this.altitudeEventPlace = altitudeEventPlace;
+	public void setLongitudeEventPlace(double longitudeEventPlace) {
+		this.longitudeEventPlace = longitudeEventPlace;
 	}
 
-	public String getLatitudeEventPlace() {
+	public double getLatitudeEventPlace() {
 		return latitudeEventPlace;
 	}
 
-	public void setLatitudeEventPlace(String latitudeEventPlace) {
+	public void setLatitudeEventPlace(double latitudeEventPlace) {
 		this.latitudeEventPlace = latitudeEventPlace;
 	}
 	

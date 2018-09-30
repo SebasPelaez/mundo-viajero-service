@@ -1,5 +1,6 @@
 package com.co.mundoviajero.business.Event;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.co.mundoviajero.dto.EventDTO;
 import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
@@ -25,9 +27,21 @@ public class EventBusiness {
 
 	@Autowired
 	private IEventDAO eventDAO;
-	
+
 	public ResponseEntity<ResponseDTO> getAllEvents() throws Exception {
 		List<EventDTO> events = eventDAO.getAllEvents();
+		if (events != null) {
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), events),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
+				HttpStatus.NOT_FOUND);
+	}
+	
+	public ResponseEntity<ResponseDTO> getEventsWithId(List<Long> eventsId) throws Exception {
+		List<EventDTO> events = eventDAO.getEventsWithId(eventsId);
 		if (events != null) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), events),
@@ -71,10 +85,29 @@ public class EventBusiness {
 
 	public ResponseEntity<ResponseDTO> createEvent(EventDTO event) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
-
+		
 		if (parametersValidation(event) && !event.getPlaces().isEmpty()) {
 
+			if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
+					Constants.EVENT_CREATED_DATE))
+				throw new ValidationException("El Evento debe empezar 8 horas después de la hora actual");
+
+			if (!Validator.validateDate(event.getStartDate(), event.getEndDate(), Constants.EVENT_DURATION))
+				throw new ValidationException("La fecha final del evento debe ser mayor que la inicial");
+
 			for (EventPlaceDTO evDTO : event.getPlaces()) {
+
+				if (!Validator.validateDate(event.getStartDate(), evDTO.getEventPlaceStartDate(), Constants.EMPTY))
+					throw new ValidationException(
+							"La fecha inicial del lugar debe ser mayor que la fecha inicial del evento");
+
+				if (!Validator.validateDate(evDTO.getEventPlaceStartDate(), evDTO.getEventPlaceEndDate(),
+						Constants.EVENT_DURATION))
+					throw new ValidationException("La fecha final del lugar debe ser mayor que la inicial");
+
+				if (!Validator.validateDate(evDTO.getEventPlaceEndDate(), event.getEndDate(), Constants.EMPTY))
+					throw new ValidationException(
+							"La fecha final del lugar debe ser menor que la fecha final del evento");
 
 				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCityId()), FieldConstants.CITY_ID,
 						FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
@@ -85,11 +118,11 @@ public class EventBusiness {
 				sb.append(Validator.valideString(evDTO.getEventPlaceEndDate(), FieldConstants.EVENT_ENDDATE,
 						FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 
-				sb.append(Validator.valideString(evDTO.getAltitudeEventPlace(), FieldConstants.EVENTPLACE_ALTITUDE,
-						FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+				sb.append(Validator.valideString(evDTO.getLongitudeEventPlace(), FieldConstants.EVENTPLACE_ALTITUDE,
+						FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 				sb.append(Validator.valideString(evDTO.getLatitudeEventPlace(), FieldConstants.EVENTPLACE_LATITUDE,
-						FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+						FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 			}
 
@@ -97,15 +130,18 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			EventDTO eventCreated = eventDAO.createEvent(event);
-			if (eventCreated != null) {
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
-						eventCreated), HttpStatus.OK);
+			if (eventDAO.validResponsible(event.getPersonIdResponsible())) {
+				if (eventDAO.createEvent(event)) {
+					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+							true), HttpStatus.OK);
+				}
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
+						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
-					HttpStatus.PRECONDITION_REQUIRED);
+			throw new ValidationException("El responsable del evento no es válido");
+
 		}
 
 		throw new ValidationException("No hay lugares asociados");
@@ -144,10 +180,10 @@ public class EventBusiness {
 							FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 					break;
 
-				case FieldConstants.EVENT_ALTITUDEMEETINGPOINT:
+				case FieldConstants.EVENT_LONGITUDEMEETINGPOINT:
 					sb.append(Validator.valideString(bodyParameters.get(parameter),
-							FieldConstants.EVENT_ALTITUDEMEETINGPOINT, FieldConstants.ALTITUDE_LENGTH,
-							FieldConstants.ALTITUDE_OBLIGATORY));
+							FieldConstants.EVENT_LONGITUDEMEETINGPOINT, FieldConstants.LONGITUDE_LENGTH,
+							FieldConstants.LONGITUDE_OBLIGATORY));
 					break;
 
 				case FieldConstants.EVENT_LATITUDEMEETINGPOINT:
@@ -163,8 +199,9 @@ public class EventBusiness {
 					break;
 
 				case FieldConstants.EVENT_FARE:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.EVENT_FARE,
-							FieldConstants.EVENT_FARE_LENGTH, FieldConstants.EVENT_FARE_OBLIGATORY));
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.EVENT_FARE, FieldConstants.EVENT_FARE_LENGTH,
+							FieldConstants.EVENT_FARE_OBLIGATORY));
 					break;
 
 				case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
@@ -173,29 +210,29 @@ public class EventBusiness {
 							FieldConstants.ID_OBLIGATORY));
 					break;
 				case FieldConstants.STATEID:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.STATEID,
-							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.STATEID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
 					break;
 				}
 			}
-			
+
 			if (sb.toString().length() > 0) {
 				throw new ValidationException(sb.toString());
 			}
-			
-			if( eventDAO.updateEvent(bodyParameters, identifier) ) {		
+
+			if (eventDAO.updateEvent(bodyParameters, identifier)) {
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
-						HttpStatus.PRECONDITION_REQUIRED);			
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), true),
+						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			
+
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
 					HttpStatus.PRECONDITION_REQUIRED);
 
-		}else {
+		} else {
 			throw new ValidationException("Falta id del Evento");
 		}
 
@@ -216,8 +253,8 @@ public class EventBusiness {
 		sb.append(Validator.valideString(event.getEndDate(), FieldConstants.EVENT_ENDDATE,
 				FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
 
-		sb.append(Validator.valideString(event.getAltitudeMeetingPoint(), FieldConstants.EVENT_ALTITUDEMEETINGPOINT,
-				FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+		sb.append(Validator.valideString(event.getLongitudeMeetingPoint(), FieldConstants.EVENT_LONGITUDEMEETINGPOINT,
+				FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 
 		sb.append(Validator.valideString(event.getLatitudeMeetingPoint(), FieldConstants.EVENT_LATITUDEMEETINGPOINT,
 				FieldConstants.LATITUDE_LENGTH, FieldConstants.LATITUDE_OBLIGATORY));

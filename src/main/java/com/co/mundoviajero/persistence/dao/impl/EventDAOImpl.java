@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.co.mundoviajero.dto.EventDTO;
-import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.Event;
@@ -33,6 +32,33 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	@Override
 	public List<EventDTO> getAllEvents() {
 		Query query = getCurrentSession().createQuery("From Event");
+		List<Event> events = (List<Event>) query.getResultList();
+		
+		if (events.isEmpty())
+			return null;
+		
+		List<EventDTO> eventDTO = new ArrayList<>();
+		for (Event e : events) {
+			EventDTO eDTO = setEventDTO(e);
+			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
+			eventDTO.add(eDTO);
+		}
+		
+		return eventDTO;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<EventDTO> getEventsWithId(List<Long> eventsId) {
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("select e from Event e where e.id IN (");
+		for (Long id : eventsId) {
+			stringBuffer.append(id+",");
+		}
+		stringBuffer.replace(stringBuffer.length()-1, stringBuffer.length(), ")");
+		
+		Query query = getCurrentSession().createQuery(stringBuffer.toString());
 		List<Event> events = (List<Event>) query.getResultList();
 		
 		if (events.isEmpty())
@@ -92,7 +118,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	}
 	
 	@Override
-	public EventDTO createEvent(EventDTO event) throws ValidationException {
+	public boolean createEvent(EventDTO event) throws ValidationException {
 
 		Event newEvent = setEvent(event);
 		
@@ -105,17 +131,15 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			Long eventId = events.get(0).getId();
 			event.setId(eventId);
 			
-			List<EventPlaceDTO> eventPlaces = eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId);
-			if (eventPlaces == null) {
-				return null;
+			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId)) {
+				return false;
 			}
-			event.setPlaces(eventPlaces);
 			
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return event;		
+		return true;		
 	}
 	
 	@Override
@@ -144,6 +168,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return true;
 	}
 	
+	@Override
+	public boolean validResponsible(Long personIdResponsible) {
+		String queryString = "select p from Person p where p.id = :personIdResponsible and p.stateId = 16";
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("personIdResponsible", personIdResponsible);
+		return !query.getResultList().isEmpty();
+	}
+	
 	private EventDTO setEventDTO(Event event) {
 		EventDTO eventDTO = new EventDTO();
 		
@@ -153,8 +185,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			eventDTO.setDescription(event.getDescription().trim());
 			eventDTO.setStartDate(event.getStartDate().toString().trim());
 			eventDTO.setEndDate(event.getEndDate().toString().trim());
-			eventDTO.setAltitudeMeetingPoint(event.getAltitudeMeetingPoint().trim());
-			eventDTO.setLatitudeMeetingPoint(event.getLatitudeMeetingPoint().trim());
+			eventDTO.setLongitudeMeetingPoint(String.valueOf(event.getLongitudeMeetingPoint()));
+			eventDTO.setLatitudeMeetingPoint(String.valueOf(event.getLatitudeMeetingPoint()));
 			eventDTO.setCapaciticy(event.getCapaciticy());
 			eventDTO.setFare(event.getFare());
 			eventDTO.setPersonIdResponsible(event.getPersonIdResponsible());
@@ -174,18 +206,18 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setName(eventDTO.getName().trim());
 			event.setDescription(eventDTO.getDescription().trim());
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date startDate = format.parse(eventDTO.getStartDate());
 			Date endDate = format.parse(eventDTO.getEndDate());
 			
-			java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
-			java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
+			java.sql.Timestamp startDateSql = new java.sql.Timestamp(startDate.getTime());
+			java.sql.Timestamp endDateSql = new java.sql.Timestamp(endDate.getTime());
 			
 			event.setStartDate(startDateSql);
 			event.setEndDate(endDateSql);
 			
-			event.setAltitudeMeetingPoint(eventDTO.getAltitudeMeetingPoint().trim());
-			event.setLatitudeMeetingPoint(eventDTO.getLatitudeMeetingPoint().trim());
+			event.setLongitudeMeetingPoint(Double.parseDouble(eventDTO.getLongitudeMeetingPoint().trim()));
+			event.setLatitudeMeetingPoint(Double.parseDouble(eventDTO.getLatitudeMeetingPoint().trim()));
 			event.setCapaciticy(eventDTO.getCapaciticy());
 			event.setFare(eventDTO.getFare());
 			event.setPersonIdResponsible(eventDTO.getPersonIdResponsible());

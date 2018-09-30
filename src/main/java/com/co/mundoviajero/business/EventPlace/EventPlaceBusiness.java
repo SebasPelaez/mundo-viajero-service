@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
 import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
+import com.co.mundoviajero.util.BoundingBoxDistance;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
+import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
+import com.co.mundoviajero.util.BoundingBoxDistance.MapPoint;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Service
@@ -24,7 +28,7 @@ public class EventPlaceBusiness {
 
 	@Autowired
 	private IEventPlaceDAO eventPlaceDAO;
-	
+
 	public ResponseEntity<ResponseDTO> getEventPlace(Long id) throws ValidationException {
 
 		EventPlaceDTO eventDTO = eventPlaceDAO.getEventPlace(id);
@@ -39,7 +43,7 @@ public class EventPlaceBusiness {
 				HttpStatus.NOT_FOUND);
 
 	}
-	
+
 	public ResponseEntity<ResponseDTO> getAllEventPlacesForEvent(Long id) {
 		List<EventPlaceDTO> events = eventPlaceDAO.getAllEventPlaces(id);
 		if (events != null) {
@@ -56,7 +60,7 @@ public class EventPlaceBusiness {
 
 		Long identifier;
 		StringBuilder sb = new StringBuilder();
-		
+
 		if (bodyParameters.containsKey(FieldConstants.EVENT_ID)) {
 			bodyParameters.remove(FieldConstants.EVENT_ID);
 		}
@@ -86,12 +90,12 @@ public class EventPlaceBusiness {
 
 				case FieldConstants.EVENTPLACE_ALTITUDE:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENTPLACE_ALTITUDE,
-							FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+							FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
 					break;
 
 				case FieldConstants.EVENTPLACE_LATITUDE:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENTPLACE_LATITUDE,
-							FieldConstants.ALTITUDE_LENGTH, FieldConstants.ALTITUDE_OBLIGATORY));
+							FieldConstants.LATITUDE_LENGTH, FieldConstants.LATITUDE_OBLIGATORY));
 					break;
 				default:
 					break;
@@ -116,6 +120,25 @@ public class EventPlaceBusiness {
 			throw new ValidationException("Falta id del Evento");
 		}
 
+	}
+
+	public List<Long> findNearestEvents(Map<String, String> parameters) throws ValidationException {
+
+		double latitude = Double.parseDouble(parameters.get(Constants.LATITUDE));
+		double longitude = Double.parseDouble(parameters.get(Constants.LONGITUDE));
+		double halfSideInKm = Double.parseDouble(Constants.BOUNDINGBOXDISTANCE);
+
+		MapPoint mp1 = new MapPoint(latitude, longitude);
+		BoundingBox boundingBox = BoundingBoxDistance.GetBoundingBox(mp1, halfSideInKm);
+		
+		List<Long> eventsId = eventPlaceDAO.findNearestEvents(boundingBox);
+
+		if(eventsId != null) {
+			return eventsId;
+		}
+		
+		throw new ValidationException("No se encontraron Lugares cercanos");
+		
 	}
 
 }

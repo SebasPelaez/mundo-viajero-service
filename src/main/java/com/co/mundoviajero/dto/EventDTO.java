@@ -16,8 +16,8 @@ public class EventDTO implements Serializable {
 	private String latitudeMeetingPoint;
 	private int capaciticy;
 	private float fare;
-	private Long personIdResponsible;
-	private Long stateId;
+	private PersonDTO personIdResponsible;
+	private StateDTO stateId;
 	private List<EventPlaceDTO> places;
 	
 	public Long getId() {
@@ -74,16 +74,16 @@ public class EventDTO implements Serializable {
 	public void setFare(float fare) {
 		this.fare = fare;
 	}
-	public Long getPersonIdResponsible() {
+	public PersonDTO getPersonIdResponsible() {
 		return personIdResponsible;
 	}
-	public void setPersonIdResponsible(Long personIdResponsible) {
+	public void setPersonIdResponsible(PersonDTO personIdResponsible) {
 		this.personIdResponsible = personIdResponsible;
 	}
-	public Long getStateId() {
+	public StateDTO getStateId() {
 		return stateId;
 	}
-	public void setStateId(Long stateId) {
+	public void setStateId(StateDTO stateId) {
 		this.stateId = stateId;
 	}
 	public List<EventPlaceDTO> getPlaces() {

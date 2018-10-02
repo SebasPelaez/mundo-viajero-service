@@ -19,8 +19,8 @@ public class PersonDTO implements Serializable {
 	private Double calification;
 	private String token;
 	private String profilePhoto;
-	private Long profileId;
-	private Long stateId;
+	private ProfileDTO profileId;
+	private StateDTO stateId;
 	
 	public Long getId() {
     	return id;
@@ -100,16 +100,16 @@ public class PersonDTO implements Serializable {
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
 	}
-	public Long getProfileId() {
+	public ProfileDTO getProfileId() {
 		return profileId;
 	}
-	public void setProfileId(Long profileId) {
+	public void setProfileId(ProfileDTO profileId) {
 		this.profileId = profileId;
 	}
-	public Long getStateId() {
+	public StateDTO getStateId() {
 		return stateId;
 	}
-	public void setStateId(Long stateId) {
+	public void setStateId(StateDTO stateId) {
 		this.stateId = stateId;
 	}
 	

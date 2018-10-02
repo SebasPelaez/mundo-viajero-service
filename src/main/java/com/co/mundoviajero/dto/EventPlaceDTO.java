@@ -8,7 +8,7 @@ public class EventPlaceDTO implements Serializable {
 	
 	private Long id;
 	private Long eventId;
-	private Long cityId;
+	private CityDTO cityId;
 	private String eventPlaceStartDate;
 	private String eventPlaceEndDate;
 	private String longitudeEventPlace;
@@ -26,10 +26,10 @@ public class EventPlaceDTO implements Serializable {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
-	public Long getCityId() {
+	public CityDTO getCityId() {
 		return cityId;
 	}
-	public void setCityId(Long cityId) {
+	public void setCityId(CityDTO cityId) {
 		this.cityId = cityId;
 	}
 	public String getEventPlaceStartDate() {

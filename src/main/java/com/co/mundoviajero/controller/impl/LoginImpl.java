@@ -3,6 +3,7 @@ package com.co.mundoviajero.controller.impl;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,11 +19,17 @@ public class LoginImpl implements LoginController{
 	@Autowired
 	private LoginBusiness loginBusiness;
 
+	@Autowired
+	private MessageSourceAccessor messageSource;
+
 	@Override
 	public ResponseEntity<ResponseDTO> login(@RequestBody Map<String, String> loginParameters) throws Exception {
 		if(!loginParameters.isEmpty()){
-			return loginBusiness.login(loginParameters);
+			if( loginParameters.containsKey("email") && loginParameters.containsKey("password")) {
+				return loginBusiness.login(loginParameters);
+			}
+			throw new ValidationException(messageSource.getMessage("MISS_EMAIL_PASSWORD_PARAMS"));
 		}
-		throw new ValidationException("El body esta vacio");
+		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
 	}
 }

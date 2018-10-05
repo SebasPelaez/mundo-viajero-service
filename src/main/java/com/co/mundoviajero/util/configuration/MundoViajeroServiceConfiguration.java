@@ -31,6 +31,6 @@ public class MundoViajeroServiceConfiguration implements WebMvcConfigurer {
 	@Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityHandlerInterceptor()).addPathPatterns("/**")
-            .excludePathPatterns("/login", "/person");
+            .excludePathPatterns("/login", "/person", "/profile/**", "/state/**");
     }
 }

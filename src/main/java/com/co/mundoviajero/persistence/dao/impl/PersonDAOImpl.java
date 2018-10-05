@@ -38,10 +38,8 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	public boolean createPerson(PersonDTO person) throws ValidationException {
 
 		Person newPerson = setPerson(person);
-		Double calification = 0.0;
 
 		try {
-			newPerson.setCalification(calification);
 			getCurrentSession().saveOrUpdate(newPerson);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -174,7 +172,6 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		Person person = new Person();
 
 		try {
-			person.setId(personDTO.getId());
 			person.setIdentification(personDTO.getIdentification());
 			person.setRNT(personDTO.getRnt());
 			person.setName(personDTO.getName());
@@ -192,8 +189,8 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			person.setCalification(personDTO.getCalification());
 			person.setProfilePhoto(personDTO.getProfilePhoto());
 			person.setToken(personDTO.getToken());
-			person.setProfileId(personDTO.getProfileId());
-			person.setStateId(personDTO.getStateId());
+			person.setProfile(personDTO.getProfile());
+			person.setStateId(personDTO.getState());
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -220,8 +217,8 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			personDTO.setCalification(person.getCalification());
 			personDTO.setProfilePhoto(person.getProfilePhoto().trim());
 			personDTO.setToken(person.getToken().trim());
-			personDTO.setProfileId(person.getProfileId());
-			personDTO.setStateId(person.getStateId());
+			personDTO.setProfile(person.getProfile());
+			personDTO.setState(person.getStateId());
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;

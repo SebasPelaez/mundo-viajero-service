@@ -109,7 +109,7 @@ public class EventBusiness {
 					throw new ValidationException(
 							"La fecha final del lugar debe ser menor que la fecha final del evento");
 
-				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCityId()), FieldConstants.CITY_ID,
+				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCity().getId()), FieldConstants.CITY_ID,
 						FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 				sb.append(Validator.valideString(evDTO.getEventPlaceStartDate(), FieldConstants.EVENT_STARTDATE,
@@ -130,7 +130,7 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			if (eventDAO.validResponsible(event.getPersonIdResponsible())) {
+			if (eventDAO.validResponsible(event.getPersonIdResponsible().getId())) {
 				if (eventDAO.createEvent(event)) {
 					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
@@ -268,7 +268,7 @@ public class EventBusiness {
 		sb.append(Validator.validateNumber(String.valueOf(event.getPersonIdResponsible()),
 				FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(String.valueOf(event.getStateId()), FieldConstants.STATEID,
+		sb.append(Validator.validateNumber(String.valueOf(event.getState().getId()), FieldConstants.STATEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {

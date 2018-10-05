@@ -2,6 +2,9 @@ package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
 
+import com.co.mundoviajero.persistence.entity.Profile;
+import com.co.mundoviajero.persistence.entity.State;
+
 public class PersonDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -19,8 +22,8 @@ public class PersonDTO implements Serializable {
 	private Double calification;
 	private String token;
 	private String profilePhoto;
-	private ProfileDTO profileId;
-	private StateDTO stateId;
+	private Profile profileId;
+	private State stateId;
 	
 	public Long getId() {
     	return id;
@@ -28,7 +31,7 @@ public class PersonDTO implements Serializable {
     public void setId (Long id) {
     	this.id = id;
     }
-	public String getIdentification() {
+    public String getIdentification() {
 		return identification;
 	}
 	public void setIdentification(String identification) {
@@ -99,18 +102,18 @@ public class PersonDTO implements Serializable {
 	}
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
-	}
-	public ProfileDTO getProfileId() {
+	}    
+	public Profile getProfile() {
 		return profileId;
 	}
-	public void setProfileId(ProfileDTO profileId) {
-		this.profileId = profileId;
+	public void setProfile(Profile profile) {
+		this.profileId = profile;
 	}
-	public StateDTO getStateId() {
+	public State getState() {
 		return stateId;
 	}
-	public void setStateId(StateDTO stateId) {
-		this.stateId = stateId;
+	public void setState(State state) {
+		this.stateId = state;
 	}
 	
 

@@ -2,13 +2,15 @@ package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
 
+import com.co.mundoviajero.persistence.entity.City;
+
 public class EventPlaceDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Long eventId;
-	private CityDTO cityId;
+	private City city;
 	private String eventPlaceStartDate;
 	private String eventPlaceEndDate;
 	private String longitudeEventPlace;
@@ -26,11 +28,11 @@ public class EventPlaceDTO implements Serializable {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
-	public CityDTO getCityId() {
-		return cityId;
+	public City getCity() {
+		return city;
 	}
-	public void setCityId(CityDTO cityId) {
-		this.cityId = cityId;
+	public void setCity(City cityId) {
+		this.city = cityId;
 	}
 	public String getEventPlaceStartDate() {
 		return eventPlaceStartDate;

@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -20,8 +22,9 @@ public class City {
 	@Column(name = "Name")
     private String name;
     
-    @Column(name = "DepartmentId")
-    private String departmentId;
+	@ManyToOne
+    @JoinColumn(name = "DepartmentId", referencedColumnName = "Id")
+    private Department departmentId;
 
 	public Long getId() {
 		return id;
@@ -39,11 +42,11 @@ public class City {
 		this.name = name;
 	}
 
-	public String getDepartmentId() {
+	public Department getDepartmentId() {
 		return departmentId;
 	}
 
-	public void setDepartmentId(String departmentId) {
+	public void setDepartmentId(Department departmentId) {
 		this.departmentId = departmentId;
 	}
 

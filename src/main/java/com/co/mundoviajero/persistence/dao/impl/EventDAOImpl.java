@@ -190,7 +190,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			eventDTO.setCapaciticy(event.getCapaciticy());
 			eventDTO.setFare(event.getFare());
 			eventDTO.setPersonIdResponsible(event.getPersonIdResponsible());
-			eventDTO.setStateId(event.getStateId());
+			eventDTO.setState(event.getStateId());
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
@@ -221,7 +221,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setCapaciticy(eventDTO.getCapaciticy());
 			event.setFare(eventDTO.getFare());
 			event.setPersonIdResponsible(eventDTO.getPersonIdResponsible());
-			event.setStateId(eventDTO.getStateId());
+			event.setStateId(eventDTO.getState());
 						
 		} catch (Exception e) {
 			System.out.println(e);

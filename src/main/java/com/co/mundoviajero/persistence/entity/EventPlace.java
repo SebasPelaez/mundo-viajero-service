@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -26,8 +28,9 @@ public class EventPlace implements Serializable {
 	@Column(name = "EventId")
 	private Long eventId;
 
-	@Column(name = "CityId")
-	private Long cityId;
+	@ManyToOne
+    @JoinColumn(name = "CityId", referencedColumnName = "Id")
+	private City cityId;
 
 	@Column(name = "EventPlaceStartDate")
 	private Timestamp eventPlaceStartDate;
@@ -57,11 +60,11 @@ public class EventPlace implements Serializable {
 		this.eventId = eventId;
 	}
 
-	public Long getCityId() {
+	public City getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(Long cityId) {
+	public void setCityId(City cityId) {
 		this.cityId = cityId;
 	}
 

@@ -105,10 +105,10 @@ public class PersonBusiness {
 		sb.append(Validator.valideString(person.getProfilePhoto(), FieldConstants.PERSON_PROFILEPHOTO,
 				FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getProfileId()), FieldConstants.PERSON_PROFILEID,
+		sb.append(Validator.validateNumber(String.valueOf(person.getProfile().getId()), FieldConstants.PERSON_PROFILEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getStateId()), FieldConstants.STATEID,
+		sb.append(Validator.validateNumber(String.valueOf(person.getState().getId()), FieldConstants.STATEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {
@@ -117,7 +117,7 @@ public class PersonBusiness {
 
 		if (Validator.validateBirthday(person.getBirthday())) {
 			setNullAttributes(person);
-			if (person.getProfileId() == 1) {
+			if (person.getProfile().getId() == 1) {
 
 				if (!personDAO.existPersonTourist(person.getEmail())) {
 					return new ResponseEntity<>(

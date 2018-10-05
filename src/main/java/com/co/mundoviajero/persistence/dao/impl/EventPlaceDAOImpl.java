@@ -130,7 +130,7 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		try {
 			eventPlaceDTO.setId(eventPlace.getId());
 			eventPlaceDTO.setEventId(eventPlace.getEventId());
-			eventPlaceDTO.setCityId(eventPlace.getCityId());
+			eventPlaceDTO.setCity(eventPlace.getCityId());
 			eventPlaceDTO.setEventPlaceStartDate(eventPlace.getEventPlaceStartDate().toString().trim());
 			eventPlaceDTO.setEventPlaceEndDate(eventPlace.getEventPlaceEndDate().toString().trim());
 			eventPlaceDTO.setLongitudeEventPlace(String.valueOf(eventPlace.getLongitudeEventPlace()));
@@ -153,7 +153,7 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 				eventPlace.setEventId(eventId);
 				evtDTO.setEventId(eventId);
 
-				eventPlace.setCityId(evtDTO.getCityId());
+				eventPlace.setCityId(evtDTO.getCity());
 				eventPlace.setLongitudeEventPlace(Double.parseDouble(evtDTO.getLongitudeEventPlace()));
 				eventPlace.setLatitudeEventPlace(Double.parseDouble(evtDTO.getLatitudeEventPlace()));
 

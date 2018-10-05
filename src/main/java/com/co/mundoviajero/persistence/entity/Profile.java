@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -24,8 +26,9 @@ public class Profile implements Serializable {
     @Column(name = "Description")
     private String description;
     
-    @Column(name = "StateId")
-    private Long stateId;
+    @ManyToOne
+    @JoinColumn(name = "StateId", referencedColumnName = "Id")
+    private State stateId;
 
 	public Long getId() {
 		return id;
@@ -43,11 +46,11 @@ public class Profile implements Serializable {
 		this.description = description;
 	}
 
-	public Long getStateId() {
+	public State getStateId() {
 		return stateId;
 	}
 
-	public void setStateId(Long stateId) {
+	public void setStateId(State stateId) {
 		this.stateId = stateId;
 	}
     

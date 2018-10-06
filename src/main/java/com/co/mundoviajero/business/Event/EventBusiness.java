@@ -237,7 +237,7 @@ public class EventBusiness {
 
 
         } else {
-            throw new ValidationException("Falta id del Evento");
+            throw new ValidationException(messageSource.getMessage("MISS_EVENT_ID"));
         }
 
     }

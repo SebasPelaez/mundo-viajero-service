@@ -3,6 +3,7 @@ package com.co.mundoviajero.business.Person;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
@@ -134,16 +135,20 @@ public class PersonBusiness {
 				}
 			}
 			// At this part the new Person should be a Guide
-			if (!personDAO.existPersonGuide(person.getIdentification(), person.getRnt(), person.getEmail())) {
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
-						personDAO.createPerson(person)), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(
-						new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
-								messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"), null),
-						HttpStatus.PRECONDITION_REQUIRED);
+			if(!StringUtils.isBlank(person.getIdentification()) && !StringUtils.isBlank(person.getRnt())) {
+				if (!personDAO.existPersonGuide(person.getIdentification(), person.getRnt(), person.getEmail())) {
+					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+							personDAO.createPerson(person)), HttpStatus.OK);
+				} else {
+					return new ResponseEntity<>(
+							new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
+									messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"), null),
+							HttpStatus.PRECONDITION_REQUIRED);
+				}				
 			}
+			throw new ValidationException("El campo Identificación o RNT para el guía debe ser obligatorio");
+			
 		} else {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
 					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("BIRTHDAY_DESC_ERROR"), null),

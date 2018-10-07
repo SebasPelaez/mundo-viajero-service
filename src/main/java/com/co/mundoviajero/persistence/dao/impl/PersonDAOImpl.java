@@ -11,9 +11,12 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.PersonDTO;
+import com.co.mundoviajero.dto.person.CreatePersonDTO;
+import com.co.mundoviajero.dto.person.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.Profile;
+import com.co.mundoviajero.persistence.entity.State;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "PersonDAOImpl")
@@ -35,7 +38,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public boolean createPerson(PersonDTO person) throws ValidationException {
+	public boolean createPerson(CreatePersonDTO person) throws ValidationException {
 
 		Person newPerson = setPerson(person);
 
@@ -168,7 +171,7 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 		return personDTO;
 	}
 	
-	private Person setPerson(PersonDTO personDTO) {
+	private Person setPerson(CreatePersonDTO personDTO) {
 		Person person = new Person();
 
 		try {
@@ -189,8 +192,14 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			person.setCalification(personDTO.getCalification());
 			person.setProfilePhoto(personDTO.getProfilePhoto());
 			person.setToken(personDTO.getToken());
-			person.setProfile(personDTO.getProfile());
-			person.setStateId(personDTO.getState());
+			
+			Profile profile = new Profile();
+			profile.setId(Long.parseLong(personDTO.getProfileId()));
+			person.setProfile(profile);
+			
+			State state = new State();
+			state.setId(Long.parseLong(personDTO.getStateId()));
+			person.setStateId(state);
 
 		} catch (Exception e) {
 			System.out.println(e);

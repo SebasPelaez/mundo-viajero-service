@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.co.mundoviajero.business.Person.PersonBusiness;
 import com.co.mundoviajero.controller.PersonController;
-import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.person.CreatePersonDTO;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @RestController
@@ -28,7 +28,7 @@ public class PersonImpl implements PersonController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person)  throws Exception{		
+	public ResponseEntity<ResponseDTO> createPerson(@RequestBody CreatePersonDTO person)  throws Exception{		
         return personBusiness.createPerson(person);        
 	}
 

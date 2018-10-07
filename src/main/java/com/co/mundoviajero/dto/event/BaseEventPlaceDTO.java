@@ -1,38 +1,21 @@
-package com.co.mundoviajero.dto;
+package com.co.mundoviajero.dto.event;
 
 import java.io.Serializable;
 
-import com.co.mundoviajero.persistence.entity.City;
-
-public class EventPlaceDTO implements Serializable {
+public abstract class BaseEventPlaceDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	private Long eventId;
-	private City city;
-	private String eventPlaceStartDate;
-	private String eventPlaceEndDate;
-	private String longitudeEventPlace;
-	private String latitudeEventPlace;
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+	protected Long eventId;
+	protected String eventPlaceStartDate;
+	protected String eventPlaceEndDate;
+	protected String longitudeEventPlace;
+	protected String latitudeEventPlace;
 	public Long getEventId() {
 		return eventId;
 	}
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
-	}
-	public City getCity() {
-		return city;
-	}
-	public void setCity(City cityId) {
-		this.city = cityId;
 	}
 	public String getEventPlaceStartDate() {
 		return eventPlaceStartDate;
@@ -58,5 +41,5 @@ public class EventPlaceDTO implements Serializable {
 	public void setLatitudeEventPlace(String latitudeEventPlace) {
 		this.latitudeEventPlace = latitudeEventPlace;
 	}
-	
+
 }

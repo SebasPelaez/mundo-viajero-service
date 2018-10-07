@@ -15,10 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.EventDTO;
+import com.co.mundoviajero.dto.event.CreateEventDTO;
+import com.co.mundoviajero.dto.event.EventDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.State;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
@@ -118,7 +121,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	}
 	
 	@Override
-	public boolean createEvent(EventDTO event) throws ValidationException {
+	public boolean createEvent(CreateEventDTO event) throws ValidationException {
 
 		Event newEvent = setEvent(event);
 		
@@ -198,11 +201,10 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return eventDTO;
 	}	
 
-	private Event setEvent(EventDTO eventDTO) {
+	private Event setEvent(CreateEventDTO eventDTO) {
 		Event event = new Event();
 
 		try {
-			event.setId(eventDTO.getId());
 			event.setName(eventDTO.getName().trim());
 			event.setDescription(eventDTO.getDescription().trim());
 			
@@ -220,8 +222,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setLatitudeMeetingPoint(Double.parseDouble(eventDTO.getLatitudeMeetingPoint().trim()));
 			event.setCapaciticy(eventDTO.getCapaciticy());
 			event.setFare(eventDTO.getFare());
-			event.setPersonIdResponsible(eventDTO.getPersonIdResponsible());
-			event.setStateId(eventDTO.getState());
+			
+			Person person = new Person();
+			person.setId(Long.parseLong(eventDTO.getPersonIdResponsible()));
+			event.setPersonIdResponsible(person);
+			
+			State state = new State();
+			state.setId(Long.parseLong(eventDTO.getStateId()));
+			event.setStateId(state);
 						
 		} catch (Exception e) {
 			System.out.println(e);

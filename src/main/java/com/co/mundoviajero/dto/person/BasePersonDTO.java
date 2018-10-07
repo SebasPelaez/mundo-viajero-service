@@ -1,37 +1,25 @@
-package com.co.mundoviajero.dto;
+package com.co.mundoviajero.dto.person;
 
 import java.io.Serializable;
 
-import com.co.mundoviajero.persistence.entity.Profile;
-import com.co.mundoviajero.persistence.entity.State;
-
-public class PersonDTO implements Serializable {
+public abstract class BasePersonDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	private String identification;
-	private String rnt;
-	private String name;
-	private String lastName;
-	private String birthday;
-	private String email;
-	private String phoneNumber;
-	private String address;
-	private String password;
-	private Double calification;
-	private String token;
-	private String profilePhoto;
-	private Profile profileId;
-	private State stateId;
+	protected String identification;
+	protected String rnt;
+	protected String name;
+	protected String lastName;
+	protected String birthday;
+	protected String email;
+	protected String phoneNumber;
+	protected String address;
+	protected String password;
+	protected Double calification;
+	protected String token;
+	protected String profilePhoto;
 	
-	public Long getId() {
-    	return id;
-    }    
-    public void setId (Long id) {
-    	this.id = id;
-    }
-    public String getIdentification() {
+	public String getIdentification() {
 		return identification;
 	}
 	public void setIdentification(String identification) {
@@ -102,19 +90,6 @@ public class PersonDTO implements Serializable {
 	}
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
-	}    
-	public Profile getProfile() {
-		return profileId;
 	}
-	public void setProfile(Profile profile) {
-		this.profileId = profile;
-	}
-	public State getState() {
-		return stateId;
-	}
-	public void setState(State state) {
-		this.stateId = state;
-	}
-	
 
 }

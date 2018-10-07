@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.co.mundoviajero.business.Event.EventBusiness;
 import com.co.mundoviajero.business.EventPlace.EventPlaceBusiness;
 import com.co.mundoviajero.controller.EventController;
-import com.co.mundoviajero.dto.EventDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.CreateEventDTO;
 import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
@@ -50,7 +50,7 @@ public class EventImpl implements EventController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> createEvent(@RequestBody EventDTO event) throws Exception {
+	public ResponseEntity<ResponseDTO> createEvent(@RequestBody CreateEventDTO event) throws Exception {
 		return eventBusiness.createEvent(event);
 	}
 

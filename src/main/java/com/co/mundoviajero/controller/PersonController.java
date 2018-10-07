@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.person.CreatePersonDTO;
 
 public interface PersonController {
 
@@ -24,7 +24,7 @@ public interface PersonController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/person", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> createPerson(@RequestBody PersonDTO person) throws Exception;
+	ResponseEntity<ResponseDTO> createPerson(@RequestBody CreatePersonDTO person) throws Exception;
 
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/person/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })

@@ -10,9 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.co.mundoviajero.dto.EventDTO;
-import com.co.mundoviajero.dto.EventPlaceDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.CreateEventDTO;
+import com.co.mundoviajero.dto.event.CreateEventPlaceDTO;
+import com.co.mundoviajero.dto.event.EventDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
@@ -83,7 +84,7 @@ public class EventBusiness {
 
 	}
 
-	public ResponseEntity<ResponseDTO> createEvent(EventDTO event) throws ValidationException {
+	public ResponseEntity<ResponseDTO> createEvent(CreateEventDTO event) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 		
 		if (parametersValidation(event) && !event.getPlaces().isEmpty()) {
@@ -95,7 +96,7 @@ public class EventBusiness {
 			if (!Validator.validateDate(event.getStartDate(), event.getEndDate(), Constants.EVENT_DURATION))
 				throw new ValidationException("La fecha final del evento debe ser mayor que la inicial");
 
-			for (EventPlaceDTO evDTO : event.getPlaces()) {
+			for (CreateEventPlaceDTO evDTO : event.getPlaces()) {
 
 				if (!Validator.validateDate(event.getStartDate(), evDTO.getEventPlaceStartDate(), Constants.EMPTY))
 					throw new ValidationException(
@@ -109,7 +110,7 @@ public class EventBusiness {
 					throw new ValidationException(
 							"La fecha final del lugar debe ser menor que la fecha final del evento");
 
-				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCity().getId()), FieldConstants.CITY_ID,
+				sb.append(Validator.validateNumber(String.valueOf(evDTO.getCityId()), FieldConstants.CITY_ID,
 						FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 				sb.append(Validator.valideString(evDTO.getEventPlaceStartDate(), FieldConstants.EVENT_STARTDATE,
@@ -130,7 +131,7 @@ public class EventBusiness {
 				throw new ValidationException(sb.toString());
 			}
 
-			if (eventDAO.validResponsible(event.getPersonIdResponsible().getId())) {
+			if (eventDAO.validResponsible(Long.parseLong(event.getPersonIdResponsible()))) {
 				if (eventDAO.createEvent(event)) {
 					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
@@ -238,7 +239,7 @@ public class EventBusiness {
 
 	}
 
-	private boolean parametersValidation(EventDTO event) {
+	private boolean parametersValidation(CreateEventDTO event) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Validator.valideString(event.getName(), FieldConstants.EVENT_NAME, FieldConstants.EVENT_NAME_LENGTH,
@@ -268,7 +269,7 @@ public class EventBusiness {
 		sb.append(Validator.validateNumber(String.valueOf(event.getPersonIdResponsible()),
 				FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(String.valueOf(event.getState().getId()), FieldConstants.STATEID,
+		sb.append(Validator.validateNumber(event.getStateId(), FieldConstants.STATEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {

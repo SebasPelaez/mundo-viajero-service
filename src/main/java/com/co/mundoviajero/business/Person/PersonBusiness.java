@@ -127,10 +127,7 @@ public class PersonBusiness {
 									messageSource.getMessage("POST_DESC_SUCCESS"), personDAO.createPerson(person)),
 							HttpStatus.OK);
 				} else {
-					return new ResponseEntity<>(
-							new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
-									messageSource.getMessage("EXISTING_TOURIST_DESC_ERROR"), null),
-							HttpStatus.PRECONDITION_REQUIRED);
+					throw new ValidationException(messageSource.getMessage("EXISTING_TOURIST_DESC_ERROR"));
 				}
 			}
 			// At this part the new Person should be a Guide
@@ -140,18 +137,12 @@ public class PersonBusiness {
 							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
 							personDAO.createPerson(person)), HttpStatus.OK);
 				} else {
-					return new ResponseEntity<>(
-							new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
-									messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"), null),
-							HttpStatus.PRECONDITION_REQUIRED);
+					throw new ValidationException(messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"));
 				}				
 			}
-			throw new ValidationException("El campo Identificación o RNT para el guía debe ser obligatorio");
-			
+			throw new ValidationException(messageSource.getMessage("GUIDE_REQUIRED_PARAMS"));			
 		} else {
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("BIRTHDAY_DESC_ERROR"), null),
-					HttpStatus.PRECONDITION_REQUIRED);
+			throw new ValidationException(messageSource.getMessage("BIRTHDAY_DESC_ERROR"));
 		}
 
 	}
@@ -161,11 +152,11 @@ public class PersonBusiness {
 		String identifier = "";
 		StringBuilder sb = new StringBuilder();
 		
-		if( bodyParameters.containsKey("email")) {
-			identifier = "email";
+		if( bodyParameters.containsKey(FieldConstants.PERSON_EMAIL)) {
+			identifier = FieldConstants.PERSON_EMAIL;
 		}else {
-			if( bodyParameters.containsKey("identification")) {
-				identifier = "identification";
+			if( bodyParameters.containsKey(FieldConstants.PERSON_IDENTIFICATION)) {
+				identifier = FieldConstants.PERSON_IDENTIFICATION;
 			}
 		}
 		
@@ -200,11 +191,11 @@ public class PersonBusiness {
 							FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
 					break;
 				case FieldConstants.PERSON_PROFILEID:
-					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.PERSON_PROFILEID,
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.PERSON_PROFILEID,
 							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				case FieldConstants.STATEID:
-					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.STATEID,
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.STATEID,
 							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
@@ -217,18 +208,18 @@ public class PersonBusiness {
 			throw new ValidationException(sb.toString());
 		}
 		
-		if( identifier.isEmpty()) {
-			throw new ValidationException("No se dispone de un identificador para actualizar");
+		if(!StringUtils.isEmpty(identifier) ) {
+			if( personDAO.updatePerson(bodyParameters, identifier) ) {		
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
+						HttpStatus.PRECONDITION_REQUIRED);			
+			}
+			
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
+					HttpStatus.PRECONDITION_REQUIRED);
 		}
-		if( personDAO.updatePerson(bodyParameters, identifier) ) {		
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
-					HttpStatus.PRECONDITION_REQUIRED);			
-		}
-		
-		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
-				HttpStatus.PRECONDITION_REQUIRED);
+		throw new ValidationException(messageSource.getMessage("MISS_IDENTIFICATION_PARAM"));
 	}
 
 	private void setNullAttributes(PersonDTO person) {

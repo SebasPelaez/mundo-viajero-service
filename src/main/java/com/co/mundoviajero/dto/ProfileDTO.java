@@ -2,12 +2,14 @@ package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
 
+import com.co.mundoviajero.persistence.entity.State;
+
 public class ProfileDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String description;
-	private Long stateId;
+	private State state;
 	public Long getId() {
 		return id;
 	}
@@ -20,11 +22,11 @@ public class ProfileDTO implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Long getStateId() {
-		return stateId;
+	public State getState() {
+		return state;
 	}
-	public void setStateId(Long stateId) {
-		this.stateId = stateId;
+	public void setState(State state) {
+		this.state = state;
 	}
 	
 	

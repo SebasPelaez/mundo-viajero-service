@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.person.PersonDTO;
 import com.co.mundoviajero.dto.LoginDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.FieldConstants;

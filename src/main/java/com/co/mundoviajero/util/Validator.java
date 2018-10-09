@@ -104,8 +104,6 @@ public class Validator {
 		long diffInMillies = parsedEndDate.getTime() - parsedStartDate.getTime();
 	    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 	    
-	    System.out.println("Diff: " + diff);
-	    System.out.println("Validation: " + (diff >= comparableHour));
 	    return diff >= comparableHour;
 		
 	}

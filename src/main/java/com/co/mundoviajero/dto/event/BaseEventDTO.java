@@ -1,24 +1,20 @@
-package com.co.mundoviajero.dto;
+package com.co.mundoviajero.dto.event;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class EventDTO implements Serializable {
+public abstract class BaseEventDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private Long id;
-	private String name;
-	private String description;
-	private String startDate;
-	private String endDate;
-	private String longitudeMeetingPoint;
-	private String latitudeMeetingPoint;
-	private int capaciticy;
-	private float fare;
-	private Long personIdResponsible;
-	private Long stateId;
-	private List<EventPlaceDTO> places;
+	
+	protected Long id;
+	protected String name;
+	protected String description;
+	protected String startDate;
+	protected String endDate;
+	protected String longitudeMeetingPoint;
+	protected String latitudeMeetingPoint;
+	protected int capaciticy;
+	protected float fare;
 	
 	public Long getId() {
 		return id;
@@ -73,24 +69,6 @@ public class EventDTO implements Serializable {
 	}
 	public void setFare(float fare) {
 		this.fare = fare;
-	}
-	public Long getPersonIdResponsible() {
-		return personIdResponsible;
-	}
-	public void setPersonIdResponsible(Long personIdResponsible) {
-		this.personIdResponsible = personIdResponsible;
-	}
-	public Long getStateId() {
-		return stateId;
-	}
-	public void setStateId(Long stateId) {
-		this.stateId = stateId;
-	}
-	public List<EventPlaceDTO> getPlaces() {
-		return places;
-	}
-	public void setPlaces(List<EventPlaceDTO> places) {
-		this.places = places;
 	}
 	
 }

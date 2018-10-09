@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.co.mundoviajero.dto.PersonDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.person.CreatePersonDTO;
+import com.co.mundoviajero.dto.person.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
@@ -68,7 +69,7 @@ public class PersonBusiness {
 
 	}
 
-	public ResponseEntity<ResponseDTO> createPerson(PersonDTO person) throws ValidationException {
+	public ResponseEntity<ResponseDTO> createPerson(CreatePersonDTO person) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_IDENTIFICATION,
@@ -97,7 +98,7 @@ public class PersonBusiness {
 		sb.append(Validator.valideString(person.getPassword(), FieldConstants.PERSON_PASSWORD,
 				FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getCalification()), FieldConstants.PERSON_CALIFICATION,
+		sb.append(Validator.validateNumber(String.valueOf(person.getCalification()), FieldConstants.PERSON_CALIFICATION,
 				FieldConstants.PERSON_CALIFICATION_LENGTH, FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
 
 		sb.append(Validator.valideString(person.getToken(), FieldConstants.PERSON_TOKEN,
@@ -106,10 +107,10 @@ public class PersonBusiness {
 		sb.append(Validator.valideString(person.getProfilePhoto(), FieldConstants.PERSON_PROFILEPHOTO,
 				FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getProfileId()), FieldConstants.PERSON_PROFILEID,
+		sb.append(Validator.validateNumber(person.getProfileId(), FieldConstants.PERSON_PROFILEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(("" + person.getStateId()), FieldConstants.STATEID,
+		sb.append(Validator.validateNumber(person.getStateId(), FieldConstants.STATEID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {
@@ -118,7 +119,7 @@ public class PersonBusiness {
 
 		if (Validator.validateBirthday(person.getBirthday())) {
 			setNullAttributes(person);
-			if (person.getProfileId() == 1) {
+			if (person.getProfileId().equals("1")) {
 
 				if (!personDAO.existPersonTourist(person.getEmail())) {
 					return new ResponseEntity<>(
@@ -222,7 +223,7 @@ public class PersonBusiness {
 		throw new ValidationException(messageSource.getMessage("MISS_IDENTIFICATION_PARAM"));
 	}
 
-	private void setNullAttributes(PersonDTO person) {
+	private void setNullAttributes(CreatePersonDTO person) {
 		if (person.getIdentification() == null)
 			person.setIdentification("");
 		if (person.getRnt() == null)

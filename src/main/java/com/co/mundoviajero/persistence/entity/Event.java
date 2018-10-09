@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -47,11 +49,13 @@ public class Event implements Serializable {
 	@Column(name = "Fare")
     private float fare;
 	
-	@Column(name = "PersonIdResponsible")
-    private Long personIdResponsible;
+	@ManyToOne
+    @JoinColumn(name = "PersonIdResponsible", referencedColumnName = "Id")
+    private Person personIdResponsible;
 	
-	@Column(name = "StateId")
-    private Long stateId;
+	@ManyToOne
+    @JoinColumn(name = "StateId", referencedColumnName = "Id")
+    private State stateId;
 
 	public Long getId() {
 		return id;
@@ -125,19 +129,19 @@ public class Event implements Serializable {
 		this.fare = fare;
 	}
 
-	public Long getPersonIdResponsible() {
+	public Person getPersonIdResponsible() {
 		return personIdResponsible;
 	}
 
-	public void setPersonIdResponsible(Long personIdResponsible) {
+	public void setPersonIdResponsible(Person personIdResponsible) {
 		this.personIdResponsible = personIdResponsible;
 	}
 
-	public Long getStateId() {
+	public State getStateId() {
 		return stateId;
 	}
 
-	public void setStateId(Long stateId) {
+	public void setStateId(State stateId) {
 		this.stateId = stateId;
 	}
 

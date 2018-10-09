@@ -2,6 +2,8 @@ package com.co.mundoviajero.dto;
 
 import java.io.Serializable;
 
+import com.co.mundoviajero.dto.person.PersonDTO;
+
 public class LoginDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

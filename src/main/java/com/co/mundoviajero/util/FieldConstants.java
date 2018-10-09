@@ -94,7 +94,8 @@ public class FieldConstants {
 	/**
 	 * COMMONS
 	 */
-	
+
+	public static final String ID = "id";
 	public static final String STATEID = "stateId";
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;

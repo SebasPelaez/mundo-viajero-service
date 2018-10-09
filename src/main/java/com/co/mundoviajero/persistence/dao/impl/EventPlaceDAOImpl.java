@@ -11,8 +11,10 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.EventPlaceDTO;
+import com.co.mundoviajero.dto.event.CreateEventPlaceDTO;
+import com.co.mundoviajero.dto.event.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
+import com.co.mundoviajero.persistence.entity.City;
 import com.co.mundoviajero.persistence.entity.EventPlace;
 import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 
@@ -41,8 +43,8 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 	}
 
 	@Override
-	public boolean createEventPlaces(List<EventPlaceDTO> eventPlacesDTO, Long eventId) {
-
+	public boolean createEventPlaces(List<CreateEventPlaceDTO> eventPlacesDTO, Long eventId) {
+		
 		List<EventPlace> eventPlaces = setEventPlace(eventPlacesDTO, eventId);
 
 		try {
@@ -130,7 +132,7 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		try {
 			eventPlaceDTO.setId(eventPlace.getId());
 			eventPlaceDTO.setEventId(eventPlace.getEventId());
-			eventPlaceDTO.setCityId(eventPlace.getCityId());
+			eventPlaceDTO.setCity(eventPlace.getCityId());
 			eventPlaceDTO.setEventPlaceStartDate(eventPlace.getEventPlaceStartDate().toString().trim());
 			eventPlaceDTO.setEventPlaceEndDate(eventPlace.getEventPlaceEndDate().toString().trim());
 			eventPlaceDTO.setLongitudeEventPlace(String.valueOf(eventPlace.getLongitudeEventPlace()));
@@ -142,18 +144,21 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		return eventPlaceDTO;
 	}
 
-	private List<EventPlace> setEventPlace(List<EventPlaceDTO> eventPlacesDTO, Long eventId) {
+	private List<EventPlace> setEventPlace(List<CreateEventPlaceDTO> eventPlacesDTO, Long eventId) {
 
 		List<EventPlace> eventPlaces = new ArrayList<>();
 
 		try {
-			for (EventPlaceDTO evtDTO : eventPlacesDTO) {
+			for (CreateEventPlaceDTO evtDTO : eventPlacesDTO) {
 
 				EventPlace eventPlace = new EventPlace();
 				eventPlace.setEventId(eventId);
 				evtDTO.setEventId(eventId);
 
-				eventPlace.setCityId(evtDTO.getCityId());
+				City city = new City();
+				city.setId(Long.parseLong(evtDTO.getCityId()));
+				eventPlace.setCityId(city);
+				
 				eventPlace.setLongitudeEventPlace(Double.parseDouble(evtDTO.getLongitudeEventPlace()));
 				eventPlace.setLatitudeEventPlace(Double.parseDouble(evtDTO.getLatitudeEventPlace()));
 

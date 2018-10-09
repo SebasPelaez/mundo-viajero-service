@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.co.mundoviajero.dto.EventDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.CreateEventDTO;
 
 public interface EventController {
 	
@@ -36,7 +36,7 @@ public interface EventController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/event", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> createEvent(@RequestBody EventDTO event) throws Exception;
+	ResponseEntity<ResponseDTO> createEvent(@RequestBody CreateEventDTO event) throws Exception;
 	
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/event", method = RequestMethod.PUT, produces = {

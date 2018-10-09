@@ -43,7 +43,7 @@ public class ProfileDAOImpl extends BaseDAO implements IProfileDAO{
 		ProfileDTO profileDTO = new ProfileDTO();
 		profileDTO.setId(profile.getId());
 		profileDTO.setDescription(profile.getDescription().trim());
-		profileDTO.setStateId(profile.getStateId());
+		profileDTO.setState(profile.getStateId());
 		
 		return profileDTO;
 	}

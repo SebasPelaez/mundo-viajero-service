@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.co.mundoviajero.dto.ImageEventDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.persistence.dao.IImageEventDAO;
+import com.co.mundoviajero.util.FieldConstants;
+import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Service
@@ -38,7 +40,7 @@ public class ImageEventBusiness {
 
 	}
 	
-	public ResponseEntity<ResponseDTO> getAllImagesEventForEvent(Long id) {
+	public ResponseEntity<ResponseDTO> getAllImagesForEvent(Long id) {
 		List<ImageEventDTO> images = imageEventDAO.getAllImageEvent(id);
 		if (images != null) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -54,7 +56,50 @@ public class ImageEventBusiness {
 		
 		Long identifier;
 		StringBuilder sb = new StringBuilder();
-		return null;
+		
+		if (bodyParameters.containsKey(FieldConstants.ID)) {
+			
+			identifier = Long.parseLong(bodyParameters.get(FieldConstants.ID));
+			bodyParameters.remove(FieldConstants.ID);
+			
+			if(!bodyParameters.isEmpty()){
+				
+				for (String parameter : bodyParameters.keySet()) {
+					switch (parameter) {
+					
+						case FieldConstants.IMAGE_EVENT_PATH:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.IMAGE_EVENT_PATH, FieldConstants.IMAGE_EVENT_PATH_LENGTH,
+									FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
+							break;
+	
+						case FieldConstants.IMAGE_EVENT_UPLOAD_DATE:
+							sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.IMAGE_EVENT_UPLOAD_DATE,
+									FieldConstants.IMAGE_EVENT_UPLOAD_DATE_LENGTH, FieldConstants.IMAGE_EVENT_UPLOAD_DATE_OBLIGATORY));
+							break;
+						default:
+							break;
+					}
+				}
+				
+				if (sb.toString().length() > 0) {
+					throw new ValidationException(sb.toString());
+				}
+				
+				if (imageEventDAO.updateImageEvent(bodyParameters, identifier)) {
+					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
+							HttpStatus.OK);
+				}
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("PUT_DESC_ERROR"), null),
+						HttpStatus.PRECONDITION_REQUIRED);
+				
+			}
+			throw new ValidationException(messageSource.getMessage("UPDATE_EVENT_MORE_EXPECTED_PARAMS"));
+		}else {
+			throw new ValidationException(messageSource.getMessage("MISS_EVENT_PLACE_ID"));
+		}
 	}
 	
 	

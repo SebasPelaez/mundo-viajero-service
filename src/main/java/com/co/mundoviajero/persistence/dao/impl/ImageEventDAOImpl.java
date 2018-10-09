@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.ImageEventDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.ImageEvent;
 

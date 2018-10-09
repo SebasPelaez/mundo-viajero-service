@@ -1,4 +1,4 @@
-package com.co.mundoviajero.dto;
+package com.co.mundoviajero.dto.event;
 
 import java.io.Serializable;
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,10 @@ public class EventImpl implements EventController{
 	
 	@Autowired
 	private EventPlaceBusiness eventPlaceBusiness;
-	
+
+	@Autowired
+	private MessageSourceAccessor messageSource;
+
 	@Override
 	public ResponseEntity<ResponseDTO> getAllEvents() throws Exception {
 		return eventBusiness.getAllEvents();
@@ -38,7 +42,7 @@ public class EventImpl implements EventController{
 		if(StringUtils.isNotBlank(id)) {
 			return eventBusiness.getEvent(Long.parseLong(id));
 		}
-		throw new ValidationException("No hay parámetro de búsqueda");
+		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class EventImpl implements EventController{
 		if(!parameters.isEmpty()) {
 			return eventBusiness.getEventWithParameters(parameters);
 		}
-		throw new ValidationException("El body esta vacío");
+		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public class EventImpl implements EventController{
 		if(!bodyParameters.isEmpty()){
 			return eventBusiness.updateEvent(bodyParameters);
 		}
-		throw new ValidationException("El body esta vacio");
+		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
 	}
 
 	@Override
@@ -71,9 +75,9 @@ public class EventImpl implements EventController{
 				return eventBusiness.getEventsWithId(eventsId);
 			
 			}
-			throw new ValidationException("No se referencia Latitud o Longitud");
+			throw new ValidationException(messageSource.getMessage("MISS_LATITUDE_LONGITUDE_PARAMS"));
 		}
-		throw new ValidationException("No hay parametros");
+		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
 	}
 
 }

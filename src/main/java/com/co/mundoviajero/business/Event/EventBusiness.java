@@ -91,7 +91,7 @@ public class EventBusiness {
 
 			if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
 					Constants.EVENT_CREATED_DATE))
-				throw new ValidationException("El Evento debe empezar 8 horas después de la hora actual");
+				throw new ValidationException("El Evento debe empezar 8 horas despuï¿½s de la hora actual");
 
 			if (!Validator.validateDate(event.getStartDate(), event.getEndDate(), Constants.EVENT_DURATION))
 				throw new ValidationException("La fecha final del evento debe ser mayor que la inicial");
@@ -141,7 +141,7 @@ public class EventBusiness {
 						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
 						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			throw new ValidationException("El responsable del evento no es válido");
+			throw new ValidationException("El responsable del evento no es vï¿½lido");
 
 		}
 
@@ -165,47 +165,8 @@ public class EventBusiness {
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_NAME,
 							FieldConstants.EVENT_NAME_LENGTH, FieldConstants.EVENT_NAME_OBLIGATORY));
 					break;
-
-				case FieldConstants.EVENT_DESCRIPTION:
-					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_DESCRIPTION,
-							FieldConstants.EVENT_DESCRIPTION_LENGTH, FieldConstants.EVENT_DESCRIPTION_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_STARTDATE:
-					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_STARTDATE,
-							FieldConstants.EVENT_STARTDATE_LENGTH, FieldConstants.EVENT_STARTDATE_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_ENDDATE:
-					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_ENDDATE,
-							FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_LONGITUDEMEETINGPOINT:
-					sb.append(Validator.valideString(bodyParameters.get(parameter),
-							FieldConstants.EVENT_LONGITUDEMEETINGPOINT, FieldConstants.LONGITUDE_LENGTH,
-							FieldConstants.LONGITUDE_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_LATITUDEMEETINGPOINT:
-					sb.append(Validator.valideString(bodyParameters.get(parameter),
-							FieldConstants.EVENT_LATITUDEMEETINGPOINT, FieldConstants.LATITUDE_LENGTH,
-							FieldConstants.LATITUDE_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_CAPACITY:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-							FieldConstants.EVENT_CAPACITY, FieldConstants.EVENT_CAPACITY_LENGTH,
-							FieldConstants.EVENT_CAPACITY_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_FARE:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-							FieldConstants.EVENT_FARE, FieldConstants.EVENT_FARE_LENGTH,
-							FieldConstants.EVENT_FARE_OBLIGATORY));
-					break;
-
-				case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
+        
+        case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
 					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
 							FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH,
 							FieldConstants.ID_OBLIGATORY));
@@ -241,14 +202,7 @@ public class EventBusiness {
 
 	private boolean parametersValidation(CreateEventDTO event) {
 		StringBuilder sb = new StringBuilder();
-
-		sb.append(Validator.valideString(event.getName(), FieldConstants.EVENT_NAME, FieldConstants.EVENT_NAME_LENGTH,
-				FieldConstants.EVENT_NAME_OBLIGATORY));
-
-		sb.append(Validator.valideString(event.getDescription(), FieldConstants.EVENT_DESCRIPTION,
-				FieldConstants.EVENT_DESCRIPTION_LENGTH, FieldConstants.EVENT_DESCRIPTION_OBLIGATORY));
-
-		sb.append(Validator.valideString(event.getStartDate(), FieldConstants.EVENT_STARTDATE,
+    sb.append(Validator.valideString(event.getStartDate(), FieldConstants.EVENT_STARTDATE,
 				FieldConstants.EVENT_STARTDATE_LENGTH, FieldConstants.EVENT_STARTDATE_OBLIGATORY));
 
 		sb.append(Validator.valideString(event.getEndDate(), FieldConstants.EVENT_ENDDATE,
@@ -278,5 +232,4 @@ public class EventBusiness {
 		return true;
 
 	}
-
 }

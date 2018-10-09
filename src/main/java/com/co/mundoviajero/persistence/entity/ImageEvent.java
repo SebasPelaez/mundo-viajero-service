@@ -25,6 +25,9 @@ public class ImageEvent implements Serializable {
 	
 	@Column(name = "EventId")
 	private Long eventId;
+	
+	@Column(name = "ImagePath")
+	private String imagePath;
 
 	@Column(name = "UploadDate")
 	private Timestamp uploadDate;
@@ -51,6 +54,14 @@ public class ImageEvent implements Serializable {
 
 	public void setUploadDate(Timestamp uploadDate) {
 		this.uploadDate = uploadDate;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 }

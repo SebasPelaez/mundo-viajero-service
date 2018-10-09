@@ -117,6 +117,7 @@ CREATE TABLE public."ImageEvent"
 (
     "Id" bigint NOT NULL,
     "EventId" bigint NOT NULL references public."Event"("Id"),
+    "ImagePath" character(400) NOT NULL,
     "UploadDate" timestamp(4) without time zone NOT NULL,
     PRIMARY KEY ("Id")
 );

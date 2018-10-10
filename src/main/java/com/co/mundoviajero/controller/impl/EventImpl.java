@@ -55,7 +55,13 @@ public class EventImpl implements EventController{
 
 	@Override
 	public ResponseEntity<ResponseDTO> createEvent(@RequestBody CreateEventDTO event) throws Exception {
-		return eventBusiness.createEvent(event);
+		if(event != null){
+			if(!event.getPlaces().isEmpty()){
+				return eventBusiness.createEvent(event);
+			}
+			throw new ValidationException(messageSource.getMessage("NULL_EVENT_PLACES_FOR_EVENT"));
+		}
+		throw new ValidationException(messageSource.getMessage("NULL_BODY_PARAMS"));
 	}
 
 	@Override

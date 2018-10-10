@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.Event;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.State;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
@@ -34,6 +36,9 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	
 	@Autowired
 	private IImageEventDAO imageEventDAO;
+	
+	@Autowired
+	private MessageSourceAccessor messageSource;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -129,7 +134,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	}
 	
 	@Override
-	public boolean createEvent(CreateEventDTO event) throws ValidationException {
+	public String createEvent(CreateEventDTO event) throws ValidationException {
 
 		Event newEvent = setEvent(event);
 		
@@ -142,16 +147,18 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			Long eventId = events.get(0).getId();
 			event.setId(eventId);
 			
-			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId) &&
-					!imageEventDAO.createImageEvent(event.getImages(), eventId)) {
-				return false;
+			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId)) {
+				return messageSource.getMessage("FAIL_CREATED_EVENT_PLACE");
+			}
+			if (!imageEventDAO.createImageEvent(event.getImages(), eventId)) {
+				return messageSource.getMessage("FAIL_UPLOAD_EVENT_IMAGE");
 			}
 			
 		} catch (Exception e) {
 			System.out.println(e);
-			return false;
+			return messageSource.getMessage("FAIL_CREATED_EVENT");
 		}
-		return true;		
+		return Constants.EMPTY;		
 	}
 	
 	@Override

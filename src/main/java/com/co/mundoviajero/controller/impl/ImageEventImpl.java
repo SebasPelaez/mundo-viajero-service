@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.co.mundoviajero.business.ImageEvent.ImageEventBusiness;
 import com.co.mundoviajero.controller.ImageEventController;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
@@ -50,6 +51,11 @@ public class ImageEventImpl implements ImageEventController{
 			return imageEventBusiness.updateImageEvent(bodyParameters);
 		}
 		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
+	}
+
+	@Override
+	public ResponseEntity<ResponseDTO> uploadImage(@RequestBody ImageEventDTO imageEventDTO) throws Exception {
+		return imageEventBusiness.uploadImage(imageEventDTO);
 	}
 
 }

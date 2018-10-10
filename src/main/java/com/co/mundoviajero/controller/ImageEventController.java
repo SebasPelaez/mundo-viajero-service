@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
 
 public interface ImageEventController {
 	
@@ -27,5 +28,9 @@ public interface ImageEventController {
 	@RequestMapping(value = "/imageevent", method = RequestMethod.PUT, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> updateImages(@RequestBody Map<String, String> bodyParameters) throws Exception;
+	
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = "/imageevent", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
+	ResponseEntity<ResponseDTO> uploadImage(@RequestBody ImageEventDTO imageEventDTO) throws Exception;
 
 }

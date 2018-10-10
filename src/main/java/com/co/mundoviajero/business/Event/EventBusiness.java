@@ -14,6 +14,7 @@ import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.event.CreateEventDTO;
 import com.co.mundoviajero.dto.event.CreateEventPlaceDTO;
 import com.co.mundoviajero.dto.event.EventDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
@@ -40,7 +41,7 @@ public class EventBusiness {
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
 				HttpStatus.NOT_FOUND);
 	}
-	
+
 	public ResponseEntity<ResponseDTO> getEventsWithId(List<Long> eventsId) throws Exception {
 		List<EventDTO> events = eventDAO.getEventsWithId(eventsId);
 		if (events != null) {
@@ -86,7 +87,7 @@ public class EventBusiness {
 
 	public ResponseEntity<ResponseDTO> createEvent(CreateEventDTO event) throws ValidationException {
 		StringBuilder sb = new StringBuilder();
-		
+
 		if (parametersValidation(event) && !event.getPlaces().isEmpty()) {
 
 			if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
@@ -127,6 +128,12 @@ public class EventBusiness {
 
 			}
 
+			for (ImageEventDTO ieDTO : event.getImages()) {
+
+				sb.append(Validator.valideString(ieDTO.getImagePath(), FieldConstants.IMAGE_EVENT_PATH,
+						FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
+			}
+
 			if (sb.toString().length() > 0) {
 				throw new ValidationException(sb.toString());
 			}
@@ -141,7 +148,7 @@ public class EventBusiness {
 						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
 						HttpStatus.PRECONDITION_REQUIRED);
 			}
-			throw new ValidationException("El responsable del evento no es vï¿½lido");
+			throw new ValidationException("El responsable del evento no es válido");
 
 		}
 
@@ -165,8 +172,8 @@ public class EventBusiness {
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_NAME,
 							FieldConstants.EVENT_NAME_LENGTH, FieldConstants.EVENT_NAME_OBLIGATORY));
 					break;
-        
-        case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
+
+				case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
 					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
 							FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH,
 							FieldConstants.ID_OBLIGATORY));
@@ -202,7 +209,7 @@ public class EventBusiness {
 
 	private boolean parametersValidation(CreateEventDTO event) {
 		StringBuilder sb = new StringBuilder();
-    sb.append(Validator.valideString(event.getStartDate(), FieldConstants.EVENT_STARTDATE,
+		sb.append(Validator.valideString(event.getStartDate(), FieldConstants.EVENT_STARTDATE,
 				FieldConstants.EVENT_STARTDATE_LENGTH, FieldConstants.EVENT_STARTDATE_OBLIGATORY));
 
 		sb.append(Validator.valideString(event.getEndDate(), FieldConstants.EVENT_ENDDATE,
@@ -223,8 +230,8 @@ public class EventBusiness {
 		sb.append(Validator.validateNumber(String.valueOf(event.getPersonIdResponsible()),
 				FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 
-		sb.append(Validator.validateNumber(event.getStateId(), FieldConstants.STATEID,
-				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+		sb.append(Validator.validateNumber(event.getStateId(), FieldConstants.STATEID, FieldConstants.ID_LENGTH,
+				FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {
 			return false;

@@ -1,6 +1,7 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 		}
 		return true;
 	}
-
+	
 	@Override
 	public boolean updateImageEvent(Map<String, String> parameters, Long identifier) {
 		StringBuffer parametersQueryString = new StringBuffer();
@@ -123,7 +124,7 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 				imageEvent.setImagePath(ieDTO.getImagePath());
 				
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date startDate = format.parse(ieDTO.getUploadDate());
+				Date startDate = format.parse(LocalDateTime.now().toString().replace("T", " "));
 				java.sql.Timestamp uploadDateSql = new java.sql.Timestamp(startDate.getTime());
 				imageEvent.setUploadDate(uploadDateSql);
 

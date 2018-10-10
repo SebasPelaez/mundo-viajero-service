@@ -1,5 +1,6 @@
 package com.co.mundoviajero.business.ImageEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,5 +103,34 @@ public class ImageEventBusiness {
 		}
 	}
 	
+	public ResponseEntity<ResponseDTO> uploadImage(ImageEventDTO image) throws ValidationException {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(Validator.valideString(image.getImagePath(), FieldConstants.IMAGE_EVENT_PATH,
+				FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
+		
+		sb.append(Validator.validateNumber(String.valueOf(image.getEventId()), FieldConstants.EVENT_ID,
+				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+		
+		if (sb.toString().length() > 0) {
+			throw new ValidationException(sb.toString());
+		}
+		
+		List<ImageEventDTO> images = new ArrayList<>();
+		images.add(image);
+		Long eventId = image.getEventId();
+		
+		if (imageEventDAO.createImageEvent(images, eventId)) {
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"), true),
+					HttpStatus.PRECONDITION_REQUIRED);
+		}
+
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), null),
+				HttpStatus.PRECONDITION_REQUIRED);
+		
+	}
 	
 }

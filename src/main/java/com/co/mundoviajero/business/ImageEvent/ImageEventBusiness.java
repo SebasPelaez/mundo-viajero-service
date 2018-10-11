@@ -1,9 +1,9 @@
 package com.co.mundoviajero.business.ImageEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.co.mundoviajero.dto.event.CreateImageEventDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
@@ -103,25 +103,24 @@ public class ImageEventBusiness {
 		}
 	}
 	
-	public ResponseEntity<ResponseDTO> uploadImage(ImageEventDTO image) throws ValidationException {
+	public ResponseEntity<ResponseDTO> uploadImage(CreateImageEventDTO createImageEventDTO) throws ValidationException {
 		
 		StringBuilder sb = new StringBuilder();
+
+		for (String image: createImageEventDTO.getImages()) {
+
+			sb.append(Validator.valideString(image, FieldConstants.IMAGE_EVENT_PATH,
+					FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
+		}
 		
-		sb.append(Validator.valideString(image.getImagePath(), FieldConstants.IMAGE_EVENT_PATH,
-				FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
-		
-		sb.append(Validator.validateNumber(String.valueOf(image.getEventId()), FieldConstants.EVENT_ID,
+		sb.append(Validator.validateNumber(String.valueOf(createImageEventDTO.getEventId()), FieldConstants.EVENT_ID,
 				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 		
 		if (sb.toString().length() > 0) {
 			throw new ValidationException(sb.toString());
 		}
-		
-		List<ImageEventDTO> images = new ArrayList<>();
-		images.add(image);
-		Long eventId = image.getEventId();
-		
-		if (imageEventDAO.createImageEvent(images, eventId)) {
+
+		if (imageEventDAO.createImageEvent(createImageEventDTO.getImages(), createImageEventDTO.getEventId())) {
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"), true),
 					HttpStatus.PRECONDITION_REQUIRED);

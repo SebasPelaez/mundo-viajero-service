@@ -54,8 +54,8 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 	}
 
 	@Override
-	public boolean createImageEvent(List<ImageEventDTO> imageEventDTO, Long eventId) {
-		List<ImageEvent> imagesEvent = setImageEvent(imageEventDTO, eventId);
+	public boolean createImageEvent(List<String> images, Long eventId) {
+		List<ImageEvent> imagesEvent = setImageEvent(images, eventId);
 
 		try {
 			for (ImageEvent imageEvent : imagesEvent) {
@@ -110,19 +110,17 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 		return imageEventDTO;
 	}
 
-	
-	private List<ImageEvent> setImageEvent(List<ImageEventDTO> imageEventDTO, Long eventId) {
-		
+	private List<ImageEvent> setImageEvent(List<String> images, Long eventId) {
+
 		List<ImageEvent> imageEvents  = new ArrayList<>();
-		
 		try {
-			for (ImageEventDTO ieDTO : imageEventDTO) {
+			for (String image : images) {
 
 				ImageEvent imageEvent = new ImageEvent();
-				
+
 				imageEvent.setEventId(eventId);
-				imageEvent.setImagePath(ieDTO.getImagePath());
-				
+				imageEvent.setImagePath(image);
+
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date startDate = format.parse(LocalDateTime.now().toString().replace("T", " "));
 				java.sql.Timestamp uploadDateSql = new java.sql.Timestamp(startDate.getTime());

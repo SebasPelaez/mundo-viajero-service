@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
+import com.co.mundoviajero.dto.event.CreateImageEventDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.co.mundoviajero.dto.ResponseDTO;
-import com.co.mundoviajero.dto.event.ImageEventDTO;
 
 public interface ImageEventController {
 	
@@ -31,6 +31,6 @@ public interface ImageEventController {
 	
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/imageevent", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> uploadImage(@RequestBody ImageEventDTO imageEventDTO) throws Exception;
+	ResponseEntity<ResponseDTO> uploadImage(@RequestBody CreateImageEventDTO imageEventDTO) throws Exception;
 
 }

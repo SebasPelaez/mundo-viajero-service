@@ -129,9 +129,9 @@ public class EventBusiness {
 
 			}
 
-			for (ImageEventDTO ieDTO : event.getImages()) {
+			for (String ieDTO : event.getImages()) {
 
-				sb.append(Validator.valideString(ieDTO.getImagePath(), FieldConstants.IMAGE_EVENT_PATH,
+				sb.append(Validator.valideString(ieDTO, FieldConstants.IMAGE_EVENT_PATH,
 						FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
 			}
 

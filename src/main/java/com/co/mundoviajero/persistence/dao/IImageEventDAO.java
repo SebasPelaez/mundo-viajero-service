@@ -9,7 +9,7 @@ public interface IImageEventDAO {
 	
 	ImageEventDTO getImageEvent(Long id);
 	List<ImageEventDTO> getAllImageEvent(Long idEvent);
-	boolean createImageEvent(List<ImageEventDTO> imageEventDTO, Long eventId);
+	boolean createImageEvent(List<String> images, Long eventId);
 	boolean updateImageEvent(Map<String, String> parameters, Long identifier);
 
 }

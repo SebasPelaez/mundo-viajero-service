@@ -16,7 +16,6 @@ public abstract class BaseEventDTO implements Serializable {
 	protected String latitudeMeetingPoint;
 	protected int capaciticy;
 	protected float fare;
-	protected List<ImageEventDTO> images;
 	
 	public Long getId() {
 		return id;
@@ -71,12 +70,6 @@ public abstract class BaseEventDTO implements Serializable {
 	}
 	public void setFare(float fare) {
 		this.fare = fare;
-	}
-	public List<ImageEventDTO> getImages() {
-		return images;
-	}
-	public void setImages(List<ImageEventDTO> images) {
-		this.images = images;
 	}
 	
 }

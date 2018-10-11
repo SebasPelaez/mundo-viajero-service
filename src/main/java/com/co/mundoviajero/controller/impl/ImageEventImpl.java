@@ -2,6 +2,7 @@ package com.co.mundoviajero.controller.impl;
 
 import java.util.Map;
 
+import com.co.mundoviajero.dto.event.CreateImageEventDTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -54,8 +55,8 @@ public class ImageEventImpl implements ImageEventController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> uploadImage(@RequestBody ImageEventDTO imageEventDTO) throws Exception {
-		return imageEventBusiness.uploadImage(imageEventDTO);
+	public ResponseEntity<ResponseDTO> uploadImage(@RequestBody CreateImageEventDTO createImageEventDTO) throws Exception {
+		return imageEventBusiness.uploadImage(createImageEventDTO);
 	}
 
 }

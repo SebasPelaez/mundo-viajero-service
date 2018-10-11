@@ -2,6 +2,7 @@ package com.co.mundoviajero.dto.event;
 
 import java.util.List;
 
+import com.co.mundoviajero.persistence.entity.ImageEvent;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.State;
 
@@ -12,6 +13,7 @@ public class EventDTO extends BaseEventDTO{
 	private Person personIdResponsible;
 	private State state;
 	private List<EventPlaceDTO> places;
+	private List<ImageEventDTO> images;
 	
 	public Long getId() {
 		return id;
@@ -37,5 +39,10 @@ public class EventDTO extends BaseEventDTO{
 	public void setPlaces(List<EventPlaceDTO> places) {
 		this.places = places;
 	}
-	
+	public List<ImageEventDTO> getImages() {
+		return images;
+	}
+	public void setImages(List<ImageEventDTO> images) {
+		this.images = images;
+	}
 }

@@ -13,7 +13,7 @@ public interface IEventDAO {
 	List<EventDTO> getEventsWithId(List<Long> eventsId);
 	EventDTO getEvent(Long searchParameter);
 	List<EventDTO> getEventWithParameters(Map<String, Object> parameters);
-	boolean createEvent(CreateEventDTO event) throws ValidationException;
+	String createEvent(CreateEventDTO event) throws ValidationException;
 	boolean updateEvent(Map<String, String> parameters, Long identifier);
 	boolean validResponsible(Long personIdResponsible);
 	

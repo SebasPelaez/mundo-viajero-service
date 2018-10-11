@@ -9,6 +9,7 @@ public class CreateEventDTO extends BaseEventDTO {
 	private String personIdResponsible;
 	private String stateId;
 	private List<CreateEventPlaceDTO> places;
+	private List<String> images;
 	
 	public String getPersonIdResponsible() {
 		return personIdResponsible;
@@ -31,5 +32,6 @@ public class CreateEventDTO extends BaseEventDTO {
 	public void setStateId(String stateId) {
 		this.stateId = stateId;
 	}
-	
+	public List<String> getImages() {return images;}
+	public void setImages(List<String> images) {this.images = images;}
 }

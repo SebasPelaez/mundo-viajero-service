@@ -2,7 +2,7 @@ package com.co.mundoviajero.controller.impl;
 
 import java.util.Map;
 
-import com.co.mundoviajero.util.FieldConstants;
+import com.co.mundoviajero.dto.event.CreateImageEventDTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -11,45 +11,52 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.co.mundoviajero.business.EventPlace.EventPlaceBusiness;
-import com.co.mundoviajero.controller.EventPlaceController;
+import com.co.mundoviajero.business.ImageEvent.ImageEventBusiness;
+import com.co.mundoviajero.controller.ImageEventController;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.ImageEventDTO;
+import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @RestController
-public class EventPlaceImpl implements EventPlaceController {
-
-	@Autowired
-	private EventPlaceBusiness eventPlaceBusiness;
-
+public class ImageEventImpl implements ImageEventController{
+	
 	@Autowired
 	private MessageSourceAccessor messageSource;
 	
+	@Autowired
+	private ImageEventBusiness imageEventBusiness;
+
 	@Override
-	public ResponseEntity<ResponseDTO> getEventPlace(@PathVariable("id") String id) throws Exception {
+	public ResponseEntity<ResponseDTO> getImageEvent(@PathVariable("id") String id) throws Exception {
 		if(StringUtils.isNotBlank(id)) {
-			return eventPlaceBusiness.getEventPlace(Long.parseLong(id));
+			return imageEventBusiness.getImageEvent(Long.parseLong(id));
 		}
 		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> getAllEventPlacesForEvent(@PathVariable("id") String id) throws ValidationException{
+	public ResponseEntity<ResponseDTO> getAllImagesForEvent(@PathVariable("id") String id) throws Exception {
 		if(StringUtils.isNotBlank(id)) {
-			return eventPlaceBusiness.getAllEventPlacesForEvent(Long.parseLong(id));
+			return imageEventBusiness.getAllImagesForEvent(Long.parseLong(id));
 		}
 		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> updateEventPlace(@RequestBody Map<String, String> bodyParameters) throws Exception {
+	public ResponseEntity<ResponseDTO> updateImages(@RequestBody Map<String, String> bodyParameters) throws Exception {
 		if(!bodyParameters.isEmpty()){
 			if (bodyParameters.containsKey(FieldConstants.EVENT_ID)) {
 				bodyParameters.remove(FieldConstants.EVENT_ID);
 			}
-			return eventPlaceBusiness.updateEventPlace(bodyParameters);
+			return imageEventBusiness.updateImageEvent(bodyParameters);
 		}
 		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
+	}
+
+	@Override
+	public ResponseEntity<ResponseDTO> uploadImage(@RequestBody CreateImageEventDTO createImageEventDTO) throws Exception {
+		return imageEventBusiness.uploadImage(createImageEventDTO);
 	}
 
 }

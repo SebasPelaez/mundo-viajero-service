@@ -16,6 +16,7 @@ import com.co.mundoviajero.persistence.entity.State;
 @Transactional
 public class StateDAOImpl extends BaseDAO implements IStateDAO{
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<StateDTO> getAllStates() {
 		List<StateDTO> statesDTO = new ArrayList<>();

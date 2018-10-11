@@ -86,16 +86,27 @@ public class FieldConstants {
 	/**
 	 * EVENTPLACE FIELDS
 	 */	
-	public static final String EVENT_ID = "eventId";
 	public static final String CITY_ID = "cityId";
 	public static final String EVENTPLACE_ALTITUDE = "AltitudeEventPlace";	
 	public static final String EVENTPLACE_LATITUDE = "latitudeEventPlace";
 	
 	/**
+	 * IMAGE EVENT FIELDS
+	 */	
+	public static final String IMAGE_EVENT_PATH = "imagePath";
+	public static final int IMAGE_EVENT_PATH_LENGTH = 450;
+	public static final boolean IMAGE_EVENT_PATH_OBLIGATORY = true;
+	
+	public static final String IMAGE_EVENT_UPLOAD_DATE = "uploadDate";
+	public static final int IMAGE_EVENT_UPLOAD_DATE_LENGTH = 450;
+	public static final boolean IMAGE_EVENT_UPLOAD_DATE_OBLIGATORY = true;
+	/**
 	 * COMMONS
 	 */
-	
+
+	public static final String ID = "id";
 	public static final String STATEID = "stateId";
+	public static final String EVENT_ID = "eventId";
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;
 	

@@ -12,13 +12,19 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.EventDTO;
+import com.co.mundoviajero.dto.event.CreateEventDTO;
+import com.co.mundoviajero.dto.event.EventDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
+import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.State;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
@@ -27,6 +33,12 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	
 	@Autowired
 	private IEventPlaceDAO eventPlaceDAO;
+	
+	@Autowired
+	private IImageEventDAO imageEventDAO;
+	
+	@Autowired
+	private MessageSourceAccessor messageSource;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -41,6 +53,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		for (Event e : events) {
 			EventDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
+			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
 		}
 		
@@ -68,6 +81,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		for (Event e : events) {
 			EventDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
+			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
 		}
 		
@@ -86,6 +100,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		
 		eventDTO = setEventDTO((Event) query.getSingleResult());		
 		eventDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eventDTO.getId()));
+		eventDTO.setImages(imageEventDAO.getAllImageEvent(eventDTO.getId()));
 		return eventDTO;
 	}
 
@@ -112,13 +127,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		for (Event e : events) {
 			EventDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
+			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
 		}
 		return eventDTO;
 	}
 	
 	@Override
-	public boolean createEvent(EventDTO event) throws ValidationException {
+	public String createEvent(CreateEventDTO event) throws ValidationException {
 
 		Event newEvent = setEvent(event);
 		
@@ -132,14 +148,17 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setId(eventId);
 			
 			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId)) {
-				return false;
+				return messageSource.getMessage("FAIL_CREATED_EVENT_PLACE");
+			}
+			if (!imageEventDAO.createImageEvent(event.getImages(), eventId)) {
+				return messageSource.getMessage("FAIL_UPLOAD_EVENT_IMAGE");
 			}
 			
 		} catch (Exception e) {
 			System.out.println(e);
-			return false;
+			return messageSource.getMessage("FAIL_CREATED_EVENT");
 		}
-		return true;		
+		return Constants.EMPTY;		
 	}
 	
 	@Override
@@ -190,7 +209,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			eventDTO.setCapaciticy(event.getCapaciticy());
 			eventDTO.setFare(event.getFare());
 			eventDTO.setPersonIdResponsible(event.getPersonIdResponsible());
-			eventDTO.setStateId(event.getStateId());
+			eventDTO.setState(event.getStateId());
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
@@ -198,11 +217,10 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return eventDTO;
 	}	
 
-	private Event setEvent(EventDTO eventDTO) {
+	private Event setEvent(CreateEventDTO eventDTO) {
 		Event event = new Event();
 
 		try {
-			event.setId(eventDTO.getId());
 			event.setName(eventDTO.getName().trim());
 			event.setDescription(eventDTO.getDescription().trim());
 			
@@ -220,8 +238,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			event.setLatitudeMeetingPoint(Double.parseDouble(eventDTO.getLatitudeMeetingPoint().trim()));
 			event.setCapaciticy(eventDTO.getCapaciticy());
 			event.setFare(eventDTO.getFare());
-			event.setPersonIdResponsible(eventDTO.getPersonIdResponsible());
-			event.setStateId(eventDTO.getStateId());
+			
+			Person person = new Person();
+			person.setId(Long.parseLong(eventDTO.getPersonIdResponsible()));
+			event.setPersonIdResponsible(person);
+			
+			State state = new State();
+			state.setId(Long.parseLong(eventDTO.getStateId()));
+			event.setStateId(state);
 						
 		} catch (Exception e) {
 			System.out.println(e);

@@ -1,7 +1,9 @@
 package com.co.mundoviajero.controller.impl;
 
+import com.co.mundoviajero.util.exception.ValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,9 @@ public class StateImpl implements StateController{
 
 	@Autowired
 	private StateBusiness stateBusiness;
+
+	@Autowired
+	private MessageSourceAccessor messageSource;
 	
 	@Override
 	public ResponseEntity<ResponseDTO> getAllStates() throws Exception {
@@ -25,8 +30,8 @@ public class StateImpl implements StateController{
 	public ResponseEntity<ResponseDTO> getState(@PathVariable("search") String search) throws Exception {
 		if(StringUtils.isNotBlank(search) && StringUtils.isNumeric(search)) {
 			return stateBusiness.getState(Long.parseLong(search));
-		}		
-		return null;
+		}
+		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
 	}
 
 }

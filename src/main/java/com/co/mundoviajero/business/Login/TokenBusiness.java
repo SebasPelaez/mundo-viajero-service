@@ -26,6 +26,4 @@ public class TokenBusiness {
                 .compact();        
         return jwt;
     }
-
-    //Comentario de prueba
 }

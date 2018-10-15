@@ -4,21 +4,26 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.PersonDTO;
+import com.co.mundoviajero.dto.person.CreatePersonDTO;
+import com.co.mundoviajero.dto.person.PersonDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.Profile;
+import com.co.mundoviajero.persistence.entity.State;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "PersonDAOImpl")
 @Transactional
 public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PersonDTO> getAllPeople() {
 		Query query = getCurrentSession().createQuery("From Person");
@@ -33,19 +38,17 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO createPerson(PersonDTO person) throws ValidationException {
+	public boolean createPerson(CreatePersonDTO person) throws ValidationException {
 
 		Person newPerson = setPerson(person);
-		Double calification = 0.0;
 
 		try {
-			newPerson.setCalification(calification);
 			getCurrentSession().saveOrUpdate(newPerson);
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return person;
+		return true;
 	}
 
 	@Override
@@ -68,69 +71,110 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 
 	@Override
-	public PersonDTO getPerson(Object object) {
+	public PersonDTO getPerson(Long id) {
+		
 		PersonDTO personDTO = null;
-		Person person = null;
-		String queryString = "";
-		String searchParameter = "";
-		Long id = 0L;
-
-		if (object instanceof Long) {
-			id = (Long) object;
-			searchParameter = String.valueOf(object);
-			queryString = "select p from Person p where p.id = :id or p.identification = :searchParameter"
-					+ " or p.rnt = :searchParameter";
-		} else {
-			searchParameter = String.valueOf(object);
-			queryString = "select p from Person p where p.id = :id or upper(p.identification) = upper(:searchParameter) or "
-					+ " upper(p.rnt) = upper(:searchParameter) or upper(p.email) = upper(:searchParameter)";
-		}
+		String queryString = "select p from Person p where p.id = :id";
 		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("searchParameter", searchParameter);
 		query.setParameter("id", id);
 
 		if (query.getResultList().isEmpty())
 			return null;
-
-		person = (Person) query.getSingleResult();
-		personDTO = setPersonDTO(person);
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());
 
 		return personDTO;
 	}
 
 	@Override
-	public PersonDTO updatePerson(PersonDTO person) throws ValidationException {
+	public PersonDTO getPersonWithParameters(Map<String, String> parameters) {
+		PersonDTO personDTO = null;
+		String queryString = "";
+		
+		String key = (String) parameters.keySet().toArray()[0];
+		String value = "";	
+		
+		switch (key) {
+			case "identification":
+				queryString = "select p from Person p where upper(p.identification) = upper(:search)";
+				value = parameters.get("identification");
+				break;
+			case "rnt":
+				queryString = "select p from Person p where upper(p.rnt) = upper(:search)";
+				value = parameters.get("rnt");
+				break;
+			case "email":
+				queryString = "select p from Person p where upper(p.email) = upper(:search)";
+				value = parameters.get("email");
+				break;
+			default:
+				break;
+		}
+		
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("search", value);
+		if (query.getResultList().isEmpty())
+			return null;
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());
 
-		Person personToModify = setPerson(person);
+		return personDTO;
+	}
+	
+	@Override
+	public boolean updatePerson(Map<String, String> parameters, String identifier) throws ValidationException {
+		StringBuffer parametersQueryString = new StringBuffer();
+		String baseQueryString = "update Person p set ";
+		String conditionQueryString = " where p."+identifier+" = :"+identifier;
+		
 		try {
-			Query query = getCurrentSession()
-					.createQuery("update Person p set p.email = :email, p.phoneNumber = :phoneNumber, p.address = :address,"
-							+ " p.password = :password, p.calification = :calification, p.token = :token, p.profilePhoto = :profilePhoto,"
-							+ " p.profileId = :profileId, p.stateId = :stateId where p.id = :id");
-			query.setParameter("id", personToModify.getId());
-			query.setParameter("email", personToModify.getEmail());
-			query.setParameter("phoneNumber", personToModify.getPhoneNumber());
-			query.setParameter("address", personToModify.getAddress());
-			query.setParameter("password", personToModify.getPassword());
-			query.setParameter("calification", personToModify.getCalification());
-			query.setParameter("token", personToModify.getToken());
-			query.setParameter("profilePhoto", personToModify.getProfilePhoto());
-			query.setParameter("profileId", personToModify.getProfileId());
-			query.setParameter("stateId", personToModify.getStateId());
+			
+			for(String parameter: parameters.keySet()) {
+				if(!parameter.equals(identifier)) {
+					parametersQueryString.append("p."+parameter+" = '"+parameters.get(parameter)+"', ");
+				}
+				
+			}
+			
+			parametersQueryString.replace(parametersQueryString.length()-2, parametersQueryString.length(), "");
+			String fullQueryString = baseQueryString + parametersQueryString.toString() + conditionQueryString;
+			
+			Query query = getCurrentSession().createQuery(fullQueryString);
+			query.setParameter(identifier,parameters.get(identifier));
 			query.executeUpdate();
+			
 		} catch (Exception e) {
 			System.out.println(e);
-			return null;
+			return false;
 		}
-		return person;
-
+		return true;		
 	}
-
-	private Person setPerson(PersonDTO personDTO) {
+	
+	@Override
+	public PersonDTO login(Map<String, String> loginParameters) {
+		PersonDTO personDTO = null;
+		
+		String queryString = "";
+		String email = loginParameters.get("email");
+		String password = loginParameters.get("password");
+		queryString = "select p from Person p where p.email = :email and p.password = :password";					
+		
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("email", email);
+		query.setParameter("password", password);
+		
+		if (query.getResultList().isEmpty()) {
+			return personDTO;
+		}
+		
+		personDTO = setPersonDTO((Person) query.getSingleResult());		
+		return personDTO;
+	}
+	
+	private Person setPerson(CreatePersonDTO personDTO) {
 		Person person = new Person();
 
 		try {
-			person.setId(personDTO.getId());
 			person.setIdentification(personDTO.getIdentification());
 			person.setRNT(personDTO.getRnt());
 			person.setName(personDTO.getName());
@@ -148,8 +192,14 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			person.setCalification(personDTO.getCalification());
 			person.setProfilePhoto(personDTO.getProfilePhoto());
 			person.setToken(personDTO.getToken());
-			person.setProfileId(personDTO.getProfileId());
-			person.setStateId(personDTO.getStateId());
+			
+			Profile profile = new Profile();
+			profile.setId(Long.parseLong(personDTO.getProfileId()));
+			person.setProfile(profile);
+			
+			State state = new State();
+			state.setId(Long.parseLong(personDTO.getStateId()));
+			person.setStateId(state);
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -176,13 +226,13 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 			personDTO.setCalification(person.getCalification());
 			personDTO.setProfilePhoto(person.getProfilePhoto().trim());
 			personDTO.setToken(person.getToken().trim());
-			personDTO.setProfileId(person.getProfileId());
-			personDTO.setStateId(person.getStateId());
+			personDTO.setProfile(person.getProfile());
+			personDTO.setState(person.getStateId());
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
 		}
 		return personDTO;
 	}
-
+	
 }

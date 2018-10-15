@@ -2,18 +2,14 @@ package com.co.mundoviajero.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-
-import com.co.mundoviajero.dto.PersonDTO;
 
 public class Validator {
 
@@ -78,15 +74,38 @@ public class Validator {
 		return diff >= 6570;
 	}
 	
-	public static boolean validateUpdatePerson(PersonDTO currentPerson, PersonDTO personToModify) {
+	public static boolean validateDate(String startDate, String endDate,String type) {
 		
-		if(currentPerson.getId() != personToModify.getId() || !currentPerson.getIdentification().equals(personToModify.getIdentification()) ||
-				!currentPerson.getRnt().equals(personToModify.getRnt()) || !currentPerson.getName().equals(personToModify.getName()) ||
-				!currentPerson.getLastName().equals(personToModify.getLastName()) || !currentPerson.getBirthday().equals(personToModify.getBirthday())) {
-			
-			return false;
+		int comparableHour;
+		
+		switch (type) {
+			case Constants.EVENT_CREATED_DATE:
+				comparableHour = 8;
+				break;
+			case Constants.EVENT_DURATION:
+				comparableHour = 1;
+				break;
+			default:
+				comparableHour = 0;
+				break;
 		}
-				
-		return true;
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date parsedStartDate = null;
+		Date parsedEndDate = null;
+		
+		try {
+			parsedStartDate = format.parse(startDate);
+			parsedEndDate = format.parse(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		long diffInMillies = parsedEndDate.getTime() - parsedStartDate.getTime();
+	    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	    
+	    return diff >= comparableHour;
+		
 	}
+	
 }

@@ -40,9 +40,9 @@ public class Validator {
 	}
 
 	public static String validateNumber(String data, String fieldName, int fieldLength, boolean mandatory) {
-		if (!NumberUtils.isNumber(data)) {
+		if (NumberUtils.isNumber(data)) {
 			if (mandatory) {
-				if (StringUtils.isBlank(data) || StringUtils.length(data) > fieldLength) {
+				if (StringUtils.length(data) > fieldLength) {
 					return String.format("%s-%s", fieldName, "Formato invalido|");
 				}
 			} else {
@@ -50,8 +50,9 @@ public class Validator {
 					return String.format("%s-%s", fieldName, "Formato invalido|");
 				}
 			}
+			return "";
 		}
-		return "";
+		return String.format("%s-%s", fieldName, "Is Not Number|");
 	}
 	
 	public static boolean validateBirthday(String data) {
@@ -62,15 +63,20 @@ public class Validator {
 	    Date currentDate = null;
 	    Date birthDay = null;
 	    
+	    long diffInMillies = 0L;
+	    long diff = 0L;
+	    
 		try {
 			currentDate = sdf.parse(data);
 			birthDay = sdf.parse(localDate.toString());
+			diffInMillies = Math.abs(birthDay.getTime() - currentDate.getTime());
+		    diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		    
 		} catch (ParseException e) {
+			diff = 0L;
 			e.printStackTrace();
-		}	    
-	 
-	    long diffInMillies = Math.abs(birthDay.getTime() - currentDate.getTime());
-	    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		}	 
+		
 		return diff >= 6570;
 	}
 	
@@ -93,17 +99,20 @@ public class Validator {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date parsedStartDate = null;
 		Date parsedEndDate = null;
+		long diffInMillies = 0L;
+		long diff = 0L;
 		
 		try {
+			
 			parsedStartDate = format.parse(startDate);
 			parsedEndDate = format.parse(endDate);
+			diffInMillies = parsedEndDate.getTime() - parsedStartDate.getTime();
+			diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		long diffInMillies = parsedEndDate.getTime() - parsedStartDate.getTime();
-	    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-	    
+		    
 	    return diff >= comparableHour;
 		
 	}

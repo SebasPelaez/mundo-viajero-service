@@ -55,7 +55,8 @@ public class EventBusiness {
 	}
 
 	public ResponseEntity<ResponseDTO> getEvent(Long id) throws ValidationException {
-
+	    
+	  
 		EventDTO eventDTO = eventDAO.getEvent(id);
 
 		if (eventDTO != null) {

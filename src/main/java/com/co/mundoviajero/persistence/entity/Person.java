@@ -67,7 +67,7 @@ public class Person implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "StateId", referencedColumnName = "Id")
-    private State stateId;
+    private State state;
     
     // Constructor and Methods
     public Person() {}
@@ -185,11 +185,11 @@ public class Person implements Serializable {
     	this.profile = profile;
     }
     
-    public State getStateId() {
-    	return stateId;
+    public State getState() {
+    	return state;
     }
     
-    public void setStateId(State stateId) {
-    	this.stateId = stateId;
+    public void setState(State state) {
+    	this.state = state;
     }
 }

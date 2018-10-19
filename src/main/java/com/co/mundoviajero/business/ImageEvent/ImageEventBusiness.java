@@ -3,7 +3,7 @@ package com.co.mundoviajero.business.ImageEvent;
 import java.util.List;
 import java.util.Map;
 
-import com.co.mundoviajero.dto.event.CreateImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.CreateImageEventDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.ResponseDTO;
-import com.co.mundoviajero.dto.event.ImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.ImageEventDTO;
 import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;

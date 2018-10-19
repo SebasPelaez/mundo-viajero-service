@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.co.mundoviajero.dto.person.CreatePersonDTO;
 import com.co.mundoviajero.dto.person.PersonDTO;
+import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 public interface IPersonDAO {
@@ -16,6 +17,6 @@ public interface IPersonDAO {
 	boolean existPersonTourist(String email);
 	boolean existPersonGuide(String identification,String rnt,String email);
 	boolean updatePerson(Map<String, String> parameters, String identifier) throws ValidationException;
-	PersonDTO login(Map<String, String> loginParameters);
+	Person login(String email, String password);
 	
 }

@@ -151,24 +151,20 @@ public class PersonDAOImpl extends BaseDAO implements IPersonDAO {
 	}
 	
 	@Override
-	public PersonDTO login(Map<String, String> loginParameters) {
-		PersonDTO personDTO = null;
+	public Person login(String email, String password) {
+		Person person = null;
 		
-		String queryString = "";
-		String email = loginParameters.get("email");
-		String password = loginParameters.get("password");
-		queryString = "select p from Person p where p.email = :email and p.password = :password";					
+		String queryString = "select p from Person p where upper(p.email) = upper(:email) and p.password = :password";
 		
 		Query query = getCurrentSession().createQuery(queryString);
 		query.setParameter("email", email);
 		query.setParameter("password", password);
 		
 		if (query.getResultList().isEmpty()) {
-			return personDTO;
+			return person;
 		}
-		
-		personDTO = setPersonDTO((Person) query.getSingleResult());		
-		return personDTO;
+
+		return (Person) query.getSingleResult();
 	}
 	
 	private Person setPerson(CreatePersonDTO personDTO) {

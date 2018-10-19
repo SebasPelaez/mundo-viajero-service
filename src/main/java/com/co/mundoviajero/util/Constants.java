@@ -8,5 +8,6 @@ public class Constants{
 	public static final String LONGITUDE = "longitude";
 	public static final String LATITUDE = "latitude";
 	public static final String BOUNDINGBOXDISTANCE = "20";
-	
+	public static final String EMAIL = "email";
+	public static final String PASSWORD = "password";
 }

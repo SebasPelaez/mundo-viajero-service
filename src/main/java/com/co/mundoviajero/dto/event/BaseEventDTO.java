@@ -1,20 +1,59 @@
 package com.co.mundoviajero.dto.event;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 public abstract class BaseEventDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 5)
 	protected Long id;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 150)
 	protected String name;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 500)
 	protected String description;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 24)
 	protected String startDate;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 24)
 	protected String endDate;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 250)
 	protected String longitudeMeetingPoint;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 250)
 	protected String latitudeMeetingPoint;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 4)
 	protected int capaciticy;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 8)
 	protected float fare;
 	
 	public Long getId() {

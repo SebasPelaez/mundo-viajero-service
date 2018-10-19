@@ -11,8 +11,8 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.event.CreateEventPlaceDTO;
-import com.co.mundoviajero.dto.event.EventPlaceDTO;
+import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
+import com.co.mundoviajero.dto.event.eventplace.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.City;
 import com.co.mundoviajero.persistence.entity.EventPlace;

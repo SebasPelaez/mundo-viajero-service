@@ -105,15 +105,23 @@ public class FieldConstants {
 	 */
 
 	public static final String ID = "id";
-	public static final String STATEID = "stateId";
 	public static final String EVENT_ID = "eventId";
-	public static final int ID_LENGTH = 5;
-	public static final boolean ID_OBLIGATORY = true;
 	
 	public static final int LONGITUDE_LENGTH = 250;
 	public static final boolean LONGITUDE_OBLIGATORY = true;
 	
 	public static final int LATITUDE_LENGTH = 250;
 	public static final boolean LATITUDE_OBLIGATORY = true;
+
+	/**
+	 * NUEVAS MODIFICACIONES
+	 */
+
+	public static final String STATE_ID = "stateId";
+	public static final String PROFILE_ID = "profileId";
+
+	public static final int ID_LENGTH = 5;
+	public static final boolean ID_OBLIGATORY = true;
+
 	
 }

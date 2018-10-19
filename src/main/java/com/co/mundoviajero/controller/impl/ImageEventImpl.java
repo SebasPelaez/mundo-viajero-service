@@ -2,7 +2,7 @@ package com.co.mundoviajero.controller.impl;
 
 import java.util.Map;
 
-import com.co.mundoviajero.dto.event.CreateImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.CreateImageEventDTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.co.mundoviajero.business.ImageEvent.ImageEventBusiness;
 import com.co.mundoviajero.controller.ImageEventController;
 import com.co.mundoviajero.dto.ResponseDTO;
-import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.exception.ValidationException;
 

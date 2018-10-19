@@ -3,7 +3,7 @@ package com.co.mundoviajero.persistence.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.co.mundoviajero.dto.event.ImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.ImageEventDTO;
 
 public interface IImageEventDAO {
 	

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
-import com.co.mundoviajero.dto.event.CreateImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.CreateImageEventDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;

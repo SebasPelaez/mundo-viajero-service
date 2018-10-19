@@ -1,22 +1,60 @@
 package com.co.mundoviajero.dto.person;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 
 public abstract class BasePersonDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	@Length(max = 20)
 	protected String identification;
+
+	@Length(max = 25)
 	protected String rnt;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 100)
 	protected String name;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 100)
 	protected String lastName;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 12)
 	protected String birthday;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 40)
 	protected String email;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 13)
 	protected String phoneNumber;
+
+	@Length(max = 150)
 	protected String address;
+
+	@Length(max = 500)
 	protected String password;
+
+	@Length(max = 4)
 	protected Double calification;
+
+	@Length(max = 150)
 	protected String token;
+
+	@Length(max = 500)
 	protected String profilePhoto;
 	
 	public String getIdentification() {

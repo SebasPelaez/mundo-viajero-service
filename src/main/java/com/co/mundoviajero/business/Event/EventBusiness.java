@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.event.CreateEventDTO;
-import com.co.mundoviajero.dto.event.CreateEventPlaceDTO;
+import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
 import com.co.mundoviajero.dto.event.EventDTO;
-import com.co.mundoviajero.dto.event.ImageEventDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;

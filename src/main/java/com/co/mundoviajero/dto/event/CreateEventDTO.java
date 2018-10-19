@@ -1,14 +1,32 @@
 package com.co.mundoviajero.dto.event;
 
+import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CreateEventDTO extends BaseEventDTO {
 	
 	private static final long serialVersionUID = 1L;
-	
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 5)
 	private String personIdResponsible;
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 5)
 	private String stateId;
+
+	@NotNull
+	@NotEmpty
 	private List<CreateEventPlaceDTO> places;
+
+	@NotNull
+	@NotEmpty
 	private List<String> images;
 	
 	public String getPersonIdResponsible() {

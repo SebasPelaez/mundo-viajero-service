@@ -2,17 +2,32 @@ package com.co.mundoviajero.dto.event;
 
 import java.util.List;
 
-import com.co.mundoviajero.persistence.entity.ImageEvent;
+import com.co.mundoviajero.dto.event.eventplace.EventPlaceDTO;
+import com.co.mundoviajero.dto.event.imageevent.ImageEventDTO;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.State;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class EventDTO extends BaseEventDTO{
 
 	private static final long serialVersionUID = 1L;
-	
+
+	@NotNull
+	@NotEmpty
 	private Person personIdResponsible;
+
+	@NotNull
+	@NotEmpty
 	private State state;
+
+	@NotNull
+	@NotEmpty
 	private List<EventPlaceDTO> places;
+
+	@NotNull
+	@NotEmpty
 	private List<ImageEventDTO> images;
 	
 	public Long getId() {

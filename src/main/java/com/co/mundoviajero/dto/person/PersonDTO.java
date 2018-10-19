@@ -2,13 +2,22 @@ package com.co.mundoviajero.dto.person;
 
 import com.co.mundoviajero.persistence.entity.Profile;
 import com.co.mundoviajero.persistence.entity.State;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class PersonDTO extends BasePersonDTO {
 	
 	private static final long serialVersionUID = 1L;
-	
+
+	@NotNull
+	@NotEmpty
+	@Length(max = 5)
 	private Long id;
+
 	private Profile profileId;
+
 	private State stateId;
 	
 	public Long getId() {

@@ -17,9 +17,6 @@ public class StateImpl implements StateController{
 
 	@Autowired
 	private StateBusiness stateBusiness;
-
-	@Autowired
-	private MessageSourceAccessor messageSource;
 	
 	@Override
 	public ResponseEntity<ResponseDTO> getAllStates() throws Exception {
@@ -27,11 +24,8 @@ public class StateImpl implements StateController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> getState(@PathVariable("search") String search) throws Exception {
-		if(StringUtils.isNotBlank(search) && StringUtils.isNumeric(search)) {
-			return stateBusiness.getState(Long.parseLong(search));
-		}
-		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
+	public ResponseEntity<ResponseDTO> getState(@PathVariable("id") Long id) throws Exception {
+		return stateBusiness.getState(id);
 	}
 
 }

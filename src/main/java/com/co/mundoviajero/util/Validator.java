@@ -53,6 +53,15 @@ public class Validator {
 		}
 		return "";
 	}
+
+	public static String validateLong(Long cadena, String nombreCampo, boolean obligatorio) {
+		if (obligatorio) {
+			if (cadena == null || (cadena != null && cadena.longValue() == 0)) {
+				return String.format("%s-%s", nombreCampo, "Formato inv\u00e1lido|");
+			}
+		}
+		return "";
+	}
 	
 	public static boolean validateBirthday(String data) {
 		

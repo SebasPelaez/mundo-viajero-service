@@ -1,14 +1,10 @@
 package com.co.mundoviajero.business.Login;
 
-import java.util.Map;
-
 import com.co.mundoviajero.dto.login.AuthenticateDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
 import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.entity.Person;
-import com.co.mundoviajero.util.Constants;
-import com.co.mundoviajero.util.exception.dto.ErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.ResponseDTO;
-import com.co.mundoviajero.dto.person.PersonDTO;
 import com.co.mundoviajero.dto.login.LoginResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
-import com.co.mundoviajero.util.FieldConstants;
-import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Service

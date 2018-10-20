@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.entity.Profile;
-import com.co.mundoviajero.persistence.entity.State;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.dto.ErrorDTO;

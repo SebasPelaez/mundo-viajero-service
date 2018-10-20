@@ -2,8 +2,6 @@ package com.co.mundoviajero.dto.person;
 
 import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
-import com.co.mundoviajero.persistence.entity.Profile;
-import com.co.mundoviajero.persistence.entity.State;
 
 import java.io.Serializable;
 

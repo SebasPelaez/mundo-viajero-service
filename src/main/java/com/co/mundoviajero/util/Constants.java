@@ -10,4 +10,6 @@ public class Constants{
 	public static final String BOUNDINGBOXDISTANCE = "20";
 	public static final String EMAIL = "email";
 	public static final String PASSWORD = "password";
+	public static final String TOURIST_PROFILE_ID = "1";
+	public static final String GUIDE_PROFILE_ID = "2";
 }

@@ -1,5 +1,6 @@
 package com.co.mundoviajero.controller;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.MediaType;
 
 import com.co.mundoviajero.dto.login.AuthenticateDTO;
@@ -16,5 +17,5 @@ public interface LoginController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> login(@RequestBody AuthenticateDTO authenticateParameters) throws Exception;
+	ResponseEntity<ResponseDTO> login(@Valid @RequestBody AuthenticateDTO authenticateParameters) throws Exception;
 }

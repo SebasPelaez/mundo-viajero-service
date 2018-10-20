@@ -1,8 +1,12 @@
 package com.co.mundoviajero.business.Person;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -12,11 +16,18 @@ import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.person.CreatePersonDTO;
-import com.co.mundoviajero.dto.person.PersonDTO;
+import com.co.mundoviajero.dto.person.PersonResponseDTO;
+import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
+import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
+import com.co.mundoviajero.persistence.entity.Person;
+import com.co.mundoviajero.persistence.entity.Profile;
+import com.co.mundoviajero.persistence.entity.State;
+import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
+import com.co.mundoviajero.util.exception.dto.ErrorDTO;
 
 @Service
 public class PersonBusiness {
@@ -28,160 +39,141 @@ public class PersonBusiness {
 	private MessageSourceAccessor messageSource;
 
 	public ResponseEntity<ResponseDTO> getAllPeople() throws Exception {
-		List<PersonDTO> people = personDAO.getAllPeople();
-		if (people != null) {
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), people),
+
+		List<Person> people = personDAO.getAllPeople();
+		if (CollectionUtils.isNotEmpty(people)) {
+
+			List<PersonResponseDTO> peopleResponse = new ArrayList<>();
+			people.forEach(person -> peopleResponse.add(setPersonResponseDTO(person)));
+			return new ResponseEntity<>(
+					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
+							messageSource.getMessage("GET_DESC_SUCCESS"), peopleResponse),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
-				HttpStatus.NOT_FOUND);
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("GET_DESC_ERROR_PERSON")));
 	}
 
 	public ResponseEntity<ResponseDTO> getPerson(Long id) throws ValidationException {
 
-		PersonDTO personDTO = personDAO.getPerson(id);
+		StringBuilder sb = new StringBuilder(
+				Validator.validateLong(id, FieldConstants.PERSON_ID, FieldConstants.ID_OBLIGATORY));
 
-		if (personDTO != null) {
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
+		if (sb.toString().length() > 0) {
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("MISS_QUERY_PARAMS"), sb.toString()));
+		}
+
+		Person person = personDAO.getPerson(id);
+
+		if (person != null) {
+
+			return new ResponseEntity<>(
+					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
+							messageSource.getMessage("GET_DESC_SUCCESS"), setPersonResponseDTO(person)),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
-				HttpStatus.NOT_FOUND);
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("GET_DESC_ERROR_PERSON")));
 
 	}
 
-	public ResponseEntity<ResponseDTO> getPersonWithParameters(Map<String,String> parameters) throws ValidationException {
+	public ResponseEntity<ResponseDTO> getPersonWithParameters(Map<String, String> parameters)
+			throws ValidationException {
 
-		PersonDTO personDTO = personDAO.getPersonWithParameters(parameters);
+		if (!parameters.isEmpty()) {
+			
+			Person person = personDAO.getPersonWithParameters(parameters);
 
-		if (personDTO != null) {
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), personDTO),
-					HttpStatus.OK);
+			if (person != null) {
+
+				return new ResponseEntity<>(
+						new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
+								messageSource.getMessage("GET_DESC_SUCCESS"), setPersonResponseDTO(person)),
+						HttpStatus.OK);
+			}
+			throw new ValidationException(
+					new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("GET_DESC_ERROR_PERSON")));
+			
 		}
-		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
-				HttpStatus.NOT_FOUND);
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_QUERY_PARAMS")));
 
 	}
 
 	public ResponseEntity<ResponseDTO> createPerson(CreatePersonDTO person) throws ValidationException {
+
 		StringBuilder sb = new StringBuilder();
-
-		sb.append(Validator.valideString(person.getIdentification(), FieldConstants.PERSON_IDENTIFICATION,
-				FieldConstants.PERSON_IDENTIFICATION_LENGTH, FieldConstants.PERSON_IDENTIFICATION_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getRnt(), FieldConstants.PERSON_RNT, FieldConstants.PERSON_RNT_LENGTH,
-				FieldConstants.PERSON_RNT_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getName(), FieldConstants.PERSON_NAME,
-				FieldConstants.PERSON_NAME_LENGTH, FieldConstants.PERSON_NAME_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getLastName(), FieldConstants.PERSON_LASTNAME,
-				FieldConstants.PERSON_LASTNAME_LENGTH, FieldConstants.PERSON_LASTNAME_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getBirthday(), FieldConstants.PERSON_BIRTHDAY,
-				FieldConstants.PERSON_BIRTHDAY_LENGTH, FieldConstants.PERSON_BIRTHDAY_OBLIGATORY));
-
 		sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, person.getEmail()));
-
-		sb.append(Validator.valideString(person.getPhoneNumber(), FieldConstants.PERSON_PHONENUMBER,
-				FieldConstants.PERSON_PHONENUMBER_LENGTH, FieldConstants.PERSON_PHONENUMBER_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getAddress(), FieldConstants.PERSON_ADDRESS,
-				FieldConstants.PERSON_ADDRESS_LENGTH, FieldConstants.PERSON_ADDRESS_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getPassword(), FieldConstants.PERSON_PASSWORD,
-				FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
-
-		sb.append(Validator.validateNumber(String.valueOf(person.getCalification()), FieldConstants.PERSON_CALIFICATION,
-				FieldConstants.PERSON_CALIFICATION_LENGTH, FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getToken(), FieldConstants.PERSON_TOKEN,
-				FieldConstants.PERSON_TOKEN_LENGTH, FieldConstants.PERSON_TOKEN_OBLIGATORY));
-
-		sb.append(Validator.valideString(person.getProfilePhoto(), FieldConstants.PERSON_PROFILEPHOTO,
-				FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
-
-		sb.append(Validator.validateNumber(person.getProfileId(), FieldConstants.PERSON_PROFILEID,
-				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
-
-		sb.append(Validator.validateNumber(person.getStateId(), FieldConstants.STATEID,
-				FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
-
 		if (sb.toString().length() > 0) {
-			throw new ValidationException(sb.toString());
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"), sb.toString()));
 		}
 
 		if (Validator.validateBirthday(person.getBirthday())) {
-			setNullAttributes(person);
-			if (person.getProfileId().equals("1")) {
+
+			if (person.getProfileId().equals(Constants.TOURIST_PROFILE_ID)) {
 
 				if (!personDAO.existPersonTourist(person.getEmail())) {
-					return new ResponseEntity<>(
-							new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-									messageSource.getMessage("DESC_SUCCESS"),
-									messageSource.getMessage("POST_DESC_SUCCESS"), personDAO.createPerson(person)),
-							HttpStatus.OK);
+					createPersonExecute(person);
 				} else {
-					throw new ValidationException(messageSource.getMessage("EXISTING_TOURIST_DESC_ERROR"));
+					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
+							messageSource.getMessage("EXISTING_TOURIST_DESC_ERROR")));
 				}
 			}
 			// At this part the new Person should be a Guide
-			if(!StringUtils.isBlank(person.getIdentification()) && !StringUtils.isBlank(person.getRnt())) {
+			if (!StringUtils.isBlank(person.getIdentification()) && !StringUtils.isBlank(person.getRnt())) {
 				if (!personDAO.existPersonGuide(person.getIdentification(), person.getRnt(), person.getEmail())) {
-					return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-							messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
-							personDAO.createPerson(person)), HttpStatus.OK);
+					createPersonExecute(person);
 				} else {
-					throw new ValidationException(messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR"));
-				}				
+					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
+							messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR")));
+				}
 			}
-			throw new ValidationException(messageSource.getMessage("GUIDE_REQUIRED_PARAMS"));			
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
+					messageSource.getMessage("GUIDE_REQUIRED_PARAMS")));
 		} else {
-			throw new ValidationException(messageSource.getMessage("BIRTHDAY_DESC_ERROR"));
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
+					messageSource.getMessage("BIRTHDAY_DESC_ERROR")));
 		}
 
 	}
 
 	public ResponseEntity<ResponseDTO> updatePerson(Map<String, String> bodyParameters) throws ValidationException {
 
-		String identifier = "";
-		StringBuilder sb = new StringBuilder();
-		
-		if( bodyParameters.containsKey(FieldConstants.PERSON_EMAIL)) {
-			identifier = FieldConstants.PERSON_EMAIL;
-		}else {
-			if( bodyParameters.containsKey(FieldConstants.PERSON_IDENTIFICATION)) {
-				identifier = FieldConstants.PERSON_IDENTIFICATION;
+		if (!bodyParameters.isEmpty()) {
+
+			String identifier = "";
+			StringBuilder sb = new StringBuilder();
+
+			if (bodyParameters.containsKey(FieldConstants.PERSON_EMAIL)) {
+				identifier = FieldConstants.PERSON_EMAIL;
+			} else {
+				if (bodyParameters.containsKey(FieldConstants.PERSON_IDENTIFICATION)) {
+					identifier = FieldConstants.PERSON_IDENTIFICATION;
+				}
 			}
-		}
-		
-		for(String parameter: bodyParameters.keySet()) {
-			
-			switch (parameter) {
+
+			for (String parameter : bodyParameters.keySet()) {
+
+				switch (parameter) {
 				case FieldConstants.PERSON_EMAIL:
 					sb.append(Validator.valideEmail(FieldConstants.PERSON_EMAIL, bodyParameters.get(parameter)));
-					break;	
+					break;
 				case FieldConstants.PERSON_PHONENUMBER:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.PERSON_PHONENUMBER,
 							FieldConstants.PERSON_PHONENUMBER_LENGTH, FieldConstants.PERSON_PHONENUMBER_OBLIGATORY));
-					break;					
+					break;
 				case FieldConstants.PERSON_ADDRESS:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.PERSON_ADDRESS,
 							FieldConstants.PERSON_ADDRESS_LENGTH, FieldConstants.PERSON_ADDRESS_OBLIGATORY));
-					break;					
+					break;
 				case FieldConstants.PERSON_PASSWORD:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.PERSON_PASSWORD,
 							FieldConstants.PERSON_PASSWORD_LENGTH, FieldConstants.PERSON_PASSWORD_OBLIGATORY));
-					break;					
+					break;
 				case FieldConstants.PERSON_CALIFICATION:
-					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)), FieldConstants.PERSON_CALIFICATION,
-							FieldConstants.PERSON_CALIFICATION_LENGTH, FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
+					sb.append(Validator.validateNumber(("" + bodyParameters.get(parameter)),
+							FieldConstants.PERSON_CALIFICATION, FieldConstants.PERSON_CALIFICATION_LENGTH,
+							FieldConstants.PERSON_CALIFICATION_OBLIGATORY));
 					break;
 				case FieldConstants.PERSON_TOKEN:
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.PERSON_TOKEN,
@@ -191,53 +183,114 @@ public class PersonBusiness {
 					sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.PERSON_PROFILEPHOTO,
 							FieldConstants.PERSON_PROFILEPHOTO_LENGTH, FieldConstants.PERSON_PROFILEPHOTO_OBLIGATORY));
 					break;
-				case FieldConstants.PERSON_PROFILEID:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.PERSON_PROFILEID,
-							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+				case FieldConstants.PROFILE_ID:
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.PROFILE_ID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
-				case FieldConstants.STATEID:
-					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)), FieldConstants.STATEID,
-							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+				case FieldConstants.STATE_ID:
+					sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+							FieldConstants.STATE_ID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
 					break;
 				default:
 					break;
-			}
-			
-		}
+				}
 
-		if (sb.toString().length() > 0) {
-			throw new ValidationException(sb.toString());
-		}
-		
-		if(!StringUtils.isEmpty(identifier) ) {
-			if( personDAO.updatePerson(bodyParameters, identifier) ) {		
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"), null),
-						HttpStatus.PRECONDITION_REQUIRED);			
 			}
-			
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
+
+			if (sb.toString().length() > 0) {
+				throw new ValidationException(
+						new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"), sb.toString()));
+			}
+
+			if (StringUtils.isEmpty(identifier)) {
+				throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("MISS_IDENTIFICATION_PARAM")));
+			}
+
+			boolean updateResponse = personDAO.updatePerson(bodyParameters, identifier);
+			if (updateResponse) {
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"),
+						updateResponse), HttpStatus.PRECONDITION_REQUIRED);
+			}
+
+			return new ResponseEntity<>(
+					new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
+							messageSource.getMessage("PUT_DESC_ERROR"), updateResponse),
 					HttpStatus.PRECONDITION_REQUIRED);
+
 		}
-		throw new ValidationException(messageSource.getMessage("MISS_IDENTIFICATION_PARAM"));
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_BODY_PARAMS")));
 	}
 
-	private void setNullAttributes(CreatePersonDTO person) {
-		if (person.getIdentification() == null)
-			person.setIdentification("");
-		if (person.getRnt() == null)
-			person.setRnt("");
-		if (person.getAddress() == null)
-			person.setAddress("");
-		if (person.getPassword() == null)
-			person.setPassword("");
-		if (person.getCalification() == null)
-			person.setCalification(0.0);
-		if (person.getToken() == null)
-			person.setToken("");
-		if (person.getProfilePhoto() == null)
-			person.setProfilePhoto("");
+	private ResponseEntity<ResponseDTO> createPersonExecute(CreatePersonDTO personDTO) throws ValidationException {
+
+		Person person = setPerson(personDTO);
+		boolean createResponse = personDAO.createPerson(person);
+		if (createResponse) {
+			return new ResponseEntity<>(
+					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
+							messageSource.getMessage("POST_DESC_SUCCESS"), createResponse),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERROR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), createResponse),
+				HttpStatus.OK);
+	}
+
+	private PersonResponseDTO setPersonResponseDTO(Person person) {
+
+		PersonResponseDTO personResponseDTO = new PersonResponseDTO(person.getId(), person.getIdentification(),
+				person.getRNT(), person.getName(), person.getLastName(), person.getBirthday().toString(),
+				person.getEmail(), person.getPhoneNumber(), person.getAddress(), person.getCalification(),
+				person.getProfilePhoto(), person.getToken(),
+				new ProfileResponseDTO(person.getProfile().getId(), person.getProfile().getDescription(),
+						new StateResponseDTO(person.getProfile().getState().getId(),
+								person.getProfile().getState().getDescription(),
+								person.getProfile().getState().getBelongsTo())),
+				new StateResponseDTO(person.getState().getId(), person.getState().getDescription(),
+						person.getState().getBelongsTo()));
+
+		return personResponseDTO;
+	}
+	
+	private Person setPerson(CreatePersonDTO personDTO) {
+		Person person = new Person();
+
+		try {
+			person.setIdentification(personDTO.getIdentification());
+			person.setRNT(personDTO.getRnt());
+			person.setName(personDTO.getName());
+			person.setLastName(personDTO.getLastName());
+
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Date parsed = format.parse(personDTO.getBirthday());
+			java.sql.Date sql = new java.sql.Date(parsed.getTime());
+			person.setBirthday(sql);
+
+			person.setEmail(personDTO.getEmail());
+			person.setPhoneNumber(personDTO.getPhoneNumber());
+			person.setAddress(personDTO.getAddress());
+			person.setPassword(personDTO.getPassword());
+			person.setCalification(personDTO.getCalification());
+			person.setProfilePhoto(personDTO.getProfilePhoto());
+			person.setToken(personDTO.getToken());
+			
+			Profile profile = new Profile();
+			profile.setId(Long.parseLong(personDTO.getProfileId()));
+			person.setProfile(profile);
+			
+			State state = new State();
+			state.setId(Long.parseLong(personDTO.getStateId()));
+			person.setState(state);
+
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+
+		return person;
 	}
 
 }

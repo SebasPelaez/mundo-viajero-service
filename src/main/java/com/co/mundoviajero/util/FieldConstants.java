@@ -48,8 +48,6 @@ public class FieldConstants {
 	public static final int PERSON_PROFILEPHOTO_LENGTH = 500;
 	public static final boolean PERSON_PROFILEPHOTO_OBLIGATORY = false;
 
-	public static final String PERSON_PROFILEID = "profileId";
-
 	/**
 	 * EVENT FIELDS
 	 */
@@ -116,7 +114,7 @@ public class FieldConstants {
 	/**
 	 * NUEVAS MODIFICACIONES
 	 */
-
+	public static final String PERSON_ID = "personId";
 	public static final String STATE_ID = "stateId";
 	public static final String PROFILE_ID = "profileId";
 

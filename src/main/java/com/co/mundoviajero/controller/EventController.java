@@ -2,6 +2,7 @@ package com.co.mundoviajero.controller;
 
 import java.util.Map;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public interface EventController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/event", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> createEvent(@RequestBody CreateEventDTO event) throws Exception;
+	ResponseEntity<ResponseDTO> createEvent(@Valid @RequestBody CreateEventDTO event) throws Exception;
 	
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/event", method = RequestMethod.PUT, produces = {

@@ -2,8 +2,6 @@ package com.co.mundoviajero.business.Login;
 
 import com.co.mundoviajero.dto.login.AuthenticateDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
-import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
-import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.login.LoginResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
@@ -31,7 +30,7 @@ public class LoginBusiness {
 
         if (person != null) {
 
-            PersonResponseDTO personResponseDTO = setPersonResponseDTO(person);
+            PersonResponseDTO personResponseDTO = SetEntitiesIntoDTO.setPersonResponseDTO(person);
 
             String jwt = TokenBusiness.generateToken(person.getEmail());
             LoginResponseDTO loginResponseDTO = new LoginResponseDTO(personResponseDTO, jwt);
@@ -45,21 +44,6 @@ public class LoginBusiness {
                 messageSource.getMessage("LOGIN_ERROR"), messageSource.getMessage("LOGIN_ERROR_DESC"),
                 null),HttpStatus.UNAUTHORIZED);
 
-    }
-
-    private PersonResponseDTO setPersonResponseDTO(Person person){
-
-        PersonResponseDTO personResponseDTO = new PersonResponseDTO(person.getId(),person.getIdentification(),
-                person.getRNT(),person.getName(),person.getLastName(),person.getBirthday().toString(),person.getEmail(),
-                person.getPhoneNumber(),person.getAddress(),person.getCalification(),person.getProfilePhoto(),
-                person.getToken(),
-                new ProfileResponseDTO(person.getProfile().getId(),person.getProfile().getDescription(),
-                new StateResponseDTO(person.getProfile().getState().getId(),
-                        person.getProfile().getState().getDescription(),person.getProfile().getState().getBelongsTo())),
-                new StateResponseDTO(person.getState().getId(),person.getState().getDescription(),
-                        person.getState().getBelongsTo()));
-
-        return personResponseDTO;
     }
 
 }

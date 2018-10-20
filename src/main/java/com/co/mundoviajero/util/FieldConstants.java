@@ -103,7 +103,7 @@ public class FieldConstants {
 	 */
 
 	public static final String ID = "id";
-	public static final String EVENT_ID = "eventId";
+	
 	
 	public static final int LONGITUDE_LENGTH = 250;
 	public static final boolean LONGITUDE_OBLIGATORY = true;
@@ -117,6 +117,7 @@ public class FieldConstants {
 	public static final String PERSON_ID = "personId";
 	public static final String STATE_ID = "stateId";
 	public static final String PROFILE_ID = "profileId";
+	public static final String EVENT_ID = "eventId";
 
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;

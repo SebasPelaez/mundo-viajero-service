@@ -55,7 +55,7 @@ public class Event implements Serializable {
 	
 	@ManyToOne
     @JoinColumn(name = "StateId", referencedColumnName = "Id")
-    private State stateId;
+    private State state;
 
 	public Long getId() {
 		return id;
@@ -137,12 +137,12 @@ public class Event implements Serializable {
 		this.personIdResponsible = personIdResponsible;
 	}
 
-	public State getStateId() {
-		return stateId;
+	public State getState() {
+		return state;
 	}
 
-	public void setStateId(State stateId) {
-		this.stateId = stateId;
+	public void setState(State state) {
+		this.state = state;
 	}
 
 }

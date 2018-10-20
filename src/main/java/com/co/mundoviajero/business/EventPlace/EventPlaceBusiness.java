@@ -19,6 +19,7 @@ import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 import com.co.mundoviajero.util.BoundingBoxDistance.MapPoint;
 import com.co.mundoviajero.util.exception.ValidationException;
+import com.co.mundoviajero.util.exception.dto.ErrorDTO;
 
 @Service
 public class EventPlaceBusiness {
@@ -123,21 +124,32 @@ public class EventPlaceBusiness {
 	}
 
 	public List<Long> findNearestEvents(Map<String, String> parameters) throws ValidationException {
-
-		double latitude = Double.parseDouble(parameters.get(Constants.LATITUDE));
-		double longitude = Double.parseDouble(parameters.get(Constants.LONGITUDE));
-		double halfSideInKm = Double.parseDouble(Constants.BOUNDINGBOXDISTANCE);
-
-		MapPoint mp1 = new MapPoint(latitude, longitude);
-		BoundingBox boundingBox = BoundingBoxDistance.GetBoundingBox(mp1, halfSideInKm);
 		
-		List<Long> eventsId = eventPlaceDAO.findNearestEvents(boundingBox);
+		if(!parameters.isEmpty()) {
+			if (parameters.containsKey(Constants.LATITUDE) && parameters.containsKey(Constants.LONGITUDE)) {
+				
+				double latitude = Double.parseDouble(parameters.get(Constants.LATITUDE));
+				double longitude = Double.parseDouble(parameters.get(Constants.LONGITUDE));
+				double halfSideInKm = Double.parseDouble(Constants.BOUNDINGBOXDISTANCE);
 
-		if(eventsId != null) {
-			return eventsId;
+				MapPoint mp1 = new MapPoint(latitude, longitude);
+				BoundingBox boundingBox = BoundingBoxDistance.GetBoundingBox(mp1, halfSideInKm);
+				
+				List<Long> eventsId = eventPlaceDAO.findNearestEvents(boundingBox);
+
+				if(eventsId != null) {
+					return eventsId;
+				}
+
+				throw new ValidationException(
+						new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("NEAREST_EVENTS_NOT_FOUND")));
+			
+			}
+			throw new ValidationException(
+					new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_LATITUDE_LONGITUDE_PARAMS")));
 		}
-
-		throw new ValidationException(messageSource.getMessage("NEAREST_EVENTS_NOT_FOUND"));
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_QUERY_PARAMS")));
 		
 	}
 

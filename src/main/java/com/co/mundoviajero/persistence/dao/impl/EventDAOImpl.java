@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.co.mundoviajero.dto.event.CreateEventDTO;
-import com.co.mundoviajero.dto.event.EventDTO;
+import com.co.mundoviajero.dto.event.EventResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.dao.IImageEventDAO;
@@ -42,16 +42,16 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventDTO> getAllEvents() {
+	public List<EventResponseDTO> getAllEvents() {
 		Query query = getCurrentSession().createQuery("From Event");
 		List<Event> events = (List<Event>) query.getResultList();
 		
 		if (events.isEmpty())
 			return null;
 		
-		List<EventDTO> eventDTO = new ArrayList<>();
+		List<EventResponseDTO> eventDTO = new ArrayList<>();
 		for (Event e : events) {
-			EventDTO eDTO = setEventDTO(e);
+			EventResponseDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
 			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
@@ -62,7 +62,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventDTO> getEventsWithId(List<Long> eventsId) {
+	public List<EventResponseDTO> getEventsWithId(List<Long> eventsId) {
 		
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("select e from Event e where e.id IN (");
@@ -77,9 +77,9 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		if (events.isEmpty())
 			return null;
 		
-		List<EventDTO> eventDTO = new ArrayList<>();
+		List<EventResponseDTO> eventDTO = new ArrayList<>();
 		for (Event e : events) {
-			EventDTO eDTO = setEventDTO(e);
+			EventResponseDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
 			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
@@ -89,24 +89,14 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	}
 
 	@Override
-	public EventDTO getEvent(Long id) {
-		EventDTO eventDTO = null;
-		String queryString = "select e from Event e where e.id = :id";
-		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("id", id);
-
-		if (query.getResultList().isEmpty())
-			return null;
+	public Event getEvent(Long id) {
 		
-		eventDTO = setEventDTO((Event) query.getSingleResult());		
-		eventDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eventDTO.getId()));
-		eventDTO.setImages(imageEventDAO.getAllImageEvent(eventDTO.getId()));
-		return eventDTO;
+		return getCurrentSession().find(Event.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventDTO> getEventWithParameters(Map<String, Object> parameters) {
+	public List<EventResponseDTO> getEventWithParameters(Map<String, Object> parameters) {
 		StringBuffer parametersQueryString = new StringBuffer();
 		parametersQueryString.append("select e from Event e where ");
 		
@@ -123,9 +113,9 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		if (events.isEmpty())
 			return null;		
 		
-		List<EventDTO> eventDTO = new ArrayList<>();
+		List<EventResponseDTO> eventDTO = new ArrayList<>();
 		for (Event e : events) {
-			EventDTO eDTO = setEventDTO(e);
+			EventResponseDTO eDTO = setEventDTO(e);
 			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
 			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
 			eventDTO.add(eDTO);
@@ -142,7 +132,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 			getCurrentSession().saveOrUpdate(newEvent);
 			Map<String, Object> parameter = new HashMap<>();
 			parameter.put("personIdResponsible", event.getPersonIdResponsible());
-			List<EventDTO> events = getEventWithParameters(parameter);
+			List<EventResponseDTO> events = getEventWithParameters(parameter);
 			
 			Long eventId = events.get(0).getId();
 			event.setId(eventId);
@@ -195,8 +185,8 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		return !query.getResultList().isEmpty();
 	}
 	
-	private EventDTO setEventDTO(Event event) {
-		EventDTO eventDTO = new EventDTO();
+	private EventResponseDTO setEventDTO(Event event) {
+		EventResponseDTO eventDTO = new EventResponseDTO();
 		
 		try {
 			eventDTO.setId(event.getId());

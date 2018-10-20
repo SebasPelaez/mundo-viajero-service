@@ -3,7 +3,6 @@ package com.co.mundoviajero.business.Profile;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.entity.Profile;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
+import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.persistence.dao.IProfileDAO;
 import com.co.mundoviajero.util.exception.ValidationException;
@@ -37,10 +37,7 @@ public class ProfileBusiness {
 			List<ProfileResponseDTO> profilesResponseDTO = new ArrayList<>();
 			profiles.forEach(
 					profile -> profilesResponseDTO
-							.add(new ProfileResponseDTO(profile.getId(),profile.getDescription(),
-									new StateResponseDTO(profile.getState().getId(),profile.getState().getDescription(),
-											profile.getState().getBelongsTo())
-							))
+							.add(SetEntitiesIntoDTO.setProfileResponseDTO(profile))
 			);
 
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -66,10 +63,7 @@ public class ProfileBusiness {
 		
 		if(profile != null) {
 
-			ProfileResponseDTO profileResponseDTO =
-					new ProfileResponseDTO(profile.getId(),profile.getDescription(),
-							new StateResponseDTO(profile.getState().getId(),profile.getState().getDescription(),
-									profile.getState().getBelongsTo()));
+			ProfileResponseDTO profileResponseDTO = SetEntitiesIntoDTO.setProfileResponseDTO(profile);
 
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),

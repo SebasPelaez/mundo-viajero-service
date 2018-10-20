@@ -39,18 +39,12 @@ public class EventImpl implements EventController{
 
 	@Override
 	public ResponseEntity<ResponseDTO> getEvent(@PathVariable("id") String id) throws Exception {
-		if(StringUtils.isNotBlank(id)) {
-			return eventBusiness.getEvent(Long.parseLong(id));
-		}
-		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
+		return eventBusiness.getEvent(Long.parseLong(id));
 	}
 
 	@Override
 	public ResponseEntity<ResponseDTO> getEventWithParameters(@RequestBody Map<String, Object> parameters) throws Exception {
-		if(!parameters.isEmpty()) {
-			return eventBusiness.getEventWithParameters(parameters);
-		}
-		throw new ValidationException(messageSource.getMessage("MISS_BODY_PARAMS"));
+		return eventBusiness.getEventWithParameters(parameters);
 	}
 
 	@Override
@@ -74,16 +68,8 @@ public class EventImpl implements EventController{
 
 	@Override
 	public ResponseEntity<ResponseDTO> findNearestEvents(@RequestParam Map<String, String> parameters) throws Exception {
-		if(!parameters.isEmpty()) {
-			if (parameters.containsKey(Constants.LATITUDE) && parameters.containsKey(Constants.LONGITUDE)) {
-				
-				List<Long> eventsId = eventPlaceBusiness.findNearestEvents(parameters);
-				return eventBusiness.getEventsWithId(eventsId);
-			
-			}
-			throw new ValidationException(messageSource.getMessage("MISS_LATITUDE_LONGITUDE_PARAMS"));
-		}
-		throw new ValidationException(messageSource.getMessage("MISS_QUERY_PARAMS"));
+		List<Long> eventsId = eventPlaceBusiness.findNearestEvents(parameters);
+		return eventBusiness.getEventsWithId(eventsId);
 	}
 
 }

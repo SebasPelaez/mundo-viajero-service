@@ -14,11 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.person.CreatePersonDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
-import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
-import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.dao.IPersonDAO;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.Profile;
@@ -44,7 +43,7 @@ public class PersonBusiness {
 		if (CollectionUtils.isNotEmpty(people)) {
 
 			List<PersonResponseDTO> peopleResponse = new ArrayList<>();
-			people.forEach(person -> peopleResponse.add(setPersonResponseDTO(person)));
+			people.forEach(person -> peopleResponse.add(SetEntitiesIntoDTO.setPersonResponseDTO(person)));
 			return new ResponseEntity<>(
 					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
 							messageSource.getMessage("GET_DESC_SUCCESS"), peopleResponse),
@@ -69,7 +68,7 @@ public class PersonBusiness {
 
 			return new ResponseEntity<>(
 					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
-							messageSource.getMessage("GET_DESC_SUCCESS"), setPersonResponseDTO(person)),
+							messageSource.getMessage("GET_DESC_SUCCESS"), SetEntitiesIntoDTO.setPersonResponseDTO(person)),
 					HttpStatus.OK);
 		}
 		throw new ValidationException(
@@ -88,7 +87,7 @@ public class PersonBusiness {
 
 				return new ResponseEntity<>(
 						new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
-								messageSource.getMessage("GET_DESC_SUCCESS"), setPersonResponseDTO(person)),
+								messageSource.getMessage("GET_DESC_SUCCESS"), SetEntitiesIntoDTO.setPersonResponseDTO(person)),
 						HttpStatus.OK);
 			}
 			throw new ValidationException(
@@ -237,22 +236,6 @@ public class PersonBusiness {
 		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERROR"),
 				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), createResponse),
 				HttpStatus.OK);
-	}
-
-	private PersonResponseDTO setPersonResponseDTO(Person person) {
-
-		PersonResponseDTO personResponseDTO = new PersonResponseDTO(person.getId(), person.getIdentification(),
-				person.getRNT(), person.getName(), person.getLastName(), person.getBirthday().toString(),
-				person.getEmail(), person.getPhoneNumber(), person.getAddress(), person.getCalification(),
-				person.getProfilePhoto(), person.getToken(),
-				new ProfileResponseDTO(person.getProfile().getId(), person.getProfile().getDescription(),
-						new StateResponseDTO(person.getProfile().getState().getId(),
-								person.getProfile().getState().getDescription(),
-								person.getProfile().getState().getBelongsTo())),
-				new StateResponseDTO(person.getState().getId(), person.getState().getDescription(),
-						person.getState().getBelongsTo()));
-
-		return personResponseDTO;
 	}
 	
 	private Person setPerson(CreatePersonDTO personDTO) {

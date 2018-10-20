@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.dao.IStateDAO;
@@ -36,7 +37,7 @@ public class StateBusiness {
 			List<StateResponseDTO> stateResponse = new ArrayList<>();
 			states.forEach(
 					state -> stateResponse
-							.add(new StateResponseDTO(state.getId(),state.getDescription(),state.getBelongsTo()))
+							.add(SetEntitiesIntoDTO.setStateResponseDTO(state))
 			);
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
@@ -60,8 +61,8 @@ public class StateBusiness {
 
 		if(state != null) {
 
-			StateResponseDTO stateResponseDTO =
-					new StateResponseDTO(state.getId(),state.getDescription(),state.getBelongsTo());
+			StateResponseDTO stateResponseDTO = SetEntitiesIntoDTO.setStateResponseDTO(state);
+			
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
 					stateResponseDTO),HttpStatus.OK);

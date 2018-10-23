@@ -1,8 +1,6 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,10 +9,8 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
 import com.co.mundoviajero.dto.event.eventplace.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
-import com.co.mundoviajero.persistence.entity.City;
 import com.co.mundoviajero.persistence.entity.EventPlace;
 import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 
@@ -43,10 +39,8 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 	}
 
 	@Override
-	public boolean createEventPlaces(List<CreateEventPlaceDTO> eventPlacesDTO, Long eventId) {
+	public boolean createEventPlaces(List<EventPlace> eventPlaces) {
 		
-		List<EventPlace> eventPlaces = setEventPlace(eventPlacesDTO, eventId);
-
 		try {
 			for (EventPlace ep : eventPlaces) {
 				getCurrentSession().saveOrUpdate(ep);
@@ -142,45 +136,6 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 			return null;
 		}
 		return eventPlaceDTO;
-	}
-
-	private List<EventPlace> setEventPlace(List<CreateEventPlaceDTO> eventPlacesDTO, Long eventId) {
-
-		List<EventPlace> eventPlaces = new ArrayList<>();
-
-		try {
-			for (CreateEventPlaceDTO evtDTO : eventPlacesDTO) {
-
-				EventPlace eventPlace = new EventPlace();
-				eventPlace.setEventId(eventId);
-				evtDTO.setEventId(eventId);
-
-				City city = new City();
-				city.setId(Long.parseLong(evtDTO.getCityId()));
-				eventPlace.setCityId(city);
-				
-				eventPlace.setLongitudeEventPlace(Double.parseDouble(evtDTO.getLongitudeEventPlace()));
-				eventPlace.setLatitudeEventPlace(Double.parseDouble(evtDTO.getLatitudeEventPlace()));
-
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date startDate = format.parse(evtDTO.getEventPlaceStartDate());
-				Date endDate = format.parse(evtDTO.getEventPlaceEndDate());
-
-				java.sql.Timestamp startDateSql = new java.sql.Timestamp(startDate.getTime());
-				java.sql.Timestamp endDateSql = new java.sql.Timestamp(endDate.getTime());
-
-				eventPlace.setEventPlaceStartDate(startDateSql);
-				eventPlace.setEventPlaceEndDate(endDateSql);
-
-				eventPlaces.add(eventPlace);
-			}
-
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-
-		return eventPlaces;
 	}
 
 }

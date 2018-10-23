@@ -107,13 +107,13 @@ public class CreateEventDTO implements Serializable {
 		this.id = id;
 	}
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public String getDescription() {
-		return description;
+		return description.trim();
 	}
 	public void setDescription(String description) {
 		this.description = description;
@@ -131,13 +131,13 @@ public class CreateEventDTO implements Serializable {
 		this.endDate = endDate;
 	}
 	public String getLongitudeMeetingPoint() {
-		return longitudeMeetingPoint;
+		return longitudeMeetingPoint.trim();
 	}
 	public void setLongitudeMeetingPoint(String longitudeMeetingPoint) {
 		this.longitudeMeetingPoint = longitudeMeetingPoint;
 	}
 	public String getLatitudeMeetingPoint() {
-		return latitudeMeetingPoint;
+		return latitudeMeetingPoint.trim();
 	}
 	public void setLatitudeMeetingPoint(String latitudeMeetingPoint) {
 		this.latitudeMeetingPoint = latitudeMeetingPoint;

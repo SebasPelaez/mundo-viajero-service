@@ -12,14 +12,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.business.SetDTOIntoEntities;
 import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.event.CreateEventDTO;
 import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
-import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.dto.event.EventResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
+import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
+import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.EventPlace;
+import com.co.mundoviajero.persistence.entity.ImageEvent;
 import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.FieldConstants;
 import com.co.mundoviajero.util.Validator;
@@ -34,6 +38,12 @@ public class EventBusiness {
 
 	@Autowired
 	private IEventDAO eventDAO;
+
+	@Autowired
+	private IEventPlaceDAO eventPlaceDAO;
+
+	@Autowired
+	private IImageEventDAO imageEventDAO;
 
 	public ResponseEntity<ResponseDTO> getAllEvents() throws Exception {
 
@@ -135,8 +145,6 @@ public class EventBusiness {
 							messageSource.getMessage("EVENT_FINAL_HOUR")));
 				}
 
-				StringBuilder sb = new StringBuilder();
-
 				for (CreateEventPlaceDTO evDTO : event.getPlaces()) {
 
 					if (!Validator.validateDate(event.getStartDate(), evDTO.getEventPlaceStartDate(),
@@ -148,53 +156,45 @@ public class EventBusiness {
 					if (!Validator.validateDate(evDTO.getEventPlaceStartDate(), evDTO.getEventPlaceEndDate(),
 							Constants.EVENT_DURATION)) {
 						throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
-								messageSource.getMessage("EVENT_PLACE_PARTIAL_FINAL_HOUR")));					
+								messageSource.getMessage("EVENT_PLACE_PARTIAL_FINAL_HOUR")));
 					}
 
 					if (!Validator.validateDate(evDTO.getEventPlaceEndDate(), event.getEndDate(), Constants.EMPTY)) {
 						throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
-								messageSource.getMessage("EVENT_PLACE_FINAL_HOUR")));		
+								messageSource.getMessage("EVENT_PLACE_FINAL_HOUR")));
 					}
 
-					sb.append(Validator.validateNumber(String.valueOf(evDTO.getCityId()), FieldConstants.CITY_ID,
-							FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
-
-					sb.append(Validator.valideString(evDTO.getEventPlaceStartDate(), FieldConstants.EVENT_STARTDATE,
-							FieldConstants.EVENT_STARTDATE_LENGTH, FieldConstants.EVENT_STARTDATE_OBLIGATORY));
-
-					sb.append(Validator.valideString(evDTO.getEventPlaceEndDate(), FieldConstants.EVENT_ENDDATE,
-							FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
-
-					sb.append(Validator.valideString(evDTO.getLongitudeEventPlace(), FieldConstants.EVENTPLACE_ALTITUDE,
-							FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
-
-					sb.append(Validator.valideString(evDTO.getLatitudeEventPlace(), FieldConstants.EVENTPLACE_LATITUDE,
-							FieldConstants.LONGITUDE_LENGTH, FieldConstants.LONGITUDE_OBLIGATORY));
-
-				}
-				
-				for (String ieDTO : event.getImages()) {
-
-					sb.append(Validator.valideString(ieDTO, FieldConstants.IMAGE_EVENT_PATH,
-							FieldConstants.IMAGE_EVENT_PATH_LENGTH, FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
-				}
-
-				if (sb.toString().length() > 0) {
-					throw new ValidationException(
-							new ErrorDTO(messageSource.getMessage("CODE_ERR"), sb.toString()));
 				}
 
 				if (eventDAO.validResponsible(Long.parseLong(event.getPersonIdResponsible()))) {
-					String result = eventDAO.createEvent(event);
-					if (result.equals(Constants.EMPTY)) {
+
+					Long eventId = eventDAO.createEvent(SetDTOIntoEntities.setEvent(event));
+
+					if (eventId != -1) {
+
+						List<EventPlace> places = SetDTOIntoEntities.setEventPlace(event.getPlaces(), eventId);
+
+						if (!eventPlaceDAO.createEventPlaces(places)) {
+							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+									messageSource.getMessage("FAIL_CREATED_EVENT_PLACE")));
+						}
+
+						List<ImageEvent> images = SetDTOIntoEntities.setImageEvent(event.getImages(), eventId);
+
+						if (!imageEventDAO.createImageEvent(images)) {
+							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+									messageSource.getMessage("FAIL_UPLOAD_EVENT_IMAGE")));
+						}
+
 						return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-								messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"), true),
-								HttpStatus.OK);
+								messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"),
+								true), HttpStatus.OK);
 					}
-					throw new ValidationException(result);
+					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+							messageSource.getMessage("FAIL_CREATED_EVENT")));
 				}
-				throw new ValidationException(
-						new ErrorDTO(messageSource.getMessage("EVENT_INVALID_RESPONSIBLE"), sb.toString()));
+				throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("EVENT_INVALID_RESPONSIBLE")));
 
 			}
 			throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
@@ -210,97 +210,107 @@ public class EventBusiness {
 		Long identifier;
 		StringBuilder sb = new StringBuilder();
 
-		if (bodyParameters.containsKey(FieldConstants.ID)) {
+		if (!bodyParameters.isEmpty()) {
 
-			identifier = Long.parseLong(bodyParameters.get(FieldConstants.ID));
-			bodyParameters.remove(FieldConstants.ID);
+			if (bodyParameters.containsKey(FieldConstants.ID)) {
 
-			if (!bodyParameters.isEmpty()) {
+				identifier = Long.parseLong(bodyParameters.get(FieldConstants.ID));
+				bodyParameters.remove(FieldConstants.ID);
 
-				for (String parameter : bodyParameters.keySet()) {
-					switch (parameter) {
+				if (!bodyParameters.isEmpty()) {
 
-					case FieldConstants.EVENT_NAME:
-						sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_NAME,
-								FieldConstants.EVENT_NAME_LENGTH, FieldConstants.EVENT_NAME_OBLIGATORY));
-						break;
+					for (String parameter : bodyParameters.keySet()) {
+						switch (parameter) {
 
-					case FieldConstants.EVENT_DESCRIPTION:
-						sb.append(Validator.valideString(bodyParameters.get(parameter),
-								FieldConstants.EVENT_DESCRIPTION, FieldConstants.EVENT_DESCRIPTION_LENGTH,
-								FieldConstants.EVENT_DESCRIPTION_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_NAME:
+							sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_NAME,
+									FieldConstants.EVENT_NAME_LENGTH, FieldConstants.EVENT_NAME_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_STARTDATE:
-						sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_STARTDATE,
-								FieldConstants.EVENT_STARTDATE_LENGTH, FieldConstants.EVENT_STARTDATE_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_DESCRIPTION:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.EVENT_DESCRIPTION, FieldConstants.EVENT_DESCRIPTION_LENGTH,
+									FieldConstants.EVENT_DESCRIPTION_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_ENDDATE:
-						sb.append(Validator.valideString(bodyParameters.get(parameter), FieldConstants.EVENT_ENDDATE,
-								FieldConstants.EVENT_ENDDATE_LENGTH, FieldConstants.EVENT_ENDDATE_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_STARTDATE:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.EVENT_STARTDATE, FieldConstants.EVENT_STARTDATE_LENGTH,
+									FieldConstants.EVENT_STARTDATE_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_LONGITUDEMEETINGPOINT:
-						sb.append(Validator.valideString(bodyParameters.get(parameter),
-								FieldConstants.EVENT_LONGITUDEMEETINGPOINT, FieldConstants.LONGITUDE_LENGTH,
-								FieldConstants.LONGITUDE_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_ENDDATE:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.EVENT_ENDDATE, FieldConstants.EVENT_ENDDATE_LENGTH,
+									FieldConstants.EVENT_ENDDATE_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_LATITUDEMEETINGPOINT:
-						sb.append(Validator.valideString(bodyParameters.get(parameter),
-								FieldConstants.EVENT_LATITUDEMEETINGPOINT, FieldConstants.LATITUDE_LENGTH,
-								FieldConstants.LATITUDE_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_LONGITUDEMEETINGPOINT:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.EVENT_LONGITUDEMEETINGPOINT, FieldConstants.LONGITUDE_LENGTH,
+									FieldConstants.LONGITUDE_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_CAPACITY:
-						sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-								FieldConstants.EVENT_CAPACITY, FieldConstants.EVENT_CAPACITY_LENGTH,
-								FieldConstants.EVENT_CAPACITY_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_LATITUDEMEETINGPOINT:
+							sb.append(Validator.valideString(bodyParameters.get(parameter),
+									FieldConstants.EVENT_LATITUDEMEETINGPOINT, FieldConstants.LATITUDE_LENGTH,
+									FieldConstants.LATITUDE_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_FARE:
-						sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-								FieldConstants.EVENT_FARE, FieldConstants.EVENT_FARE_LENGTH,
-								FieldConstants.EVENT_FARE_OBLIGATORY));
-						break;
+						case FieldConstants.EVENT_CAPACITY:
+							sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+									FieldConstants.EVENT_CAPACITY, FieldConstants.EVENT_CAPACITY_LENGTH,
+									FieldConstants.EVENT_CAPACITY_OBLIGATORY));
+							break;
 
-					case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
-						sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-								FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH,
-								FieldConstants.ID_OBLIGATORY));
-						break;
-					case FieldConstants.STATEID:
-						sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
-								FieldConstants.STATEID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
-						break;
-					default:
-						break;
+						case FieldConstants.EVENT_FARE:
+							sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+									FieldConstants.EVENT_FARE, FieldConstants.EVENT_FARE_LENGTH,
+									FieldConstants.EVENT_FARE_OBLIGATORY));
+							break;
+
+						case FieldConstants.EVENT_PERSONIDRESPONSIBLE:
+							sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+									FieldConstants.EVENT_PERSONIDRESPONSIBLE, FieldConstants.ID_LENGTH,
+									FieldConstants.ID_OBLIGATORY));
+							break;
+						case FieldConstants.STATE_ID:
+							sb.append(Validator.validateNumber(String.valueOf(bodyParameters.get(parameter)),
+									FieldConstants.STATE_ID, FieldConstants.ID_LENGTH, FieldConstants.ID_OBLIGATORY));
+							break;
+						default:
+							break;
+						}
 					}
-				}
 
-				if (sb.toString().length() > 0) {
-					throw new ValidationException(sb.toString());
-				}
+					if (sb.toString().length() > 0) {
+						throw new ValidationException(
+								new ErrorDTO(messageSource.getMessage("CODE_ERR"), sb.toString()));
+					}
 
-				if (eventDAO.updateEvent(bodyParameters, identifier)) {
+					if (eventDAO.updateEvent(bodyParameters, identifier)) {
+						return new ResponseEntity<>(
+								new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+										messageSource.getMessage("DESC_SUCCESS"),
+										messageSource.getMessage("PUT_DESC_SUCCESS"), true),
+								HttpStatus.PRECONDITION_REQUIRED);
+					}
+
 					return new ResponseEntity<>(
-							new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-									messageSource.getMessage("DESC_SUCCESS"),
-									messageSource.getMessage("PUT_DESC_SUCCESS"), true),
+							new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
+									messageSource.getMessage("GET_DESC_ERROR"), null),
 							HttpStatus.PRECONDITION_REQUIRED);
+
 				}
-
-				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
-						messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), null),
-						HttpStatus.PRECONDITION_REQUIRED);
-
+				throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+						messageSource.getMessage("UPDATE_EVENT_PLACE_MORE_EXPECTED_PARAMS")));
 			}
-			throw new ValidationException(messageSource.getMessage("UPDATE_EVENT_PLACE_MORE_EXPECTED_PARAMS"));
+			throw new ValidationException(
+					new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_EVENT_ID")));
 
-		} else {
-			throw new ValidationException(messageSource.getMessage("MISS_EVENT_ID"));
 		}
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_BODY_PARAMS")));
 
 	}
 

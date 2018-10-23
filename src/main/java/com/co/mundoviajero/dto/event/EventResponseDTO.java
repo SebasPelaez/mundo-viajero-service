@@ -1,13 +1,14 @@
 package com.co.mundoviajero.dto.event;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.co.mundoviajero.dto.event.eventplace.EventPlaceDTO;
-import com.co.mundoviajero.dto.event.imageevent.ImageEventDTO;
+import com.co.mundoviajero.dto.event.imageevent.ImageEventResponseDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
 
-public class EventResponseDTO extends BaseEventDTO{
+public class EventResponseDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,13 +24,13 @@ public class EventResponseDTO extends BaseEventDTO{
 	private PersonResponseDTO personResponsible;
 	private StateResponseDTO state;
 	private List<EventPlaceDTO> places;
-	private List<ImageEventDTO> images;
+	private List<ImageEventResponseDTO> images;
 	
 	
 	
 	public EventResponseDTO(Long id, String name, String description, String startDate, String endDate,
 			double longitudeMeetingPoint, double latitudeMeetingPoint, int capaciticy, float fare,
-			PersonResponseDTO personResponsible, StateResponseDTO state, List<EventPlaceDTO> places, List<ImageEventDTO> images) {
+			PersonResponseDTO personResponsible, StateResponseDTO state, List<EventPlaceDTO> places, List<ImageEventResponseDTO> images) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -117,10 +118,10 @@ public class EventResponseDTO extends BaseEventDTO{
 	public void setPlaces(List<EventPlaceDTO> places) {
 		this.places = places;
 	}
-	public List<ImageEventDTO> getImages() {
+	public List<ImageEventResponseDTO> getImages() {
 		return images;
 	}
-	public void setImages(List<ImageEventDTO> images) {
+	public void setImages(List<ImageEventResponseDTO> images) {
 		this.images = images;
 	}
 }

@@ -1,10 +1,12 @@
 package com.co.mundoviajero.business;
 
 import com.co.mundoviajero.dto.event.EventResponseDTO;
+import com.co.mundoviajero.dto.event.imageevent.ImageEventResponseDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
 import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.ImageEvent;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.Profile;
 import com.co.mundoviajero.persistence.entity.State;
@@ -47,6 +49,14 @@ public class SetEntitiesIntoDTO {
 				null);
 
 		return eventResponseDTO;
+	}
+
+	public static ImageEventResponseDTO setImageEventDTO(ImageEvent imageEvent) {
+
+		ImageEventResponseDTO imageEventDTO = new ImageEventResponseDTO(imageEvent.getId(), imageEvent.getEventId(),
+				imageEvent.getUploadDate().toString(), imageEvent.getImagePath());
+
+		return imageEventDTO;
 	}
 
 }

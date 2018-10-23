@@ -1,8 +1,6 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,58 +9,28 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.co.mundoviajero.dto.event.CreateEventDTO;
-import com.co.mundoviajero.dto.event.EventResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
-import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
-import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.Event;
-import com.co.mundoviajero.persistence.entity.Person;
-import com.co.mundoviajero.persistence.entity.State;
-import com.co.mundoviajero.util.Constants;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
 @Transactional
 public class EventDAOImpl extends BaseDAO implements IEventDAO{
-	
-	@Autowired
-	private IEventPlaceDAO eventPlaceDAO;
-	
-	@Autowired
-	private IImageEventDAO imageEventDAO;
-	
-	@Autowired
-	private MessageSourceAccessor messageSource;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventResponseDTO> getAllEvents() {
+	public List<Event> getAllEvents() {
+		List<Event> events = new ArrayList<>();
 		Query query = getCurrentSession().createQuery("From Event");
-		List<Event> events = (List<Event>) query.getResultList();
-		
-		if (events.isEmpty())
-			return null;
-		
-		List<EventResponseDTO> eventDTO = new ArrayList<>();
-		for (Event e : events) {
-			EventResponseDTO eDTO = setEventDTO(e);
-			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
-			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
-			eventDTO.add(eDTO);
-		}
-		
-		return eventDTO;
+		events = (List<Event>) query.getResultList();		
+		return events;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventResponseDTO> getEventsWithId(List<Long> eventsId) {
+	public List<Event> getEventsWithId(List<Long> eventsId) {
 		
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("select e from Event e where e.id IN (");
@@ -73,30 +41,19 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		
 		Query query = getCurrentSession().createQuery(stringBuffer.toString());
 		List<Event> events = (List<Event>) query.getResultList();
-		
-		if (events.isEmpty())
-			return null;
-		
-		List<EventResponseDTO> eventDTO = new ArrayList<>();
-		for (Event e : events) {
-			EventResponseDTO eDTO = setEventDTO(e);
-			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
-			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
-			eventDTO.add(eDTO);
-		}
-		
-		return eventDTO;
+				
+		return events;
 	}
 
 	@Override
-	public Event getEvent(Long id) {
-		
+	public Event getEvent(Long id) {		
 		return getCurrentSession().find(Event.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventResponseDTO> getEventWithParameters(Map<String, Object> parameters) {
+	public List<Event> getEventWithParameters(Map<String, Object> parameters) {
+		
 		StringBuffer parametersQueryString = new StringBuffer();
 		parametersQueryString.append("select e from Event e where ");
 		
@@ -110,45 +67,23 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		Query query = getCurrentSession().createQuery(parametersQueryString.toString());
 		
 		List<Event> events = (List<Event>) query.getResultList();
-		if (events.isEmpty())
-			return null;		
-		
-		List<EventResponseDTO> eventDTO = new ArrayList<>();
-		for (Event e : events) {
-			EventResponseDTO eDTO = setEventDTO(e);
-			eDTO.setPlaces(eventPlaceDAO.getAllEventPlaces(eDTO.getId()));
-			eDTO.setImages(imageEventDAO.getAllImageEvent(eDTO.getId()));
-			eventDTO.add(eDTO);
-		}
-		return eventDTO;
+		return events;
 	}
 	
 	@Override
-	public String createEvent(CreateEventDTO event) throws ValidationException {
-
-		Event newEvent = setEvent(event);
-		
+	public Long createEvent(Event event) throws ValidationException {
+	
+		Long eventId = -1L;
 		try {
-			getCurrentSession().saveOrUpdate(newEvent);
+			getCurrentSession().saveOrUpdate(event);
 			Map<String, Object> parameter = new HashMap<>();
 			parameter.put("personIdResponsible", event.getPersonIdResponsible());
-			List<EventResponseDTO> events = getEventWithParameters(parameter);
-			
-			Long eventId = events.get(0).getId();
-			event.setId(eventId);
-			
-			if (!eventPlaceDAO.createEventPlaces(event.getPlaces(), eventId)) {
-				return messageSource.getMessage("FAIL_CREATED_EVENT_PLACE");
-			}
-			if (!imageEventDAO.createImageEvent(event.getImages(), eventId)) {
-				return messageSource.getMessage("FAIL_UPLOAD_EVENT_IMAGE");
-			}
-			
+			List<Event> events = getEventWithParameters(parameter);
+			eventId = events.get(0).getId();
 		} catch (Exception e) {
 			System.out.println(e);
-			return messageSource.getMessage("FAIL_CREATED_EVENT");
 		}
-		return Constants.EMPTY;		
+		return eventId;		
 	}
 	
 	@Override
@@ -183,66 +118,6 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		Query query = getCurrentSession().createQuery(queryString);
 		query.setParameter("personIdResponsible", personIdResponsible);
 		return !query.getResultList().isEmpty();
-	}
-	
-	private EventResponseDTO setEventDTO(Event event) {
-		EventResponseDTO eventDTO = new EventResponseDTO();
-		
-		try {
-			eventDTO.setId(event.getId());
-			eventDTO.setName(event.getName().trim());
-			eventDTO.setDescription(event.getDescription().trim());
-			eventDTO.setStartDate(event.getStartDate().toString().trim());
-			eventDTO.setEndDate(event.getEndDate().toString().trim());
-			eventDTO.setLongitudeMeetingPoint(String.valueOf(event.getLongitudeMeetingPoint()));
-			eventDTO.setLatitudeMeetingPoint(String.valueOf(event.getLatitudeMeetingPoint()));
-			eventDTO.setCapaciticy(event.getCapaciticy());
-			eventDTO.setFare(event.getFare());
-			eventDTO.setPersonIdResponsible(event.getPersonIdResponsible());
-			eventDTO.setState(event.getStateId());
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-		return eventDTO;
-	}	
-
-	private Event setEvent(CreateEventDTO eventDTO) {
-		Event event = new Event();
-
-		try {
-			event.setName(eventDTO.getName().trim());
-			event.setDescription(eventDTO.getDescription().trim());
-			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date startDate = format.parse(eventDTO.getStartDate());
-			Date endDate = format.parse(eventDTO.getEndDate());
-			
-			java.sql.Timestamp startDateSql = new java.sql.Timestamp(startDate.getTime());
-			java.sql.Timestamp endDateSql = new java.sql.Timestamp(endDate.getTime());
-			
-			event.setStartDate(startDateSql);
-			event.setEndDate(endDateSql);
-			
-			event.setLongitudeMeetingPoint(Double.parseDouble(eventDTO.getLongitudeMeetingPoint().trim()));
-			event.setLatitudeMeetingPoint(Double.parseDouble(eventDTO.getLatitudeMeetingPoint().trim()));
-			event.setCapaciticy(eventDTO.getCapaciticy());
-			event.setFare(eventDTO.getFare());
-			
-			Person person = new Person();
-			person.setId(Long.parseLong(eventDTO.getPersonIdResponsible()));
-			event.setPersonIdResponsible(person);
-			
-			State state = new State();
-			state.setId(Long.parseLong(eventDTO.getStateId()));
-			event.setStateId(state);
-						
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-
-		return event;
 	}
 
 }

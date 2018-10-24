@@ -84,7 +84,7 @@ public class FieldConstants {
 	/**
 	 * EVENTPLACE FIELDS
 	 */	
-	public static final String CITY_ID = "cityId";
+	
 	public static final String EVENTPLACE_ALTITUDE = "AltitudeEventPlace";	
 	public static final String EVENTPLACE_LATITUDE = "latitudeEventPlace";
 	
@@ -116,8 +116,10 @@ public class FieldConstants {
 	 */
 	public static final String PERSON_ID = "personId";
 	public static final String STATE_ID = "stateId";
+	public static final String CITY_ID = "cityId";
 	public static final String PROFILE_ID = "profileId";
 	public static final String EVENT_ID = "eventId";
+	public static final String EVENT_PLACE_ID = "eventPlaceId";
 
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;

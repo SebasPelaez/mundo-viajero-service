@@ -14,7 +14,7 @@ import com.co.mundoviajero.dto.ResponseDTO;
 public interface StateController {
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
+	@RequestMapping(value = "", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
 	ResponseEntity<ResponseDTO> getAllStates()  throws Exception;
 	
 	@CrossOrigin(origins = "*")

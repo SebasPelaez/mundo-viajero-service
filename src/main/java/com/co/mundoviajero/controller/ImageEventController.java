@@ -15,23 +15,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.co.mundoviajero.dto.ResponseDTO;
 
+@RequestMapping(value = "/imageevent")
 public interface ImageEventController {
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/imageevent/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> getImageEvent(@PathVariable("id") Long id) throws Exception;
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/event/imageevent/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
+	@RequestMapping(value = "/event/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> getAllImagesForEvent(@PathVariable("id") Long id) throws Exception;
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/imageevent", method = RequestMethod.PUT, produces = {
+	@RequestMapping(value = "", method = RequestMethod.PUT, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> updateImages(@RequestBody Map<String, String> bodyParameters) throws Exception;
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/imageevent", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
+	@RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> uploadImage(@Valid @RequestBody CreateImageEventDTO imageEventDTO) throws Exception;
 
 }

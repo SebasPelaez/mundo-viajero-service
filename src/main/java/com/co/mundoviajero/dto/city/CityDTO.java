@@ -23,6 +23,13 @@ public class CityDTO implements Serializable {
 
 	private DepartmentDTO department;
 	
+	public CityDTO(Long id,String name,DepartmentDTO department) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.department = department;
+	}
+	
 	public Long getId() {
 		return id;
 	}

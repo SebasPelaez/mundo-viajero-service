@@ -20,11 +20,11 @@ import com.co.mundoviajero.dto.person.CreatePersonDTO;
 public interface PersonController {
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
+	@RequestMapping(value = "", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> getAllPeople() throws Exception;
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/", method = RequestMethod.POST, produces = {
+	@RequestMapping(value = "", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> createPerson(@Valid @RequestBody CreatePersonDTO person) throws Exception;
 
@@ -37,7 +37,7 @@ public interface PersonController {
 	ResponseEntity<ResponseDTO> getPersonWithParameters(@RequestParam Map<String, String> parameters) throws Exception;
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = {
+	@RequestMapping(value = "", method = RequestMethod.PUT, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> updatePerson(@RequestBody Map<String, String> bodyParameters) throws Exception;
 

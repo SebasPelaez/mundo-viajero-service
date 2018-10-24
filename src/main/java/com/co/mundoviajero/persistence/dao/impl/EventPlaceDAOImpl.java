@@ -1,6 +1,5 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.event.eventplace.EventPlaceDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.EventPlace;
 import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
@@ -20,22 +18,15 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EventPlaceDTO> getAllEventPlaces(Long eventId) {
+	public List<EventPlace> getAllEventPlaces(Long eventId) {
 
 		String queryString = "select ep from EventPlace ep where ep.eventId = :eventId";
 		Query query = getCurrentSession().createQuery(queryString);
 		query.setParameter("eventId", eventId);
 
 		List<EventPlace> places = (List<EventPlace>) query.getResultList();
-		List<EventPlaceDTO> placesDTO = new ArrayList<>();
-
-		if (places.isEmpty())
-			return null;
-
-		for (EventPlace ep : places) {
-			placesDTO.add(setEventPlaceDTO(ep));
-		}
-		return placesDTO;
+		
+		return places;
 	}
 
 	@Override
@@ -80,17 +71,8 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 	}
 
 	@Override
-	public EventPlaceDTO getEventPlace(Long id) {
-		String queryString = "select ep from EventPlace ep where ep.id = :id";
-		Query query = getCurrentSession().createQuery(queryString);
-		query.setParameter("id", id);
-
-		EventPlace eventPlace = (EventPlace) query.getSingleResult();
-
-		if (eventPlace == null)
-			return null;
-
-		return setEventPlaceDTO(eventPlace);
+	public EventPlace getEventPlace(Long id) {
+		return getCurrentSession().find(EventPlace.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -118,24 +100,6 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 			return null;
 
 		return eventsId;
-	}
-
-	private EventPlaceDTO setEventPlaceDTO(EventPlace eventPlace) {
-		EventPlaceDTO eventPlaceDTO = new EventPlaceDTO();
-
-		try {
-			eventPlaceDTO.setId(eventPlace.getId());
-			eventPlaceDTO.setEventId(eventPlace.getEventId());
-			eventPlaceDTO.setCity(eventPlace.getCityId());
-			eventPlaceDTO.setEventPlaceStartDate(eventPlace.getEventPlaceStartDate().toString().trim());
-			eventPlaceDTO.setEventPlaceEndDate(eventPlace.getEventPlaceEndDate().toString().trim());
-			eventPlaceDTO.setLongitudeEventPlace(String.valueOf(eventPlace.getLongitudeEventPlace()));
-			eventPlaceDTO.setLatitudeEventPlace(String.valueOf(eventPlace.getLatitudeEventPlace()));
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-		return eventPlaceDTO;
 	}
 
 }

@@ -20,6 +20,11 @@ public class DepartmentDTO implements Serializable {
 	@Length(max = 150)
 	private String name;
 	
+	public DepartmentDTO(Long id,String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
 	public Long getId() {
 		return id;
 	}

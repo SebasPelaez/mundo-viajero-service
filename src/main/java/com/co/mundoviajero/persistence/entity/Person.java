@@ -81,7 +81,7 @@ public class Person implements Serializable {
     }
     
     public String getIdentification() {
-    	return identification;
+    	return identification.trim();
     }
     
     public void setIdentification(String identification) {
@@ -89,7 +89,7 @@ public class Person implements Serializable {
     }
     
     public String getRNT() {
-    	return rnt;
+    	return rnt.trim();
     }
     
     public void setRNT(String rnt) {
@@ -97,7 +97,7 @@ public class Person implements Serializable {
     }
     
     public String getName() {
-    	return name;
+    	return name.trim();
     }
     
     public void setName(String name) {
@@ -105,7 +105,7 @@ public class Person implements Serializable {
     }
     
     public String getLastName() {
-    	return lastName;
+    	return lastName.trim();
     }
     
     public void setLastName(String lastName) {
@@ -121,7 +121,7 @@ public class Person implements Serializable {
     }
     
     public String getEmail() {
-    	return email;
+    	return email.trim();
     }
     
     public void setEmail(String email)
@@ -130,7 +130,7 @@ public class Person implements Serializable {
     }
     
     public String getPhoneNumber() {
-    	return phoneNumber;
+    	return phoneNumber.trim();
     }
     
     public void setPhoneNumber(String phoneNumber) {
@@ -138,7 +138,7 @@ public class Person implements Serializable {
     }
     
     public String getAddress() {
-    	return address;
+    	return address.trim();
     }
     
     public void setAddress(String address) {
@@ -146,7 +146,7 @@ public class Person implements Serializable {
     }
     
     public String getPassword() {
-    	return password;
+    	return password.trim();
     }
     
     public void setPassword(String password) {
@@ -162,7 +162,7 @@ public class Person implements Serializable {
     }
     
     public String getProfilePhoto() {
-    	return profilePhoto;
+    	return profilePhoto.trim();
     }
     
     public void setProfilePhoto(String profilePhoto) {
@@ -170,7 +170,7 @@ public class Person implements Serializable {
     }
     
     public String getToken() {
-    	return token;
+    	return token.trim();
     }
     
     public void setToken(String token) {

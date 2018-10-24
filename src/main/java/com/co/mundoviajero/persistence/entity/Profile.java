@@ -39,7 +39,7 @@ public class Profile implements Serializable {
 	}
 
 	public String getDescription() {
-		return description;
+		return description.trim();
 	}
 
 	public void setDescription(String description) {

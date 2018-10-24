@@ -1,17 +1,37 @@
 package com.co.mundoviajero.business;
 
+import com.co.mundoviajero.dto.city.CityDTO;
+import com.co.mundoviajero.dto.department.DepartmentDTO;
 import com.co.mundoviajero.dto.event.EventResponseDTO;
+import com.co.mundoviajero.dto.event.eventplace.EventPlaceResponseDTO;
 import com.co.mundoviajero.dto.event.imageevent.ImageEventResponseDTO;
 import com.co.mundoviajero.dto.person.PersonResponseDTO;
 import com.co.mundoviajero.dto.profile.ProfileResponseDTO;
 import com.co.mundoviajero.dto.state.StateResponseDTO;
+import com.co.mundoviajero.persistence.entity.City;
+import com.co.mundoviajero.persistence.entity.Department;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.EventPlace;
 import com.co.mundoviajero.persistence.entity.ImageEvent;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.Profile;
 import com.co.mundoviajero.persistence.entity.State;
 
 public class SetEntitiesIntoDTO {
+
+	public static CityDTO setCityResponseDTO(City city) {
+
+		CityDTO cityDTO = new CityDTO(city.getId(), city.getName(), setDDepartmentResponseDTO(city.getDepartmentId()));
+
+		return cityDTO;
+	}
+
+	public static DepartmentDTO setDDepartmentResponseDTO(Department department) {
+
+		DepartmentDTO departmentDTO = new DepartmentDTO(department.getId(), department.getName());
+
+		return departmentDTO;
+	}
 
 	public static PersonResponseDTO setPersonResponseDTO(Person person) {
 
@@ -57,6 +77,16 @@ public class SetEntitiesIntoDTO {
 				imageEvent.getUploadDate().toString(), imageEvent.getImagePath());
 
 		return imageEventDTO;
+	}
+
+	public static EventPlaceResponseDTO setEventPlaceDTO(EventPlace eventPlace) {
+
+		EventPlaceResponseDTO eventPlaceResponseDTO = new EventPlaceResponseDTO(eventPlace.getId(),
+				eventPlace.getEventId(), eventPlace.getEventPlaceStartDate().toString(),
+				eventPlace.getEventPlaceEndDate().toString(), eventPlace.getLongitudeEventPlace(),
+				eventPlace.getLatitudeEventPlace(), setCityResponseDTO(eventPlace.getCityId()));
+		
+		return eventPlaceResponseDTO;
 	}
 
 }

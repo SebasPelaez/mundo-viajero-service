@@ -66,7 +66,7 @@ public class Event implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 
 	public void setName(String name) {
@@ -74,7 +74,7 @@ public class Event implements Serializable {
 	}
 
 	public String getDescription() {
-		return description;
+		return description.trim();
 	}
 
 	public void setDescription(String description) {

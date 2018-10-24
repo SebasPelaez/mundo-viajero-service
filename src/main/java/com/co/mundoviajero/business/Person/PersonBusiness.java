@@ -112,7 +112,7 @@ public class PersonBusiness {
 			if (person.getProfileId().equals(Constants.TOURIST_PROFILE_ID)) {
 
 				if (!personDAO.existPersonTourist(person.getEmail())) {
-					createPersonExecute(person);
+					return createPersonExecute(person);					
 				} else {
 					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
 							messageSource.getMessage("EXISTING_TOURIST_DESC_ERROR")));
@@ -121,7 +121,7 @@ public class PersonBusiness {
 			// At this part the new Person should be a Guide
 			if (!StringUtils.isBlank(person.getIdentification()) && !StringUtils.isBlank(person.getRnt())) {
 				if (!personDAO.existPersonGuide(person.getIdentification(), person.getRnt(), person.getEmail())) {
-					createPersonExecute(person);
+					return createPersonExecute(person);
 				} else {
 					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
 							messageSource.getMessage("EXISTING_GUIDE_DESC_ERROR")));

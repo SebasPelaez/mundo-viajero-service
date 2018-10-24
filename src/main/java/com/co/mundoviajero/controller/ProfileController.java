@@ -14,7 +14,7 @@ import com.co.mundoviajero.dto.ResponseDTO;
 public interface ProfileController {
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
+	@RequestMapping(value = "", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
 	ResponseEntity<ResponseDTO> getAllProfiles()  throws Exception;
 	
 	@CrossOrigin(origins = "*")

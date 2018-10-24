@@ -57,7 +57,7 @@ public class ImageEvent implements Serializable {
 	}
 
 	public String getImagePath() {
-		return imagePath;
+		return imagePath.trim();
 	}
 
 	public void setImagePath(String imagePath) {

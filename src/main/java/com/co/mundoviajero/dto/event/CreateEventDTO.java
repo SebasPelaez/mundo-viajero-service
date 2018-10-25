@@ -15,11 +15,6 @@ public class CreateEventDTO implements Serializable {
 
 	@NotNull
 	@NotEmpty
-	@Length(max = 5)
-	protected Long id;
-
-	@NotNull
-	@NotEmpty
 	@Length(max = 150)
 	protected String name;
 
@@ -100,12 +95,6 @@ public class CreateEventDTO implements Serializable {
 	public List<String> getImages() {return images;}
 	public void setImages(List<String> images) {this.images = images;}
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name.trim();
 	}

@@ -12,15 +12,24 @@ public class CreateImageEventDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    @NotEmpty
-    @Length(max = 5)
     private Long eventId;
 
     @NotNull
     @NotEmpty
     private List<String> images;
+    
+    @NotNull
+	private String stateId;
+    
+    public CreateImageEventDTO() {}
 
-    public Long getEventId() {
+	public CreateImageEventDTO(Long eventId, List<String> images,String stateId) {
+		this.eventId = eventId;
+		this.images = images;
+		this.stateId = stateId;
+	}
+
+	public Long getEventId() {
         return eventId;
     }
 
@@ -35,4 +44,12 @@ public class CreateImageEventDTO implements Serializable {
     public void setImages(List<String> images) {
         this.images = images;
     }
+
+	public String getStateId() {
+		return stateId;
+	}
+
+	public void setStateId(String stateId) {
+		this.stateId = stateId;
+	}
 }

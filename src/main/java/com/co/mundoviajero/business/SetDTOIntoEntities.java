@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.co.mundoviajero.dto.event.CreateEventDTO;
 import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
+import com.co.mundoviajero.dto.event.imageevent.CreateImageEventDTO;
 import com.co.mundoviajero.persistence.entity.City;
 import com.co.mundoviajero.persistence.entity.Event;
 import com.co.mundoviajero.persistence.entity.EventPlace;
@@ -95,21 +96,25 @@ public class SetDTOIntoEntities {
 		return eventPlaces;
 	}
 	
-	public static List<ImageEvent> setImageEvent(List<String> images, Long eventId) {
+	public static List<ImageEvent> setImageEvent(CreateImageEventDTO createImageEventDTO) {
 
 		List<ImageEvent> imageEvents  = new ArrayList<>();
 		try {
-			for (String image : images) {
+			for (String image : createImageEventDTO.getImages()) {
 
 				ImageEvent imageEvent = new ImageEvent();
 
-				imageEvent.setEventId(eventId);
+				imageEvent.setEventId(createImageEventDTO.getEventId());
 				imageEvent.setImagePath(image);
 
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date startDate = format.parse(LocalDateTime.now().toString().replace("T", " "));
 				java.sql.Timestamp uploadDateSql = new java.sql.Timestamp(startDate.getTime());
 				imageEvent.setUploadDate(uploadDateSql);
+				
+				State state = new State();
+				state.setId(Long.parseLong(createImageEventDTO.getStateId()));
+				imageEvent.setState(state);
 
 				imageEvents.add(imageEvent);
 			}

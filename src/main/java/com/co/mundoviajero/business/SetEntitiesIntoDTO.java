@@ -74,7 +74,7 @@ public class SetEntitiesIntoDTO {
 	public static ImageEventResponseDTO setImageEventDTO(ImageEvent imageEvent) {
 
 		ImageEventResponseDTO imageEventDTO = new ImageEventResponseDTO(imageEvent.getId(), imageEvent.getEventId(),
-				imageEvent.getUploadDate().toString(), imageEvent.getImagePath());
+				imageEvent.getUploadDate().toString(), imageEvent.getImagePath(),setStateResponseDTO(imageEvent.getState()));
 
 		return imageEventDTO;
 	}

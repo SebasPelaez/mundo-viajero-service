@@ -101,5 +101,13 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 
 		return eventsId;
 	}
+	
+	@Override
+	public boolean validCity(Long cityId) {
+		String queryString = "select c from City c where c.id = :cityId";
+		Query query = getCurrentSession().createQuery(queryString);
+		query.setParameter("cityId", cityId);
+		return !query.getResultList().isEmpty();
+	}
 
 }

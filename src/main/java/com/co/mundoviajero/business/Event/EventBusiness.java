@@ -18,6 +18,7 @@ import com.co.mundoviajero.dto.ResponseDTO;
 import com.co.mundoviajero.dto.event.CreateEventDTO;
 import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
 import com.co.mundoviajero.dto.event.eventplace.EventPlaceResponseDTO;
+import com.co.mundoviajero.dto.event.imageevent.CreateImageEventDTO;
 import com.co.mundoviajero.dto.event.imageevent.ImageEventResponseDTO;
 import com.co.mundoviajero.dto.event.EventResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
@@ -54,7 +55,7 @@ public class EventBusiness {
 
 			List<EventResponseDTO> eventsDTO = new ArrayList<>();
 			events.forEach(event -> eventsDTO.add(SetEntitiesIntoDTO.setEventResponseDTO(event)));
-			
+
 			setListsInEvent(eventsDTO);
 
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -74,7 +75,7 @@ public class EventBusiness {
 
 			List<EventResponseDTO> eventsDTO = new ArrayList<>();
 			events.forEach(event -> eventsDTO.add(SetEntitiesIntoDTO.setEventResponseDTO(event)));
-			
+
 			setListsInEvent(eventsDTO);
 
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -98,16 +99,17 @@ public class EventBusiness {
 		}
 
 		Event event = eventDAO.getEvent(id);
-		
+
 		if (event != null) {
-			
+
 			EventResponseDTO eventResponseDTO = SetEntitiesIntoDTO.setEventResponseDTO(event);
 			eventResponseDTO.setPlaces(setPlacesInEventDTO(eventResponseDTO.getId()));
 			eventResponseDTO.setImages(setImagesInEventDTO(eventResponseDTO.getId()));
-			
-			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
-					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
-					eventResponseDTO), HttpStatus.OK);
+
+			return new ResponseEntity<>(
+					new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"), messageSource.getMessage("DESC_SUCCESS"),
+							messageSource.getMessage("GET_DESC_SUCCESS"), eventResponseDTO),
+					HttpStatus.OK);
 		}
 		throw new ValidationException(
 				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("GET_DESC_ERROR_EVENT")));
@@ -124,7 +126,7 @@ public class EventBusiness {
 
 				List<EventResponseDTO> eventsDTO = new ArrayList<>();
 				events.forEach(event -> eventsDTO.add(SetEntitiesIntoDTO.setEventResponseDTO(event)));
-				
+
 				setListsInEvent(eventsDTO);
 
 				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -192,7 +194,9 @@ public class EventBusiness {
 									messageSource.getMessage("FAIL_CREATED_EVENT_PLACE")));
 						}
 
-						List<ImageEvent> images = SetDTOIntoEntities.setImageEvent(event.getImages(), eventId);
+						CreateImageEventDTO createImageEventDTO = new CreateImageEventDTO(eventId, event.getImages(),
+								event.getStateId());
+						List<ImageEvent> images = SetDTOIntoEntities.setImageEvent(createImageEventDTO);
 
 						if (!imageEventDAO.createImageEvent(images)) {
 							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
@@ -301,6 +305,16 @@ public class EventBusiness {
 								new ErrorDTO(messageSource.getMessage("CODE_ERR"), sb.toString()));
 					}
 
+					if (bodyParameters.containsKey(FieldConstants.EVENT_PERSONIDRESPONSIBLE)) {
+
+						if (!eventDAO.validResponsible(
+								Long.parseLong(bodyParameters.get(FieldConstants.EVENT_PERSONIDRESPONSIBLE)))) {
+
+							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+									messageSource.getMessage("EVENT_INVALID_RESPONSIBLE")));
+						}
+					}
+
 					if (eventDAO.updateEvent(bodyParameters, identifier)) {
 						return new ResponseEntity<>(
 								new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -326,35 +340,50 @@ public class EventBusiness {
 				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_BODY_PARAMS")));
 
 	}
-	
+
 	private void setListsInEvent(List<EventResponseDTO> eventsDTO) {
-		
+
 		eventsDTO.forEach(event -> {
-			
+
 			event.setPlaces(setPlacesInEventDTO(event.getId()));
 			event.setImages(setImagesInEventDTO(event.getId()));
-			
+
 		});
-		
+
 	}
-	
+
 	private List<EventPlaceResponseDTO> setPlacesInEventDTO(Long eventId) {
-		
+
 		List<EventPlace> places = eventPlaceDAO.getAllEventPlaces(eventId);
 		List<EventPlaceResponseDTO> placesDTO = new ArrayList<>();
 		places.forEach(place -> placesDTO.add(SetEntitiesIntoDTO.setEventPlaceDTO(place)));
-		
+
 		return placesDTO;
-		
+
 	}
-	
+
 	private List<ImageEventResponseDTO> setImagesInEventDTO(Long eventId) {
-		
+
 		List<ImageEvent> images = imageEventDAO.getAllImageEvent(eventId);
 		List<ImageEventResponseDTO> imagesDTO = new ArrayList<>();
 		images.forEach(image -> imagesDTO.add(SetEntitiesIntoDTO.setImageEventDTO(image)));
-		
+
 		return imagesDTO;
+	}
+
+	private void validateEventDates(String startDate, String endDate) throws ValidationException {
+
+		if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), startDate,
+				Constants.EVENT_CREATED_DATE)) {
+			throw new ValidationException(
+					new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("EVENT_INITIAL_HOUR")));
+		}
+
+		if (!Validator.validateDate(startDate, endDate, Constants.EVENT_DURATION)) {
+			throw new ValidationException(
+					new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("EVENT_FINAL_HOUR")));
+		}
+
 	}
 
 }

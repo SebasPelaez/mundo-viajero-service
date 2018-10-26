@@ -2,6 +2,8 @@ package com.co.mundoviajero.dto.event.imageevent;
 
 import java.io.Serializable;
 
+import com.co.mundoviajero.dto.state.StateResponseDTO;
+
 public class ImageEventResponseDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -10,13 +12,23 @@ public class ImageEventResponseDTO implements Serializable {
 	private Long eventId;
 	private String uploadDate;
 	private String imagePath;
-	
-	public ImageEventResponseDTO(Long id, Long eventId, String uploadDate, String imagePath) {
+	private StateResponseDTO state;
+
+	public ImageEventResponseDTO(Long id, Long eventId, String uploadDate, String imagePath, StateResponseDTO state) {
 		super();
 		this.id = id;
 		this.eventId = eventId;
 		this.uploadDate = uploadDate;
 		this.imagePath = imagePath;
+		this.state = state;
+	}
+
+	public StateResponseDTO getState() {
+		return state;
+	}
+
+	public void setState(StateResponseDTO state) {
+		this.state = state;
 	}
 
 	public Long getId() {

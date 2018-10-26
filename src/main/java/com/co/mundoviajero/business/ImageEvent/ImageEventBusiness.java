@@ -146,8 +146,7 @@ public class ImageEventBusiness {
 	public ResponseEntity<ResponseDTO> uploadImage(CreateImageEventDTO createImageEventDTO) throws ValidationException {
 
 		if (createImageEventDTO != null) {
-			List<ImageEvent> images = SetDTOIntoEntities.setImageEvent(createImageEventDTO.getImages(),
-					createImageEventDTO.getEventId());
+			List<ImageEvent> images = SetDTOIntoEntities.setImageEvent(createImageEventDTO);
 			
 			boolean upload = imageEventDAO.createImageEvent(images);
 			if(upload) {

@@ -139,6 +139,16 @@ public class EventPlaceBusiness {
 						throw new ValidationException(
 								new ErrorDTO(messageSource.getMessage("CODE_ERR"), sb.toString()));
 					}
+					
+					if (bodyParameters.containsKey(FieldConstants.CITY_ID)) {
+						
+						if (!eventPlaceDAO.validCity(Long.parseLong(bodyParameters.get(FieldConstants.CITY_ID)))) {
+							
+							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+									messageSource.getMessage("CITY_INVALID")));
+						}
+						
+					}
 
 					boolean updateEventPlaceResponse = eventPlaceDAO.updateEventPlace(bodyParameters, identifier);
 

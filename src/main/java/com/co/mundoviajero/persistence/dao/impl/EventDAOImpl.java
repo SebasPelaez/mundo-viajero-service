@@ -77,7 +77,7 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 		try {
 			getCurrentSession().saveOrUpdate(event);
 			Map<String, Object> parameter = new HashMap<>();
-			parameter.put("personIdResponsible", event.getPersonIdResponsible());
+			parameter.put("personIdResponsible", event.getPersonIdResponsible().getId());
 			List<Event> events = getEventWithParameters(parameter);
 			eventId = events.get(0).getId();
 		} catch (Exception e) {

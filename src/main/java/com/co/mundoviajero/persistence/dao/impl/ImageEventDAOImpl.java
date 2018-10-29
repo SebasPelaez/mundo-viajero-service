@@ -10,10 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.co.mundoviajero.persistence.dao.IImageEventDAO;
 import com.co.mundoviajero.persistence.entity.ImageEvent;
+import com.co.mundoviajero.util.FieldConstants;
 
 @Repository(value = "ImageEventDAOImpl")
 @Transactional
-public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
+public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO {
 
 	@Override
 	public ImageEvent getImageEvent(Long id) {
@@ -33,7 +34,7 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 
 	@Override
 	public boolean createImageEvent(List<ImageEvent> images) {
-		
+
 		try {
 			for (ImageEvent imageEvent : images) {
 				getCurrentSession().saveOrUpdate(imageEvent);
@@ -45,24 +46,17 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 		}
 		return true;
 	}
-	
+
 	@Override
-	public boolean updateImageEvent(Map<String, String> parameters, Long identifier) {
-		StringBuffer parametersQueryString = new StringBuffer();
-		String baseQueryString = "update ImageEvent ie set ";
-		String conditionQueryString = " where ie.id = :id";
+	public boolean updateImageEvent(Map<String, String> parameters) {
+
+		String queryString = "update ImageEvent ie set ie.state = '" + parameters.get(FieldConstants.STATE_ID)
+				+ "' where ie.id = :id";
 
 		try {
 
-			for (String parameter : parameters.keySet()) {
-				parametersQueryString.append("ie." + parameter + " = '" + parameters.get(parameter) + "', ");
-			}
-
-			parametersQueryString.replace(parametersQueryString.length() - 2, parametersQueryString.length(), "");
-			String fullQueryString = baseQueryString + parametersQueryString.toString() + conditionQueryString;
-
-			Query query = getCurrentSession().createQuery(fullQueryString);
-			query.setParameter("id", identifier);
+			Query query = getCurrentSession().createQuery(queryString);
+			query.setParameter("id", Long.parseLong(parameters.get(FieldConstants.ID)));
 			query.executeUpdate();
 
 		} catch (Exception e) {
@@ -71,5 +65,5 @@ public class ImageEventDAOImpl extends BaseDAO implements IImageEventDAO{
 		}
 		return true;
 	}
-	
+
 }

@@ -12,8 +12,6 @@ public class CreateEventPlaceDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@NotEmpty
-	@Length(max = 5)
 	private Long eventId;
 
 	@NotNull

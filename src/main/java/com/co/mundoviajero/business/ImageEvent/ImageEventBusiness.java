@@ -80,59 +80,23 @@ public class ImageEventBusiness {
 
 	public ResponseEntity<ResponseDTO> updateImageEvent(Map<String, String> bodyParameters) throws ValidationException {
 
-		Long identifier;
-		StringBuilder sb = new StringBuilder();
-
 		if (!bodyParameters.isEmpty()) {
-
-			if (bodyParameters.containsKey(FieldConstants.EVENT_ID)) {
-				bodyParameters.remove(FieldConstants.EVENT_ID);
-			}
 			if (bodyParameters.containsKey(FieldConstants.ID)) {
-
-				identifier = Long.parseLong(bodyParameters.get(FieldConstants.ID));
-				bodyParameters.remove(FieldConstants.ID);
-
-				if (!bodyParameters.isEmpty()) {
-
-					for (String parameter : bodyParameters.keySet()) {
-						switch (parameter) {
-
-						case FieldConstants.IMAGE_EVENT_PATH:
-							sb.append(Validator.valideString(bodyParameters.get(parameter),
-									FieldConstants.IMAGE_EVENT_PATH, FieldConstants.IMAGE_EVENT_PATH_LENGTH,
-									FieldConstants.IMAGE_EVENT_PATH_OBLIGATORY));
-							break;
-
-						case FieldConstants.IMAGE_EVENT_UPLOAD_DATE:
-							sb.append(Validator.valideString(bodyParameters.get(parameter),
-									FieldConstants.IMAGE_EVENT_UPLOAD_DATE,
-									FieldConstants.IMAGE_EVENT_UPLOAD_DATE_LENGTH,
-									FieldConstants.IMAGE_EVENT_UPLOAD_DATE_OBLIGATORY));
-							break;
-						default:
-							break;
-						}
-					}
-
-					if (sb.toString().length() > 0) {
-						throw new ValidationException(
-								new ErrorDTO(messageSource.getMessage("MISS_QUERY_PARAMS"), sb.toString()));
-					}
-
-					if (imageEventDAO.updateImageEvent(bodyParameters, identifier)) {
+				
+				if (bodyParameters.containsKey(FieldConstants.STATE_ID)) {
+					
+					boolean upload = imageEventDAO.updateImageEvent(bodyParameters);
+					if (upload) {
 						return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 								messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("PUT_DESC_SUCCESS"),
-								null), HttpStatus.OK);
+								upload), HttpStatus.OK);
 					}
 					return new ResponseEntity<>(
 							new ResponseDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("DESC_ERR"),
-									messageSource.getMessage("PUT_DESC_ERROR"), null),
+									messageSource.getMessage("PUT_DESC_ERROR"), upload),
 							HttpStatus.PRECONDITION_REQUIRED);
-
-				}
-				throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
-						messageSource.getMessage("UPDATE_EVENT_MORE_EXPECTED_PARAMS")));
+					
+				}				
 			} else {
 				throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 						messageSource.getMessage("MISS_EVENT_PLACE_ID")));

@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.co.mundoviajero.business.SetDTOIntoEntities;
 import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
+import com.co.mundoviajero.dto.event.eventplace.CreateEventPlaceDTO;
 import com.co.mundoviajero.dto.event.eventplace.EventPlaceResponseDTO;
 import com.co.mundoviajero.persistence.dao.IEventPlaceDAO;
 import com.co.mundoviajero.persistence.entity.EventPlace;
@@ -79,6 +81,31 @@ public class EventPlaceBusiness {
 
 		throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 				messageSource.getMessage("GET_DESC_ERROR_EVENT_PLACE")));
+	}
+	
+	public ResponseEntity<ResponseDTO> addPlaceIntoEvent(CreateEventPlaceDTO createEventPlaceDTO) throws ValidationException {
+
+		if (createEventPlaceDTO != null) {
+			
+			List<CreateEventPlaceDTO> placesDTO = new ArrayList<>();
+			placesDTO.add(createEventPlaceDTO);
+			
+			List<EventPlace> places = SetDTOIntoEntities.setEventPlace(placesDTO,createEventPlaceDTO.getEventId());
+			
+			boolean upload = eventPlaceDAO.createEventPlaces(places);
+			
+			if(upload) {
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("POST_DESC_SUCCESS"), upload),
+						HttpStatus.PRECONDITION_REQUIRED);
+			}
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+					messageSource.getMessage("DESC_ERR"), messageSource.getMessage("POST_DESC_ERROR"), upload),
+					HttpStatus.PRECONDITION_REQUIRED);
+		}
+		throw new ValidationException(
+				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_BODY_PARAMS")));		
+
 	}
 
 	public ResponseEntity<ResponseDTO> updateEventPlace(Map<String, String> bodyParameters) throws ValidationException {

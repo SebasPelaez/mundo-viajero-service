@@ -1,11 +1,16 @@
 package com.co.mundoviajero.util.configuration;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -41,4 +46,18 @@ public class ErrorHandlerControllerAdvice {
        return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
            messageSource.getMessage("DESC_ERR_VALIDATION"), ex.getMessage()), HttpStatus.BAD_REQUEST);
    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDTO> handleValidation(HttpServletRequest req,
+                                                        MethodArgumentNotValidException ex) {
+        return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR_VALIDATION"),
+                messageSource.getMessage("DESC_ERR_VALIDATION"), generateErrorDesc(ex.getBindingResult().getFieldErrors())),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    private String generateErrorDesc(List<FieldError> fields) {
+        return fields.stream()
+                .map(fe -> fe.getField() + " - " + fe.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+    }
 }

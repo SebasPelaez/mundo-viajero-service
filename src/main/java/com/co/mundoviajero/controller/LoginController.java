@@ -1,9 +1,9 @@
 package com.co.mundoviajero.controller;
 
-import java.util.Map;
-
+import javax.validation.Valid;
 import javax.ws.rs.core.MediaType;
 
+import com.co.mundoviajero.dto.login.AuthenticateDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,5 +17,5 @@ public interface LoginController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON }, consumes = { MediaType.APPLICATION_JSON })
-	ResponseEntity<ResponseDTO> login(@RequestBody Map<String, String> loginParameters) throws Exception;
+	ResponseEntity<ResponseDTO> login(@Valid @RequestBody AuthenticateDTO authenticateParameters) throws Exception;
 }

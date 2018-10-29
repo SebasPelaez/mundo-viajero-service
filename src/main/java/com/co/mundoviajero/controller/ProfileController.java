@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.co.mundoviajero.dto.ResponseDTO;
 
+@RequestMapping(value = "/profile")
 public interface ProfileController {
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/profile", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
+	@RequestMapping(value = "", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
 	ResponseEntity<ResponseDTO> getAllProfiles()  throws Exception;
 	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/profile/{search}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
-	ResponseEntity<ResponseDTO> getProfile(@PathVariable("search") String search)  throws Exception;
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON})
+	ResponseEntity<ResponseDTO> getProfile(@PathVariable("id") Long id)  throws Exception;
 	
 }

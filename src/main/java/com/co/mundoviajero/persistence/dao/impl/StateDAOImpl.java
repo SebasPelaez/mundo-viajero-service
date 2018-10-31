@@ -1,6 +1,5 @@
 package com.co.mundoviajero.persistence.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -8,7 +7,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.co.mundoviajero.dto.StateDTO;
 import com.co.mundoviajero.persistence.dao.IStateDAO;
 import com.co.mundoviajero.persistence.entity.State;
 
@@ -18,34 +16,14 @@ public class StateDAOImpl extends BaseDAO implements IStateDAO{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<StateDTO> getAllStates() {
-		List<StateDTO> statesDTO = new ArrayList<>();
+	public List<State> getAllStates() {
 		Query query = getCurrentSession().createQuery("From State");
 		List<State> states = (List<State>)query.getResultList();
-		
-		for(State s: states) {
-			statesDTO.add(setStateDTO(s));
-		}
-		
-	    return statesDTO;
+	    return states;
 	}
 
 	@Override
-	public StateDTO getState(Long id) {
-		Query query = getCurrentSession().createQuery("select s from State s where s.id = :id");
-		query.setParameter("id", id);
-		StateDTO stateDTO = setStateDTO((State) query.getSingleResult());
-		return stateDTO;
+	public State getState(Long id) {
+		return getCurrentSession().find(State.class, id);
 	}
-	
-	private StateDTO setStateDTO(State state) {
-		
-		StateDTO stateDTO = new StateDTO();
-		stateDTO.setId(state.getId());
-		stateDTO.setDescription(state.getDescription().trim());
-		stateDTO.setBelongsTo(state.getBelongsTo().trim());
-		
-		return stateDTO;
-	}
-
 }

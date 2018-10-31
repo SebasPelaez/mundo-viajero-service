@@ -37,7 +37,7 @@ public class State implements Serializable {
 	}
 
 	public String getDescription() {
-		return description;
+		return description.trim();
 	}
 
 	public void setDescription(String description) {
@@ -45,7 +45,7 @@ public class State implements Serializable {
 	}
 
 	public String getBelongsTo() {
-		return belongsTo;
+		return belongsTo.trim();
 	}
 
 	public void setBelongsTo(String belongsTo) {

@@ -1,12 +1,8 @@
-package com.co.mundoviajero.business.State;
+package com.co.mundoviajero.business.Department;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.co.mundoviajero.persistence.entity.State;
-import com.co.mundoviajero.util.FieldConstants;
-import com.co.mundoviajero.util.Validator;
-import com.co.mundoviajero.util.exception.dto.ErrorDTO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -16,58 +12,62 @@ import org.springframework.stereotype.Service;
 
 import com.co.mundoviajero.business.SetEntitiesIntoDTO;
 import com.co.mundoviajero.dto.ResponseDTO;
-import com.co.mundoviajero.dto.state.StateResponseDTO;
-import com.co.mundoviajero.persistence.dao.IStateDAO;
+import com.co.mundoviajero.dto.department.DepartmentResponseDTO;
+import com.co.mundoviajero.persistence.dao.IDepartmentDAO;
+import com.co.mundoviajero.persistence.entity.Department;
+import com.co.mundoviajero.util.FieldConstants;
+import com.co.mundoviajero.util.Validator;
 import com.co.mundoviajero.util.exception.ValidationException;
+import com.co.mundoviajero.util.exception.dto.ErrorDTO;
 
 @Service
-public class StateBusiness {
-
+public class DepartmentBusiness {
+	
 	@Autowired
-	private IStateDAO stateDAO;
+	private IDepartmentDAO departmentDAO;
 
 	@Autowired
 	private MessageSourceAccessor messageSource;
 	
-	public ResponseEntity<ResponseDTO> getAllStates() throws Exception {
-		List<State> states = stateDAO.getAllStates();
-		if(CollectionUtils.isNotEmpty(states)){
+	public ResponseEntity<ResponseDTO> getAllDepartments() throws Exception {
+		List<Department> deparments = departmentDAO.getAllDeparments();
+		if(CollectionUtils.isNotEmpty(deparments)){
 
-			List<StateResponseDTO> stateResponse = new ArrayList<>();
-			states.forEach(
-					state -> stateResponse
-							.add(SetEntitiesIntoDTO.setStateResponseDTO(state))
+			List<DepartmentResponseDTO> departmentResponse = new ArrayList<>();
+			deparments.forEach(
+					deparment -> departmentResponse
+							.add(SetEntitiesIntoDTO.setDepartmentResponseDTO(deparment))
 			);
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
-					stateResponse),HttpStatus.OK);
+					departmentResponse),HttpStatus.OK);
 		}
 		throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("GET_DESC_ERROR_STATE")));
+				messageSource.getMessage("GET_DESC_ERROR_DEPARMENT")));
 	}
 
-	public ResponseEntity<ResponseDTO> getState(Long id) throws ValidationException {
+	public ResponseEntity<ResponseDTO> getDepartment(Long id) throws ValidationException {
 
 		StringBuilder sb = new StringBuilder(Validator.validateLong(
-				id, FieldConstants.STATE_ID, FieldConstants.ID_OBLIGATORY));
+				id, FieldConstants.DEPARTMENT_ID, FieldConstants.ID_OBLIGATORY));
 
 		if (sb.toString().length() > 0) {
 			throw new ValidationException(new ErrorDTO(messageSource.getMessage("MISS_QUERY_PARAMS"),
 					sb.toString()));
 		}
 
-		State state = stateDAO.getState(id);
+		Department department = departmentDAO.getDepartment(id);
 
-		if(state != null) {
+		if(department != null) {
 
-			StateResponseDTO stateResponseDTO = SetEntitiesIntoDTO.setStateResponseDTO(state);
+			DepartmentResponseDTO departmentResponseDTO = SetEntitiesIntoDTO.setDepartmentResponseDTO(department);
 			
 			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
 					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"),
-					stateResponseDTO),HttpStatus.OK);
+					departmentResponseDTO),HttpStatus.OK);
 		}
 		throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
-				messageSource.getMessage("GET_DESC_ERROR_STATE")));
+				messageSource.getMessage("GET_DESC_ERROR_DEPARMENT")));
 	}
-	
+
 }

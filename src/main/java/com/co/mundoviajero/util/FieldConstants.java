@@ -116,6 +116,7 @@ public class FieldConstants {
 	 */
 	public static final String PERSON_ID = "personId";
 	public static final String STATE_ID = "stateId";
+	public static final String DEPARTMENT_ID = "departmentId";
 	public static final String CITY_ID = "cityId";
 	public static final String PROFILE_ID = "profileId";
 	public static final String EVENT_ID = "eventId";

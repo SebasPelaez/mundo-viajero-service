@@ -88,6 +88,34 @@ public class EventBusiness {
 				HttpStatus.NOT_FOUND);
 
 	}
+	
+	public ResponseEntity<ResponseDTO> findGuideEvents(Long id) throws ValidationException {
+
+		StringBuilder sb = new StringBuilder(
+				Validator.validateLong(id, FieldConstants.EVENT_ID, FieldConstants.ID_OBLIGATORY));
+
+		if (sb.toString().length() > 0) {
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("MISS_QUERY_PARAMS"), sb.toString()));
+		}
+
+		List<Event> events = eventDAO.findGuideEvents(id);
+		if (CollectionUtils.isNotEmpty(events)) {
+
+			List<EventResponseDTO> eventsDTO = new ArrayList<>();
+			events.forEach(event -> eventsDTO.add(SetEntitiesIntoDTO.setEventResponseDTO(event)));
+
+			setListsInEvent(eventsDTO);
+
+			return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+					messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("GET_DESC_SUCCESS"), eventsDTO),
+					HttpStatus.OK);
+
+		}
+		return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("DESC_ERR"), messageSource.getMessage("GET_DESC_ERROR"), events),
+				HttpStatus.NOT_FOUND);
+
+	}
 
 	public ResponseEntity<ResponseDTO> getEvent(Long id) throws ValidationException {
 

@@ -25,6 +25,9 @@ public class EventPlace implements Serializable {
 	@Column(name = "Id")
 	private Long id;
 
+	@Column(name = "Name")
+	private String name;
+	
 	@Column(name = "EventId")
 	private Long eventId;
 
@@ -50,6 +53,14 @@ public class EventPlace implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Long getEventId() {

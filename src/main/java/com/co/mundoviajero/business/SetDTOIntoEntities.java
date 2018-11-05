@@ -66,6 +66,8 @@ public class SetDTOIntoEntities {
 
 				EventPlace eventPlace = new EventPlace();
 				eventPlace.setEventId(eventId);
+				
+				eventPlace.setName(evtDTO.getName());
 
 				City city = new City();
 				city.setId(Long.parseLong(evtDTO.getCityId()));

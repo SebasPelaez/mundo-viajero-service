@@ -11,6 +11,7 @@ public interface IEventDAO {
 	List<Event> getAllEvents();
 	List<Event> getEventsWithId(List<Long> eventsId);
 	Event getEvent(Long id);
+	List<Event> findGuideEvents(Long id);
 	List<Event> getEventWithParameters(Map<String, Object> parameters);
 	Long createEvent(Event event) throws ValidationException;
 	boolean updateEvent(Map<String, String> parameters, Long identifier);

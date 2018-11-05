@@ -1,7 +1,7 @@
 package com.co.mundoviajero.business;
 
-import com.co.mundoviajero.dto.city.CityDTO;
-import com.co.mundoviajero.dto.department.DepartmentDTO;
+import com.co.mundoviajero.dto.city.CityResponseDTO;
+import com.co.mundoviajero.dto.department.DepartmentResponseDTO;
 import com.co.mundoviajero.dto.event.EventResponseDTO;
 import com.co.mundoviajero.dto.event.eventplace.EventPlaceResponseDTO;
 import com.co.mundoviajero.dto.event.imageevent.ImageEventResponseDTO;
@@ -19,16 +19,17 @@ import com.co.mundoviajero.persistence.entity.State;
 
 public class SetEntitiesIntoDTO {
 
-	public static CityDTO setCityResponseDTO(City city) {
+	public static CityResponseDTO setCityResponseDTO(City city) {
 
-		CityDTO cityDTO = new CityDTO(city.getId(), city.getName(), setDDepartmentResponseDTO(city.getDepartmentId()));
+		CityResponseDTO cityDTO = new CityResponseDTO(city.getId(), city.getName(),
+				setDepartmentResponseDTO(city.getDepartmentId()));
 
 		return cityDTO;
 	}
 
-	public static DepartmentDTO setDDepartmentResponseDTO(Department department) {
+	public static DepartmentResponseDTO setDepartmentResponseDTO(Department department) {
 
-		DepartmentDTO departmentDTO = new DepartmentDTO(department.getId(), department.getName());
+		DepartmentResponseDTO departmentDTO = new DepartmentResponseDTO(department.getId(), department.getName());
 
 		return departmentDTO;
 	}
@@ -74,7 +75,8 @@ public class SetEntitiesIntoDTO {
 	public static ImageEventResponseDTO setImageEventDTO(ImageEvent imageEvent) {
 
 		ImageEventResponseDTO imageEventDTO = new ImageEventResponseDTO(imageEvent.getId(), imageEvent.getEventId(),
-				imageEvent.getUploadDate().toString(), imageEvent.getImagePath(),setStateResponseDTO(imageEvent.getState()));
+				imageEvent.getUploadDate().toString(), imageEvent.getImagePath(),
+				setStateResponseDTO(imageEvent.getState()));
 
 		return imageEventDTO;
 	}
@@ -82,10 +84,10 @@ public class SetEntitiesIntoDTO {
 	public static EventPlaceResponseDTO setEventPlaceDTO(EventPlace eventPlace) {
 
 		EventPlaceResponseDTO eventPlaceResponseDTO = new EventPlaceResponseDTO(eventPlace.getId(),
-				eventPlace.getEventId(), eventPlace.getEventPlaceStartDate().toString(),
+				eventPlace.getName(), eventPlace.getEventId(), eventPlace.getEventPlaceStartDate().toString(),
 				eventPlace.getEventPlaceEndDate().toString(), eventPlace.getLongitudeEventPlace(),
 				eventPlace.getLatitudeEventPlace(), setCityResponseDTO(eventPlace.getCityId()));
-		
+
 		return eventPlaceResponseDTO;
 	}
 

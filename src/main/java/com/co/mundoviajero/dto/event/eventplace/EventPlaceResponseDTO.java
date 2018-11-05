@@ -1,6 +1,6 @@
 package com.co.mundoviajero.dto.event.eventplace;
 
-import com.co.mundoviajero.dto.city.CityDTO;
+import com.co.mundoviajero.dto.city.CityResponseDTO;
 import java.io.Serializable;
 
 public class EventPlaceResponseDTO implements Serializable {
@@ -8,17 +8,19 @@ public class EventPlaceResponseDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	private String name;
 	private Long eventId;
 	private String eventPlaceStartDate;
 	private String eventPlaceEndDate;
 	private double longitudeEventPlace;
 	private double latitudeEventPlace;
-	private CityDTO city;
+	private CityResponseDTO city;
 
-	public EventPlaceResponseDTO(Long id, Long eventId, String eventPlaceStartDate, String eventPlaceEndDate,
-			double longitudeEventPlace, double latitudeEventPlace, CityDTO city) {
+	public EventPlaceResponseDTO(Long id, String name, Long eventId, String eventPlaceStartDate, String eventPlaceEndDate,
+			double longitudeEventPlace, double latitudeEventPlace, CityResponseDTO city) {
 		super();
 		this.id = id;
+		this.name = name;
 		this.eventId = eventId;
 		this.eventPlaceStartDate = eventPlaceStartDate;
 		this.eventPlaceEndDate = eventPlaceEndDate;
@@ -62,11 +64,17 @@ public class EventPlaceResponseDTO implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public CityDTO getCity() {
+	public CityResponseDTO getCity() {
 		return city;
 	}
-	public void setCity(CityDTO city) {
+	public void setCity(CityResponseDTO city) {
 		this.city = city;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

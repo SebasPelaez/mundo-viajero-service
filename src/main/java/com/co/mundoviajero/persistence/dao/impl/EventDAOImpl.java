@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.co.mundoviajero.persistence.dao.IEventDAO;
 import com.co.mundoviajero.persistence.entity.Event;
+import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.util.exception.ValidationException;
 
 @Repository(value = "EventDAOImpl")
@@ -48,6 +49,24 @@ public class EventDAOImpl extends BaseDAO implements IEventDAO{
 	@Override
 	public Event getEvent(Long id) {		
 		return getCurrentSession().find(Event.class, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Event> findGuideEvents(Long guideId) {
+		
+		Person personIdResponsible = new Person();
+		personIdResponsible.setId(guideId);
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("select e from Event e where e.personIdResponsible = :personIdResponsible");
+		
+		Query query = getCurrentSession().createQuery(stringBuffer.toString());
+		query.setParameter("personIdResponsible",personIdResponsible);
+		
+		List<Event> events = (List<Event>) query.getResultList();
+				
+		return events;
 	}
 
 	@SuppressWarnings("unchecked")

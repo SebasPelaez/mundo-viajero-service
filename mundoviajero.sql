@@ -174,6 +174,7 @@ ALTER TABLE public."SQ_CITY" OWNER TO udearoot;
 CREATE TABLE public."EventPlace"
 (
     "Id" bigint NOT NULL,
+    "Name" character(100) NOT NULL,
     "EventId" bigint NOT NULL references public."Event"("Id"),
     "CityId" bigint NOT NULL references public."City"("Id"),
     "EventPlaceStartDate" timestamp(4) without time zone NOT NULL,

@@ -13,6 +13,11 @@ public class CreateEventPlaceDTO implements Serializable{
 
 	@NotNull
 	private Long eventId;
+	
+	@NotNull
+	@NotEmpty
+	@Length(max = 100)
+	private String name;
 
 	@NotNull
 	@NotEmpty
@@ -85,6 +90,14 @@ public class CreateEventPlaceDTO implements Serializable{
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

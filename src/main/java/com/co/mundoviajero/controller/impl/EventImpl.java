@@ -56,4 +56,9 @@ public class EventImpl implements EventController{
 		return eventBusiness.getEventsWithId(eventsId);
 	}
 
+	@Override
+	public ResponseEntity<ResponseDTO> findGuideEvents(@PathVariable("id") Long id) throws Exception {
+		return eventBusiness.findGuideEvents(id);
+	}
+
 }

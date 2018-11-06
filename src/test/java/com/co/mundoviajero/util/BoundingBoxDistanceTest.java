@@ -1,11 +1,15 @@
 package com.co.mundoviajero.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import com.co.mundoviajero.util.BoundingBoxDistance.BoundingBox;
 import com.co.mundoviajero.util.BoundingBoxDistance.MapPoint;
 
-public class BoundingBoxDistanceTest extends TestCase {
+public class BoundingBoxDistanceTest {
 
+	@Test
 	public void testGetBoundingBox() {
 		MapPoint mp1 = new MapPoint(6.2678539, -75.5690221);
 		MapPoint mpCompare = new MapPoint(6.18461, -75.59913);

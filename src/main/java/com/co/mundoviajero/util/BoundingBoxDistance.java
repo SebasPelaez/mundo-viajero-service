@@ -1,7 +1,7 @@
 package com.co.mundoviajero.util;
 
 /**
- * Esta clase nos permite determinar un radio de N kilometros para una ubicación
+ * Esta clase nos permite determinar un radio de N kilometros para una ubicacion
  * especifica del mapa, denotada por Latitud y Longitud.
  * Esta rutina, fue desarrollada por Federico A. Ramponi Official Web site:
  * https://stackoverflow.com/questions/238260/how-to-calculate-the-bounding-box-for-a-given-lat-lng-location/238558#238558

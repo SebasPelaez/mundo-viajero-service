@@ -233,5 +233,33 @@ public class EventPlaceBusiness {
 				new ErrorDTO(messageSource.getMessage("CODE_ERR"), messageSource.getMessage("MISS_QUERY_PARAMS")));
 
 	}
+	
+	public ResponseEntity<ResponseDTO> deleteEventPlace(Long eventPlaceId) throws ValidationException {
+
+		StringBuilder sb = new StringBuilder(
+				Validator.validateLong(eventPlaceId, FieldConstants.EVENT_PLACE_ID, FieldConstants.ID_OBLIGATORY));
+
+		if (sb.toString().length() > 0) {
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("MISS_QUERY_PARAMS"), sb.toString()));
+		}
+
+		EventPlace eventPlace = eventPlaceDAO.getEventPlace(eventPlaceId);
+
+		if (eventPlace != null) {
+
+			boolean succes = eventPlaceDAO.deleteEventPlace(eventPlace);
+			if (succes) {
+				return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
+						messageSource.getMessage("DESC_SUCCESS"), messageSource.getMessage("DELETE_EVENT_PLACE_SUCCES"),
+						succes), HttpStatus.OK);
+			}
+			throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+					messageSource.getMessage("DELETE_EVENT_PLACE_FAILED")));
+			
+		}
+		throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
+				messageSource.getMessage("GET_DESC_ERROR_EVENT_PLACE")));
+
+	}
 
 }

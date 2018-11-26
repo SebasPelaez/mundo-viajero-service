@@ -34,4 +34,8 @@ public interface EventPlaceController {
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON })
 	ResponseEntity<ResponseDTO> addPlaceIntoEvent(@Valid @RequestBody CreateEventPlaceDTO createEventPlaceDTO) throws Exception;
+	
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON })
+	ResponseEntity<ResponseDTO> deleteEventPlace(@PathVariable("id") Long id) throws Exception;
 }

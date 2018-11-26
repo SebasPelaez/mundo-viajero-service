@@ -1,5 +1,7 @@
 package com.co.mundoviajero.business;
 
+import com.co.mundoviajero.dto.EventRecomendation.EventRecomendationResponseDTO;
+import com.co.mundoviajero.dto.Recomendation.RecomendationResponseDTO;
 import com.co.mundoviajero.dto.city.CityResponseDTO;
 import com.co.mundoviajero.dto.department.DepartmentResponseDTO;
 import com.co.mundoviajero.dto.event.EventResponseDTO;
@@ -12,9 +14,11 @@ import com.co.mundoviajero.persistence.entity.City;
 import com.co.mundoviajero.persistence.entity.Department;
 import com.co.mundoviajero.persistence.entity.Event;
 import com.co.mundoviajero.persistence.entity.EventPlace;
+import com.co.mundoviajero.persistence.entity.EventRecomendation;
 import com.co.mundoviajero.persistence.entity.ImageEvent;
 import com.co.mundoviajero.persistence.entity.Person;
 import com.co.mundoviajero.persistence.entity.Profile;
+import com.co.mundoviajero.persistence.entity.Recomendation;
 import com.co.mundoviajero.persistence.entity.State;
 
 public class SetEntitiesIntoDTO {
@@ -66,8 +70,8 @@ public class SetEntitiesIntoDTO {
 		EventResponseDTO eventResponseDTO = new EventResponseDTO(event.getId(), event.getName(), event.getDescription(),
 				event.getStartDate().toString(), event.getEndDate().toString(), event.getLongitudeMeetingPoint(),
 				event.getLatitudeMeetingPoint(), event.getCapaciticy(), event.getFare(),
-				setPersonResponseDTO(event.getPersonIdResponsible()), setStateResponseDTO(event.getState()), null,
-				null);
+				setPersonResponseDTO(event.getPersonIdResponsible()), setStateResponseDTO(event.getState()), null, null,
+				null, 0);
 
 		return eventResponseDTO;
 	}
@@ -89,6 +93,24 @@ public class SetEntitiesIntoDTO {
 				eventPlace.getLatitudeEventPlace(), setCityResponseDTO(eventPlace.getCityId()));
 
 		return eventPlaceResponseDTO;
+	}
+
+	public static RecomendationResponseDTO setRecomendationResponseDTO(Recomendation recomendation) {
+
+		RecomendationResponseDTO recomendationResponseDTO = new RecomendationResponseDTO(recomendation.getId(),
+				recomendation.getDescription());
+
+		return recomendationResponseDTO;
+	}
+
+	public static EventRecomendationResponseDTO setEventRecomendationResponseDTO(
+			EventRecomendation eventRecomendation) {
+
+		EventRecomendationResponseDTO eventRecomendationResponseDTO = new EventRecomendationResponseDTO(
+				eventRecomendation.getPrimary().getEventId(),
+				setRecomendationResponseDTO(eventRecomendation.getPrimary().getRecomendation()));
+		return eventRecomendationResponseDTO;
+
 	}
 
 }

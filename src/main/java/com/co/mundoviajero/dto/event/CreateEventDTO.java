@@ -44,13 +44,9 @@ public class CreateEventDTO implements Serializable {
 	protected String latitudeMeetingPoint;
 
 	@NotNull
-	@NotEmpty
-	@Length(max = 4)
 	protected int capaciticy;
 
 	@NotNull
-	@NotEmpty
-	@Length(max = 8)
 	protected float fare;
 	
 	@NotNull
@@ -70,6 +66,10 @@ public class CreateEventDTO implements Serializable {
 	@NotNull
 	@NotEmpty
 	private List<String> images;
+	
+	@NotNull
+	@NotEmpty
+	private List<Long> recomendations;
 	
 	public String getPersonIdResponsible() {
 		return personIdResponsible;
@@ -143,4 +143,12 @@ public class CreateEventDTO implements Serializable {
 	public void setFare(float fare) {
 		this.fare = fare;
 	}
+	public List<Long> getRecomendations() {
+		return recomendations;
+	}
+	public void setRecomendations(List<Long> recomendations) {
+		this.recomendations = recomendations;
+	}
+	
+	
 }

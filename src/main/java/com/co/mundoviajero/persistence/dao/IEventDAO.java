@@ -16,5 +16,6 @@ public interface IEventDAO {
 	Long createEvent(Event event) throws ValidationException;
 	boolean updateEvent(Map<String, String> parameters, Long identifier);
 	boolean validResponsible(Long personIdResponsible);
+	int numberOfAtendees(Long eventId);
 	
 }

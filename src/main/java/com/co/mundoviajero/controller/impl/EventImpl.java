@@ -3,6 +3,8 @@ package com.co.mundoviajero.controller.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +43,7 @@ public class EventImpl implements EventController{
 	}
 
 	@Override
-	public ResponseEntity<ResponseDTO> createEvent(@RequestBody CreateEventDTO event) throws Exception {
+	public ResponseEntity<ResponseDTO> createEvent(@Valid @RequestBody CreateEventDTO event) throws Exception {
 		return eventBusiness.createEvent(event);
 	}
 

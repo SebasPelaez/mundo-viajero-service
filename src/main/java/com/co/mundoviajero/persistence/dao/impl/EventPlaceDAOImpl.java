@@ -110,4 +110,15 @@ public class EventPlaceDAOImpl extends BaseDAO implements IEventPlaceDAO {
 		return !query.getResultList().isEmpty();
 	}
 
+	@Override
+	public boolean deleteEventPlace(EventPlace eventPlace) {
+		boolean succes = true;
+		try {
+			getCurrentSession().delete(eventPlace);
+		}catch (Exception e) {
+			succes = false;
+		}
+		return succes;
+	}
+
 }

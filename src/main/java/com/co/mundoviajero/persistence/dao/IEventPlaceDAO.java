@@ -14,5 +14,6 @@ public interface IEventPlaceDAO {
 	boolean updateEventPlace(Map<String, String> parameters, Long identifier);
 	List<Long> findNearestEvents(BoundingBox boundingBox);
 	boolean validCity(Long cityId);
+	boolean deleteEventPlace(EventPlace eventPlace);
 	
 }

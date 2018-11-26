@@ -121,6 +121,8 @@ public class FieldConstants {
 	public static final String PROFILE_ID = "profileId";
 	public static final String EVENT_ID = "eventId";
 	public static final String EVENT_PLACE_ID = "eventPlaceId";
+	public static final String EVENT_RECOMENDATION_ID = "eventRecomendationId";
+	public static final String RECOMENDATION_ID = "recomendationId";
 
 	public static final int ID_LENGTH = 5;
 	public static final boolean ID_OBLIGATORY = true;

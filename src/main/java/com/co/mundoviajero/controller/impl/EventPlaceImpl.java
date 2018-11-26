@@ -45,4 +45,9 @@ public class EventPlaceImpl implements EventPlaceController {
 		return eventPlaceBusiness.addPlaceIntoEvent(createEventPlaceDTO);
 	}
 
+	@Override
+	public ResponseEntity<ResponseDTO> deleteEventPlace(@PathVariable("id") Long id) throws Exception {
+		return eventPlaceBusiness.deleteEventPlace(id);
+	}
+
 }

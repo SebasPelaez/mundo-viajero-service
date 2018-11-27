@@ -53,7 +53,7 @@ public class CreateEventPlaceDTO implements Serializable{
 	}
 
 	public String getEventPlaceStartDate() {
-		return eventPlaceStartDate;
+		return eventPlaceStartDate.replace("T", " ");
 	}
 
 	public void setEventPlaceStartDate(String eventPlaceStartDate) {
@@ -61,7 +61,7 @@ public class CreateEventPlaceDTO implements Serializable{
 	}
 
 	public String getEventPlaceEndDate() {
-		return eventPlaceEndDate;
+		return eventPlaceEndDate.replace("T", " ");
 	}
 
 	public void setEventPlaceEndDate(String eventPlaceEndDate) {

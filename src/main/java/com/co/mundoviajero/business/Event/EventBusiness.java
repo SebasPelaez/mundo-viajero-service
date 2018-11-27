@@ -51,7 +51,7 @@ public class EventBusiness {
 
 	@Autowired
 	private IImageEventDAO imageEventDAO;
-	
+
 	@Autowired
 	private IEventRecomendationDAO eventRecomendationDAO;
 
@@ -138,7 +138,7 @@ public class EventBusiness {
 		if (event != null) {
 
 			EventResponseDTO eventResponseDTO = SetEntitiesIntoDTO.setEventResponseDTO(event);
-			
+
 			eventResponseDTO.setPlaces(setPlacesInEventDTO(id));
 			eventResponseDTO.setImages(setImagesInEventDTO(id));
 			eventResponseDTO.setRecomendations(setRecomendationInEventDTO(id));
@@ -187,13 +187,14 @@ public class EventBusiness {
 		if (event != null) {
 			if (!event.getPlaces().isEmpty()) {
 
-				if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "), event.getStartDate(),
-						Constants.EVENT_CREATED_DATE)) {
+				if (!Validator.validateDate(LocalDateTime.now().toString().replace("T", " "),
+						event.getStartDate(), Constants.EVENT_CREATED_DATE)) {
 					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 							messageSource.getMessage("EVENT_INITIAL_HOUR")));
 				}
 
-				if (!Validator.validateDate(event.getStartDate(), event.getEndDate(), Constants.EVENT_DURATION)) {
+				if (!Validator.validateDate(event.getStartDate(),
+						event.getEndDate(), Constants.EVENT_DURATION)) {
 					throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 							messageSource.getMessage("EVENT_FINAL_HOUR")));
 				}
@@ -240,21 +241,21 @@ public class EventBusiness {
 							throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 									messageSource.getMessage("FAIL_UPLOAD_EVENT_IMAGE")));
 						}
-						
-						if(!event.getRecomendations().isEmpty()) {
-							
+
+						if (!event.getRecomendations().isEmpty()) {
+
 							CreateEventRecomendationDTO createEventRecomendationDTO = new CreateEventRecomendationDTO();
 							createEventRecomendationDTO.setEventId(eventId);
 							createEventRecomendationDTO.setRecomendationsId(event.getRecomendations());
-														
+
 							List<EventRecomendation> recomendations = SetDTOIntoEntities
 									.setEventRecomendation(createEventRecomendationDTO);
 
-							if(!eventRecomendationDAO.addRecomendationsIntoEvent(recomendations)) {
+							if (!eventRecomendationDAO.addRecomendationsIntoEvent(recomendations)) {
 								throw new ValidationException(new ErrorDTO(messageSource.getMessage("CODE_ERR"),
 										messageSource.getMessage("FAIL_CREATED_RECOMENDATION")));
 							}
-							
+
 						}
 
 						return new ResponseEntity<>(new ResponseDTO(messageSource.getMessage("CODE_SUCCESS"),
@@ -408,7 +409,7 @@ public class EventBusiness {
 			Long id = event.getId();
 			event.setPlaces(setPlacesInEventDTO(id));
 			event.setImages(setImagesInEventDTO(id));
-			event.setRecomendations(setRecomendationInEventDTO(id));			
+			event.setRecomendations(setRecomendationInEventDTO(id));
 			event.setNumberOfAtendees(setAtendeesInEvent(id));
 
 		});
@@ -433,27 +434,25 @@ public class EventBusiness {
 
 		return imagesDTO;
 	}
-	
+
 	private List<EventRecomendationResponseDTO> setRecomendationInEventDTO(Long eventId) {
 
 		List<EventRecomendation> eventRecomendations = eventRecomendationDAO.getAllEventRecomendations(eventId);
 		List<EventRecomendationResponseDTO> eventRecomendationResponseDTO = new ArrayList<>();
-		
+
 		if (CollectionUtils.isNotEmpty(eventRecomendations)) {
-			
+
 			eventRecomendations.forEach(eventRecomendation -> eventRecomendationResponseDTO
 					.add(SetEntitiesIntoDTO.setEventRecomendationResponseDTO(eventRecomendation)));
 		}
-		
+
 		return eventRecomendationResponseDTO;
 	}
-	
+
 	private int setAtendeesInEvent(Long eventId) {
 
-		int count = eventDAO.numberOfAtendees(eventId);		
+		int count = eventDAO.numberOfAtendees(eventId);
 		return count;
 	}
-	
-	
 
 }

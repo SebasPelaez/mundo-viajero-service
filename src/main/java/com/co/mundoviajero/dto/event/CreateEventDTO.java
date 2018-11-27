@@ -108,13 +108,13 @@ public class CreateEventDTO implements Serializable {
 		this.description = description;
 	}
 	public String getStartDate() {
-		return startDate;
+		return startDate.replace("T", " ");
 	}
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	public String getEndDate() {
-		return endDate;
+		return endDate.replace("T", " ");
 	}
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
